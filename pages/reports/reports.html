@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports | TMS</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Existing shared navigation stylesheet -->
+  <link rel="stylesheet" href="../../css/nav-sidebar.css">
+
+  <style>
+    /* =========================================================
+       REPORTS MODULE THEME
+       Follows the existing TMS module design language.
+    ========================================================= */
+
+    #reports-page {
+      --rep-primary: #601D49;
+      --rep-primary-dark: #4B1738;
+      --rep-primary-soft: #F7EFF4;
+      --rep-bg: #FAFAF9;
+      --rep-border: #E7E5E4;
+      --rep-text: #292524;
+      --rep-muted: #78716C;
+      width: 100%;
+      min-width: 0;
+      color: var(--rep-text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #reports-page * {
+      box-sizing: border-box;
+    }
+
+    #reports-page .rep-card {
+      background: #fff;
+      border: 1px solid var(--rep-border);
+      border-radius: 10px;
+    }
+
+    /* ---------- Buttons ---------- */
+
+    #reports-page .rep-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid var(--rep-primary);
+      border-radius: 7px;
+      background: var(--rep-primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #reports-page .rep-primary-btn:hover {
+      background: var(--rep-primary-dark);
+      border-color: var(--rep-primary-dark);
+    }
+
+    #reports-page .rep-primary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    #reports-page .rep-secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--rep-border);
+      border-radius: 7px;
+      background: #fff;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #reports-page .rep-secondary-btn:hover {
+      background: #f5f5f4;
+    }
+
+    #reports-page .rep-secondary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    /* ---------- Inputs ---------- */
+
+    #reports-page .rep-input,
+    #reports-page .rep-select {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      background: #fff;
+      padding: 9px 11px;
+      color: #292524;
+      font-size: 12px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    #reports-page .rep-input,
+    #reports-page .rep-select {
+      height: 38px;
+    }
+
+    #reports-page .rep-input:focus,
+    #reports-page .rep-select:focus {
+      border-color: var(--rep-primary);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, .08);
+    }
+
+    #reports-page .rep-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #57534e;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* =========================================================
+       REPORT TYPE TABS
+    ========================================================= */
+
+    #reports-page .rep-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px;
+      background: #fff;
+      border: 1px solid var(--rep-border);
+      border-radius: 10px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    #reports-page .rep-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: #57534e;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .15s ease;
+      white-space: nowrap;
+    }
+
+    #reports-page .rep-tab:hover {
+      background: #f5f5f4;
+    }
+
+    #reports-page .rep-tab.active {
+      background: var(--rep-primary);
+      color: #fff;
+    }
+
+    #reports-page .rep-tab:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 1px;
+    }
+
+    /* =========================================================
+       KPI CARDS
+    ========================================================= */
+
+    #reports-page .rep-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    #reports-page .rep-kpi-card {
+      min-width: 0;
+      min-height: 82px;
+      padding: 9px 12px;
+      background: linear-gradient(135deg,
+          #ffffff 0%,
+          #faf5f8 55%,
+          #f7eff4 100%);
+      border: 1px solid rgba(96, 29, 73, 0.16);
+      border-radius: 9px;
+      box-shadow: 0 2px 5px rgba(96, 29, 73, .04),
+        0 4px 10px rgba(96, 29, 73, .035);
+      transition: all .2s ease;
+    }
+
+    #reports-page .rep-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 29, 73, .28);
+      box-shadow: 0 5px 12px rgba(96, 29, 73, .07);
+    }
+
+    #reports-page .rep-kpi-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 29px;
+      height: 29px;
+      border-radius: 7px;
+      font-size: 12px;
+      background: rgba(96, 29, 73, .06);
+      color: var(--rep-primary);
+    }
+
+    #reports-page .rep-kpi-value {
+      margin-top: 5px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #292524;
+      overflow-wrap: anywhere;
+    }
+
+    #reports-page .rep-kpi-label {
+      margin-top: 3px;
+      color: #78716c;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+    #reports-page .rep-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    #reports-page .rep-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    #reports-page .status-completed {
+      color: #15803d;
+      background: #f0fdf4;
+    }
+
+    #reports-page .status-pending {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    #reports-page .status-cancelled {
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    #reports-page .status-in-progress {
+      color: #601d49;
+      background: #f7eff4;
+    }
+
+    #reports-page .status-paid {
+      color: #15803d;
+      background: #f0fdf4;
+    }
+
+    #reports-page .status-partial {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+
+    #reports-page .status-overdue {
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    #reports-page .status-available {
+      color: #15803d;
+      background: #f0fdf4;
+    }
+
+    #reports-page .status-assigned {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+
+    #reports-page .status-on-trip {
+      color: #7e22ce;
+      background: #f3e8ff;
+    }
+
+    #reports-page .status-maintenance {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    #reports-page .status-inactive {
+      color: #57534e;
+      background: #e7e5e4;
+    }
+
+    #reports-page .status-draft {
+      color: #57534e;
+      background: #e7e5e4;
+    }
+
+    #reports-page .status-processing {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    #reports-page .status-processed {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+
+    #reports-page .status-failed {
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    /* =========================================================
+       COMPACT GRID TABLE
+    ========================================================= */
+
+    #reports-page .rep-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    #reports-page .rep-table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    #reports-page .rep-table th {
+      padding: 8px 12px;
+      background: #fafaf9;
+      border: 1px solid var(--rep-border);
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    #reports-page .rep-table td {
+      padding: 6px 12px;
+      border: 1px solid var(--rep-border);
+      color: #57534e;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    #reports-page .rep-table tbody tr:hover {
+      background: #fdfbfd;
+    }
+
+    /* =========================================================
+       MINI SUMMARY CARDS (within report sections)
+    ========================================================= */
+
+    #reports-page .rep-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    #reports-page .rep-mini-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      border: 1px solid var(--rep-border);
+      border-radius: 8px;
+      transition: border-color .15s;
+    }
+
+    #reports-page .rep-mini-card:hover {
+      border-color: rgba(96, 29, 73, .3);
+    }
+
+    #reports-page .rep-mini-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      font-size: 12px;
+      background: rgba(96, 29, 73, .07);
+      color: var(--rep-primary);
+    }
+
+    #reports-page .rep-mini-value {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #292524;
+    }
+
+    #reports-page .rep-mini-label {
+      font-size: 10px;
+      color: #78716c;
+      line-height: 1.2;
+    }
+
+    /* =========================================================
+       ACTION ICON BUTTONS
+    ========================================================= */
+
+    #reports-page .rep-action-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    #reports-page .rep-row-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    #reports-page .rep-row-action:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 1px;
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    #reports-page .rep-toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 11000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 32px);
+      padding: 12px 16px;
+      border: 1px solid #e7e5e4;
+      border-radius: 9px;
+      background: #fff;
+      color: #292524;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: .25s ease;
+    }
+
+    #reports-page .rep-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    #reports-page .rep-toast-icon {
+      color: var(--rep-primary);
+      font-size: 15px;
+    }
+
+    /* =========================================================
+       PRINT STYLES
+    ========================================================= */
+
+    @media print {
+
+      /* Hide everything except report content */
+      body>* {
+        display: none !important;
+      }
+
+      #reports-page,
+      #reports-page .rep-print-root {
+        display: block !important;
+      }
+
+      /* Hide filter bar, tabs, KPI cards, buttons */
+      .rep-no-print {
+        display: none !important;
+      }
+
+      #reports-page {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        padding: 24px;
+        font-size: 11px;
+        color: #111;
+      }
+
+      #reports-page .rep-card {
+        border: 1px solid #ccc;
+        box-shadow: none;
+      }
+
+      #reports-page .rep-table th,
+      #reports-page .rep-table td {
+        border: 1px solid #ccc;
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+
+      #reports-page .rep-table th {
+        background: #f5f5f4 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #reports-page .rep-kpi-card {
+        background: #fff !important;
+        border: 1px solid #ccc;
+        box-shadow: none;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+      #reports-page .rep-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      #reports-page .rep-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      #reports-page .rep-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      #reports-page .rep-toast {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #reports-page .rep-kpi-card {
+        padding: 9px;
+      }
+
+      #reports-page .rep-kpi-value {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-stone-50">
+
+  <!-- =======================================================
+       SHARED SIDEBAR AND NAVBAR
+  ======================================================== -->
+  <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+  <!-- =======================================================
+       MAIN CONTENT
+  ======================================================== -->
+  <main class="tms-main">
+    <div id="reports-page" class="px-4 py-5 md:px-6 lg:px-4">
+
+      <!-- =====================================================
+           PAGE HEADER
+      ====================================================== -->
+      <section class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rep-no-print">
+        <div>
+          <h1 class="text-xl font-bold text-stone-800">Reports</h1>
+          <p class="text-xs text-stone-500 mt-1">
+            View and analyze trips, drivers, vehicles, customers, invoices, and payroll summaries.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" id="printReportBtn" class="rep-secondary-btn" aria-label="Print report">
+            <i class="fa-solid fa-print"></i>
+            Print Report
+          </button>
+          <button type="button" id="exportCsvBtn" class="rep-primary-btn" aria-label="Export report as CSV">
+            <i class="fa-solid fa-file-csv"></i>
+            Export CSV
+          </button>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           REPORT TYPE TABS
+      ====================================================== -->
+      <section class="mb-4 rep-no-print">
+        <div class="rep-tabs" role="tablist" aria-label="Report type">
+          <button type="button" class="rep-tab active" data-report="overview" role="tab" aria-selected="true">
+            <i class="fa-solid fa-table-columns"></i> Overview
+          </button>
+          <button type="button" class="rep-tab" data-report="trips" role="tab" aria-selected="false">
+            <i class="fa-solid fa-route"></i> Trips
+          </button>
+          <button type="button" class="rep-tab" data-report="drivers" role="tab" aria-selected="false">
+            <i class="fa-solid fa-id-card"></i> Drivers
+          </button>
+          <button type="button" class="rep-tab" data-report="vehicles" role="tab" aria-selected="false">
+            <i class="fa-solid fa-truck"></i> Vehicles
+          </button>
+          <button type="button" class="rep-tab" data-report="customers" role="tab" aria-selected="false">
+            <i class="fa-solid fa-users"></i> Customers
+          </button>
+          <button type="button" class="rep-tab" data-report="invoices" role="tab" aria-selected="false">
+            <i class="fa-solid fa-file-invoice"></i> Invoices
+          </button>
+          <button type="button" class="rep-tab" data-report="payroll" role="tab" aria-selected="false">
+            <i class="fa-solid fa-money-check-dollar"></i> Payroll
+          </button>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           REPORT FILTER BAR
+      ====================================================== -->
+      <section class="rep-card p-4 mb-4 rep-no-print">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
+
+          <div>
+            <label class="rep-label" for="filterDateRange">Date Range</label>
+            <select id="filterDateRange" class="rep-select" aria-label="Filter by date range">
+              <option value="">All Dates</option>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+              <option value="lastmonth">Last Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="rep-label" for="filterTripStatus">Trip Status</label>
+            <select id="filterTripStatus" class="rep-select" aria-label="Filter by trip status">
+              <option value="">All Statuses</option>
+              <option>Completed</option>
+              <option>Pending</option>
+              <option>Cancelled</option>
+              <option>In Progress</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="rep-label" for="filterCustomer">Customer</label>
+            <select id="filterCustomer" class="rep-select" aria-label="Filter by customer">
+              <option value="">All Customers</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="rep-label" for="filterDriver">Driver</label>
+            <select id="filterDriver" class="rep-select" aria-label="Filter by driver">
+              <option value="">All Drivers</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="rep-label" for="filterVehicle">Vehicle</label>
+            <select id="filterVehicle" class="rep-select" aria-label="Filter by vehicle">
+              <option value="">All Vehicles</option>
+            </select>
+          </div>
+
+          <div class="flex items-end gap-2">
+            <button type="button" id="applyFiltersBtn" class="rep-primary-btn w-full !min-h-[38px]"
+              aria-label="Apply report filters">
+              <i class="fa-solid fa-filter text-[11px]"></i>
+              Apply
+            </button>
+            <button type="button" id="clearFiltersBtn" class="rep-secondary-btn !min-h-[38px]"
+              aria-label="Clear report filters">
+              <i class="fa-solid fa-rotate-left text-[11px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom date range (hidden by default) -->
+        <div id="customDateRange" class="hidden grid grid-cols-2 gap-2 mt-3">
+          <div>
+            <label class="rep-label" for="filterFromDate">From Date</label>
+            <input type="date" id="filterFromDate" class="rep-input">
+          </div>
+          <div>
+            <label class="rep-label" for="filterToDate">To Date</label>
+            <input type="date" id="filterToDate" class="rep-input">
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="mt-3 flex items-center gap-2">
+          <div class="relative flex-1">
+            <i
+              class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[11px] pointer-events-none"></i>
+            <input type="search" id="reportSearch" class="rep-input !pl-9"
+              placeholder="Search report records..." aria-label="Search report records">
+          </div>
+          <span id="activeFilterCount"
+            class="hidden rounded-full bg-[#601D49]/10 px-3 py-1 text-[10px] font-semibold text-[#601D49] whitespace-nowrap"></span>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           REPORT CONTENT AREA
+      ====================================================== -->
+      <section id="reportContent" class="rep-print-root">
+        <!-- Content rendered by JavaScript -->
+      </section>
+
+      <!-- EMPTY STATE (shared) -->
+      <div id="reportEmptyState" class="hidden rep-card py-14 text-center">
+        <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+          <i class="fa-solid fa-chart-simple text-lg"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-stone-700">No report data found</h3>
+        <p class="text-xs text-stone-500 mt-1">Try changing your filters or date range.</p>
+      </div>
+
+      <p class="mt-4 text-center text-[10px] text-stone-400 rep-no-print">
+        TMS Reports Module
+      </p>
+
+      <!-- TOAST -->
+      <div id="reportToast" class="rep-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check rep-toast-icon"></i>
+        <span id="reportToastMessage"></span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================================
+       REPORTS JAVASCRIPT
+  ========================================================== -->
+  <script>
+    "use strict";
+
+    // =========================================================
+    // REPORT DATA
+    // =========================================================
+
+    /**
+     * Drivers dataset.
+     */
+    const drivers = [
+      { driverId: "DRV-1001", name: "Rahul Patil", phone: "+91 98765 43210", vehicleId: "VEH-1001", vehicle: "MH-12-AB-1234", status: "Available" },
+      { driverId: "DRV-1002", name: "Amit Shinde", phone: "+91 98220 11223", vehicleId: "VEH-1002", vehicle: "MH-14-CD-4589", status: "On Trip" },
+      { driverId: "DRV-1003", name: "Suresh Jadhav", phone: "+91 99887 66554", vehicleId: "VEH-1003", vehicle: "MH-12-EF-7890", status: "Assigned" },
+      { driverId: "DRV-1004", name: "Vijay More", phone: "+91 97654 32109", vehicleId: "VEH-1004", vehicle: "MH-15-GH-2468", status: "Available" },
+      { driverId: "DRV-1005", name: "Prakash Pawar", phone: "+91 91234 56789", vehicleId: "VEH-1005", vehicle: "MH-12-JK-1357", status: "On Trip" },
+      { driverId: "DRV-1006", name: "Akash Deshmukh", phone: "+91 90000 12345", vehicleId: "VEH-1006", vehicle: "MH-13-LM-8642", status: "Assigned" },
+      { driverId: "DRV-1007", name: "Rohit Shinde", phone: "+91 98111 22334", vehicleId: "VEH-1007", vehicle: "MH-12-NP-9753", status: "Available" },
+      { driverId: "DRV-1008", name: "Nilesh Gaikwad", phone: "+91 99333 44556", vehicleId: "VEH-1008", vehicle: "MH-15-UV-5319", status: "On Trip" },
+      { driverId: "DRV-1009", name: "Mahesh Chavan", phone: "+91 98444 55667", vehicleId: "VEH-1009", vehicle: "MH-14-YZ-3197", status: "Maintenance" },
+      { driverId: "DRV-1010", name: "Sunil Deshmukh", phone: "+91 97777 88990", vehicleId: "VEH-1010", vehicle: "MH-12-CD-5821", status: "Inactive" },
+      { driverId: "DRV-1011", name: "Rajesh Kumar", phone: "+91 96666 77889", vehicleId: "VEH-1011", vehicle: "MH-12-GH-1938", status: "Available" },
+      { driverId: "DRV-1012", name: "Vikas Sharma", phone: "+91 95555 66778", vehicleId: "VEH-1012", vehicle: "MH-15-EF-7293", status: "Assigned" }
+    ];
+
+    /**
+     * Vehicles dataset.
+     */
+    const vehicles = [
+      { vehicleId: "VEH-1001", registration: "MH-12-AB-1234", type: "Mini Truck", driverId: "DRV-1001", status: "Available" },
+      { vehicleId: "VEH-1002", registration: "MH-14-CD-4589", type: "Truck", driverId: "DRV-1002", status: "On Trip" },
+      { vehicleId: "VEH-1003", registration: "MH-12-EF-7890", type: "Pickup", driverId: "DRV-1003", status: "Assigned" },
+      { vehicleId: "VEH-1004", registration: "MH-15-GH-2468", type: "Tempo", driverId: "DRV-1004", status: "Available" },
+      { vehicleId: "VEH-1005", registration: "MH-12-JK-1357", type: "Truck", driverId: "DRV-1005", status: "On Trip" },
+      { vehicleId: "VEH-1006", registration: "MH-13-LM-8642", type: "Van", driverId: "DRV-1006", status: "Assigned" },
+      { vehicleId: "VEH-1007", registration: "MH-12-NP-9753", type: "LCV", driverId: "DRV-1007", status: "Available" },
+      { vehicleId: "VEH-1008", registration: "MH-15-UV-5319", type: "Bus", driverId: "DRV-1008", status: "On Trip" },
+      { vehicleId: "VEH-1009", registration: "MH-14-YZ-3197", type: "Tempo", driverId: "DRV-1009", status: "Maintenance" },
+      { vehicleId: "VEH-1010", registration: "MH-12-CD-5821", type: "Truck", driverId: "DRV-1010", status: "Inactive" },
+      { vehicleId: "VEH-1011", registration: "MH-12-GH-1938", type: "Mini Truck", driverId: "DRV-1011", status: "Available" },
+      { vehicleId: "VEH-1012", registration: "MH-15-EF-7293", type: "Pickup", driverId: "DRV-1012", status: "Assigned" }
+    ];
+
+    /**
+     * Customers dataset.
+     */
+    const customers = [
+      { customerId: "CUS-1001", name: "ABC Logistics", type: "Business" },
+      { customerId: "CUS-1002", name: "Shree Transport Services", type: "Business" },
+      { customerId: "CUS-1003", name: "Metro Distributors", type: "Business" },
+      { customerId: "CUS-1004", name: "Sunrise Traders", type: "Business" },
+      { customerId: "CUS-1005", name: "GreenRoute Logistics", type: "Business" },
+      { customerId: "CUS-1006", name: "CityLine Enterprises", type: "Business" },
+      { customerId: "CUS-1007", name: "Patil Agro Suppliers", type: "Business" },
+      { customerId: "CUS-1008", name: "Omkar Traders", type: "Business" },
+      { customerId: "CUS-1009", name: "Sai Roadways", type: "Business" },
+      { customerId: "CUS-1010", name: "Krishna Transport", type: "Business" },
+      { customerId: "CUS-1011", name: "Balaji Distributors", type: "Business" },
+      { customerId: "CUS-1012", name: "Unity Retail", type: "Business" }
+    ];
+
+    /**
+     * Trips dataset.
+     * Status values: Completed, Pending, Cancelled, In Progress
+     */
+    const trips = [
+      { tripId: "TRP-1021", customerId: "CUS-1001", customerName: "ABC Logistics", route: "Pune → Mumbai", vehicleId: "VEH-1002", vehicle: "MH-14-CD-4589", driverId: "DRV-1002", driver: "Amit Shinde", tripDate: "2026-11-18", status: "Completed" },
+      { tripId: "TRP-1022", customerId: "CUS-1002", customerName: "Shree Transport Services", route: "Nashik → Pune", vehicleId: "VEH-1003", vehicle: "MH-12-EF-7890", driverId: "DRV-1003", driver: "Suresh Jadhav", tripDate: "2026-11-17", status: "Completed" },
+      { tripId: "TRP-1023", customerId: "CUS-1003", customerName: "Metro Distributors", route: "Mumbai → Nagpur", vehicleId: "VEH-1005", vehicle: "MH-12-JK-1357", driverId: "DRV-1005", driver: "Prakash Pawar", tripDate: "2026-11-16", status: "In Progress" },
+      { tripId: "TRP-1024", customerId: "CUS-1004", customerName: "Sunrise Traders", route: "Pune → Satara", vehicleId: "VEH-1001", vehicle: "MH-12-AB-1234", driverId: "DRV-1001", driver: "Rahul Patil", tripDate: "2026-11-15", status: "Completed" },
+      { tripId: "TRP-1025", customerId: "CUS-1005", customerName: "GreenRoute Logistics", route: "Kolhapur → Pune", vehicleId: "VEH-1004", vehicle: "MH-15-GH-2468", driverId: "DRV-1004", driver: "Vijay More", tripDate: "2026-11-14", status: "Pending" },
+      { tripId: "TRP-1026", customerId: "CUS-1006", customerName: "CityLine Enterprises", route: "Mumbai → Nashik", vehicleId: "VEH-1006", vehicle: "MH-13-LM-8642", driverId: "DRV-1006", driver: "Akash Deshmukh", tripDate: "2026-11-13", status: "Cancelled" },
+      { tripId: "TRP-1027", customerId: "CUS-1001", customerName: "ABC Logistics", route: "Pune → Nagpur", vehicleId: "VEH-1007", vehicle: "MH-12-NP-9753", driverId: "DRV-1007", driver: "Rohit Shinde", tripDate: "2026-11-12", status: "Completed" },
+      { tripId: "TRP-1028", customerId: "CUS-1003", customerName: "Metro Distributors", route: "Nashik → Mumbai", vehicleId: "VEH-1008", vehicle: "MH-15-UV-5319", driverId: "DRV-1008", driver: "Nilesh Gaikwad", tripDate: "2026-11-11", status: "In Progress" },
+      { tripId: "TRP-1029", customerId: "CUS-1002", customerName: "Shree Transport Services", route: "Pune → Kolhapur", vehicleId: "VEH-1009", vehicle: "MH-14-YZ-3197", driverId: "DRV-1009", driver: "Mahesh Chavan", tripDate: "2026-11-10", status: "Pending" },
+      { tripId: "TRP-1030", customerId: "CUS-1004", customerName: "Sunrise Traders", route: "Mumbai → Pune", vehicleId: "VEH-1010", vehicle: "MH-12-CD-5821", driverId: "DRV-1010", driver: "Sunil Deshmukh", tripDate: "2026-11-09", status: "Completed" },
+      { tripId: "TRP-1031", customerId: "CUS-1005", customerName: "GreenRoute Logistics", route: "Pune → Aurangabad", vehicleId: "VEH-1011", vehicle: "MH-12-GH-1938", driverId: "DRV-1011", driver: "Rajesh Kumar", tripDate: "2026-11-08", status: "Completed" },
+      { tripId: "TRP-1032", customerId: "CUS-1006", customerName: "CityLine Enterprises", route: "Nagpur → Pune", vehicleId: "VEH-1012", vehicle: "MH-15-EF-7293", driverId: "DRV-1012", driver: "Vikas Sharma", tripDate: "2026-11-07", status: "Cancelled" },
+      { tripId: "TRP-1033", customerId: "CUS-1007", customerName: "Patil Agro Suppliers", route: "Pune → Ahmednagar", vehicleId: "VEH-1001", vehicle: "MH-12-AB-1234", driverId: "DRV-1001", driver: "Rahul Patil", tripDate: "2026-11-06", status: "Completed" },
+      { tripId: "TRP-1034", customerId: "CUS-1008", customerName: "Omkar Traders", route: "Satara → Pune", vehicleId: "VEH-1002", vehicle: "MH-14-CD-4589", driverId: "DRV-1002", driver: "Amit Shinde", tripDate: "2026-11-05", status: "In Progress" },
+      { tripId: "TRP-1035", customerId: "CUS-1009", customerName: "Sai Roadways", route: "Mumbai → Satara", vehicleId: "VEH-1003", vehicle: "MH-12-EF-7890", driverId: "DRV-1003", driver: "Suresh Jadhav", tripDate: "2026-11-04", status: "Pending" },
+      { tripId: "TRP-1036", customerId: "CUS-1010", customerName: "Krishna Transport", route: "Nashik → Nagpur", vehicleId: "VEH-1004", vehicle: "MH-15-GH-2468", driverId: "DRV-1004", driver: "Vijay More", tripDate: "2026-11-03", status: "Completed" },
+      { tripId: "TRP-1037", customerId: "CUS-1011", customerName: "Balaji Distributors", route: "Kolhapur → Mumbai", vehicleId: "VEH-1005", vehicle: "MH-12-JK-1357", driverId: "DRV-1005", driver: "Prakash Pawar", tripDate: "2026-11-02", status: "Cancelled" },
+      { tripId: "TRP-1038", customerId: "CUS-1012", customerName: "Unity Retail", route: "Pune → Nashik", vehicleId: "VEH-1006", vehicle: "MH-13-LM-8642", driverId: "DRV-1006", driver: "Akash Deshmukh", tripDate: "2026-11-01", status: "Completed" }
+    ];
+
+    /**
+     * Invoices dataset.
+     */
+    const invoices = [
+      { id: "INV-1001", customerId: "CUS-1001", customerName: "ABC Logistics", tripId: "TRP-1021", invoiceDate: "2026-11-18", amount: 18500, paymentStatus: "Paid" },
+      { id: "INV-1002", customerId: "CUS-1002", customerName: "Shree Transport Services", tripId: "TRP-1022", invoiceDate: "2026-11-17", amount: 24200, paymentStatus: "Pending" },
+      { id: "INV-1003", customerId: "CUS-1003", customerName: "Metro Distributors", tripId: "TRP-1023", invoiceDate: "2026-11-16", amount: 31500, paymentStatus: "Overdue" },
+      { id: "INV-1004", customerId: "CUS-1004", customerName: "Sunrise Traders", tripId: "TRP-1024", invoiceDate: "2026-11-15", amount: 12800, paymentStatus: "Paid" },
+      { id: "INV-1005", customerId: "CUS-1005", customerName: "GreenRoute Logistics", tripId: "TRP-1025", invoiceDate: "2026-11-14", amount: 9700, paymentStatus: "Partially Paid" },
+      { id: "INV-1006", customerId: "CUS-1006", customerName: "CityLine Enterprises", tripId: "TRP-1026", invoiceDate: "2026-11-13", amount: 22000, paymentStatus: "Pending" },
+      { id: "INV-1007", customerId: "CUS-1001", customerName: "ABC Logistics", tripId: "TRP-1027", invoiceDate: "2026-11-12", amount: 36500, paymentStatus: "Paid" },
+      { id: "INV-1008", customerId: "CUS-1003", customerName: "Metro Distributors", tripId: "TRP-1028", invoiceDate: "2026-11-11", amount: 27800, paymentStatus: "Overdue" },
+      { id: "INV-1009", customerId: "CUS-1002", customerName: "Shree Transport Services", tripId: "TRP-1029", invoiceDate: "2026-11-10", amount: 19500, paymentStatus: "Pending" },
+      { id: "INV-1010", customerId: "CUS-1004", customerName: "Sunrise Traders", tripId: "TRP-1030", invoiceDate: "2026-11-09", amount: 15200, paymentStatus: "Paid" },
+      { id: "INV-1011", customerId: "CUS-1005", customerName: "GreenRoute Logistics", tripId: "TRP-1031", invoiceDate: "2026-11-08", amount: 17300, paymentStatus: "Partially Paid" },
+      { id: "INV-1012", customerId: "CUS-1006", customerName: "CityLine Enterprises", tripId: "TRP-1032", invoiceDate: "2026-11-07", amount: 28900, paymentStatus: "Overdue" },
+      { id: "INV-1013", customerId: "CUS-1007", customerName: "Patil Agro Suppliers", tripId: "TRP-1033", invoiceDate: "2026-11-06", amount: 11500, paymentStatus: "Paid" },
+      { id: "INV-1014", customerId: "CUS-1008", customerName: "Omkar Traders", tripId: "TRP-1034", invoiceDate: "2026-11-05", amount: 16800, paymentStatus: "Pending" },
+      { id: "INV-1015", customerId: "CUS-1009", customerName: "Sai Roadways", tripId: "TRP-1035", invoiceDate: "2026-11-04", amount: 21200, paymentStatus: "Partially Paid" },
+      { id: "INV-1016", customerId: "CUS-1010", customerName: "Krishna Transport", tripId: "TRP-1036", invoiceDate: "2026-11-03", amount: 14300, paymentStatus: "Paid" },
+      { id: "INV-1017", customerId: "CUS-1011", customerName: "Balaji Distributors", tripId: "TRP-1037", invoiceDate: "2026-11-02", amount: 19700, paymentStatus: "Overdue" },
+      { id: "INV-1018", customerId: "CUS-1012", customerName: "Unity Retail", tripId: "TRP-1038", invoiceDate: "2026-11-01", amount: 25400, paymentStatus: "Paid" }
+    ];
+
+    /**
+     * Payroll dataset.
+     */
+    const payrolls = [
+      { id: "PAY-1001", driverId: "DRV-1001", driverName: "Rahul Patil", period: "2026-11", periodLabel: "November 2026", salaryType: "Monthly", baseSalary: 30000, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Trip Incentive", amount: 4000 }, { description: "Bonus", amount: 2000 }], deductions: [{ description: "Advance", amount: 2000 }, { description: "Penalty", amount: 500 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1002", driverId: "DRV-1002", driverName: "Amit Shinde", period: "2026-11", periodLabel: "November 2026", salaryType: "Per Trip", baseSalary: null, tripRate: 1200, tripsCompleted: 20, dailyRate: null, workingDays: null, earnings: [{ description: "Trip Incentive", amount: 2000 }], deductions: [{ description: "Advance", amount: 1000 }], payrollStatus: "Processed", paymentStatus: "Pending" },
+      { id: "PAY-1003", driverId: "DRV-1003", driverName: "Suresh Jadhav", period: "2026-11", periodLabel: "November 2026", salaryType: "Daily", baseSalary: null, tripRate: null, tripsCompleted: null, dailyRate: 1000, workingDays: 24, earnings: [{ description: "Overtime", amount: 1500 }], deductions: [{ description: "Absence Deduction", amount: 500 }], payrollStatus: "Draft", paymentStatus: "Pending" },
+      { id: "PAY-1004", driverId: "DRV-1004", driverName: "Vijay More", period: "2026-10", periodLabel: "October 2026", salaryType: "Monthly", baseSalary: 28000, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Bonus", amount: 3000 }], deductions: [{ description: "Loan Deduction", amount: 2000 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1005", driverId: "DRV-1005", driverName: "Prakash Pawar", period: "2026-11", periodLabel: "November 2026", salaryType: "Per Trip", baseSalary: null, tripRate: 1300, tripsCompleted: 18, dailyRate: null, workingDays: null, earnings: [{ description: "Overtime", amount: 1500 }], deductions: [{ description: "Advance", amount: 2000 }], payrollStatus: "Processing", paymentStatus: "Pending" },
+      { id: "PAY-1006", driverId: "DRV-1006", driverName: "Akash Deshmukh", period: "2026-11", periodLabel: "November 2026", salaryType: "Daily", baseSalary: null, tripRate: null, tripsCompleted: null, dailyRate: 950, workingDays: 22, earnings: [{ description: "Other Allowance", amount: 1200 }], deductions: [{ description: "Penalty", amount: 400 }], payrollStatus: "Processed", paymentStatus: "Pending" },
+      { id: "PAY-1007", driverId: "DRV-1007", driverName: "Rohit Shinde", period: "2026-11", periodLabel: "November 2026", salaryType: "Monthly", baseSalary: 31000, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Trip Incentive", amount: 3500 }], deductions: [{ description: "Advance", amount: 2500 }], payrollStatus: "Draft", paymentStatus: "Pending" },
+      { id: "PAY-1008", driverId: "DRV-1008", driverName: "Nilesh Gaikwad", period: "2026-10", periodLabel: "October 2026", salaryType: "Per Trip", baseSalary: null, tripRate: 1400, tripsCompleted: 22, dailyRate: null, workingDays: null, earnings: [{ description: "Bonus", amount: 2500 }], deductions: [{ description: "Loan Deduction", amount: 1500 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1009", driverId: "DRV-1009", driverName: "Mahesh Chavan", period: "2026-11", periodLabel: "November 2026", salaryType: "Daily", baseSalary: null, tripRate: null, tripsCompleted: null, dailyRate: 1050, workingDays: 25, earnings: [{ description: "Overtime", amount: 2000 }], deductions: [{ description: "Absence Deduction", amount: 700 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1010", driverId: "DRV-1010", driverName: "Sunil Deshmukh", period: "2026-11", periodLabel: "November 2026", salaryType: "Monthly", baseSalary: 29500, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Trip Incentive", amount: 2500 }], deductions: [{ description: "Advance", amount: 2000 }], payrollStatus: "Draft", paymentStatus: "Pending" },
+      { id: "PAY-1011", driverId: "DRV-1011", driverName: "Rajesh Kumar", period: "2026-10", periodLabel: "October 2026", salaryType: "Per Trip", baseSalary: null, tripRate: 1250, tripsCompleted: 19, dailyRate: null, workingDays: null, earnings: [{ description: "Bonus", amount: 2000 }], deductions: [{ description: "Advance", amount: 1000 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1012", driverId: "DRV-1012", driverName: "Vikas Sharma", period: "2026-11", periodLabel: "November 2026", salaryType: "Daily", baseSalary: null, tripRate: null, tripsCompleted: null, dailyRate: 980, workingDays: 23, earnings: [{ description: "Overtime", amount: 1800 }], deductions: [{ description: "Penalty", amount: 300 }], payrollStatus: "Draft", paymentStatus: "Pending" },
+      { id: "PAY-1013", driverId: "DRV-1001", driverName: "Rahul Patil", period: "2026-10", periodLabel: "October 2026", salaryType: "Monthly", baseSalary: 30000, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Trip Incentive", amount: 3000 }], deductions: [{ description: "Advance", amount: 1500 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1014", driverId: "DRV-1002", driverName: "Amit Shinde", period: "2026-10", periodLabel: "October 2026", salaryType: "Per Trip", baseSalary: null, tripRate: 1200, tripsCompleted: 21, dailyRate: null, workingDays: null, earnings: [{ description: "Trip Incentive", amount: 2000 }], deductions: [{ description: "Advance", amount: 1000 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1015", driverId: "DRV-1003", driverName: "Suresh Jadhav", period: "2026-10", periodLabel: "October 2026", salaryType: "Daily", baseSalary: null, tripRate: null, tripsCompleted: null, dailyRate: 1000, workingDays: 25, earnings: [{ description: "Overtime", amount: 1500 }], deductions: [{ description: "Absence Deduction", amount: 500 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1016", driverId: "DRV-1004", driverName: "Vijay More", period: "2026-11", periodLabel: "November 2026", salaryType: "Monthly", baseSalary: 28000, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Bonus", amount: 2500 }], deductions: [{ description: "Loan Deduction", amount: 2000 }], payrollStatus: "Processed", paymentStatus: "Pending" },
+      { id: "PAY-1017", driverId: "DRV-1007", driverName: "Rohit Shinde", period: "2026-10", periodLabel: "October 2026", salaryType: "Monthly", baseSalary: 31000, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Trip Incentive", amount: 3000 }], deductions: [{ description: "Advance", amount: 2000 }], payrollStatus: "Processed", paymentStatus: "Paid" },
+      { id: "PAY-1018", driverId: "DRV-1010", driverName: "Sunil Deshmukh", period: "2026-10", periodLabel: "October 2026", salaryType: "Monthly", baseSalary: 29500, tripRate: null, tripsCompleted: null, dailyRate: null, workingDays: null, earnings: [{ description: "Bonus", amount: 2000 }], deductions: [{ description: "Advance", amount: 1500 }], payrollStatus: "Processed", paymentStatus: "Paid" }
+    ];
+
+    // =========================================================
+    // DOM REFERENCES
+    // =========================================================
+
+    const $ = (id) => document.getElementById(id);
+
+    let activeReport = "overview";
+    let toastTimer = null;
+    let activeFilters = {
+      dateRange: "",
+      fromDate: "",
+      toDate: "",
+      tripStatus: "",
+      customer: "",
+      driver: "",
+      vehicle: "",
+      search: ""
+    };
+
+    // =========================================================
+    // HELPER FUNCTIONS
+    // =========================================================
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function formatDate(date) {
+      if (!date) return "—";
+      const parsed = new Date(date + "T00:00:00");
+      if (Number.isNaN(parsed.getTime())) return "—";
+      return parsed.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function formatCurrency(amount) {
+      if (amount === null || amount === undefined || amount === "") return "₹0";
+      return "₹" + Number(amount).toLocaleString("en-IN");
+    }
+
+    function getPeriodLabel(period) {
+      if (!period) return "—";
+      const [year, month] = period.split("-");
+      const date = new Date(Number(year), Number(month) - 1, 1);
+      return date.toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+    }
+
+    function getDriverById(id) {
+      return drivers.find(d => d.driverId === id);
+    }
+
+    function getVehicleById(id) {
+      return vehicles.find(v => v.vehicleId === id);
+    }
+
+    function getCustomerById(id) {
+      return customers.find(c => c.customerId === id);
+    }
+
+    // Payroll calculations
+    function payrollBaseSalary(p) {
+      if (p.salaryType === "Per Trip") {
+        return Number(p.tripRate || 0) * Number(p.tripsCompleted || 0);
+      }
+      if (p.salaryType === "Daily") {
+        return Number(p.dailyRate || 0) * Number(p.workingDays || 0);
+      }
+      return Number(p.baseSalary || 0);
+    }
+
+    function payrollTotalEarnings(p) {
+      return payrollBaseSalary(p) +
+        (p.earnings || []).reduce((s, i) => s + Number(i.amount || 0), 0);
+    }
+
+    function payrollTotalDeductions(p) {
+      return (p.deductions || []).reduce((s, i) => s + Number(i.amount || 0), 0);
+    }
+
+    function payrollNetSalary(p) {
+      return payrollTotalEarnings(p) - payrollTotalDeductions(p);
+    }
+
+    // Status badges
+    function tripStatusBadge(status) {
+      const map = {
+        "Completed": "status-completed",
+        "Pending": "status-pending",
+        "Cancelled": "status-cancelled",
+        "In Progress": "status-in-progress"
+      };
+      return `<span class="rep-status ${map[status] || "status-pending"}">${escapeHTML(status)}</span>`;
+    }
+
+    function paymentStatusBadge(status) {
+      const map = {
+        "Paid": "status-paid",
+        "Pending": "status-pending",
+        "Partially Paid": "status-partial",
+        "Overdue": "status-overdue",
+        "Failed": "status-failed"
+      };
+      return `<span class="rep-status ${map[status] || "status-pending"}">${escapeHTML(status)}</span>`;
+    }
+
+    function payrollStatusBadge(status) {
+      const map = {
+        "Draft": "status-draft",
+        "Processing": "status-processing",
+        "Processed": "status-processed"
+      };
+      return `<span class="rep-status ${map[status] || "status-draft"}">${escapeHTML(status)}</span>`;
+    }
+
+    function driverStatusBadge(status) {
+      const map = {
+        "Available": "status-available",
+        "Assigned": "status-assigned",
+        "On Trip": "status-on-trip",
+        "Maintenance": "status-maintenance",
+        "Inactive": "status-inactive"
+      };
+      return `<span class="rep-status ${map[status] || "status-inactive"}">${escapeHTML(status)}</span>`;
+    }
+
+    function vehicleStatusBadge(status) {
+      const map = {
+        "Available": "status-available",
+        "Assigned": "status-assigned",
+        "On Trip": "status-on-trip",
+        "Maintenance": "status-maintenance",
+        "Inactive": "status-inactive"
+      };
+      return `<span class="rep-status ${map[status] || "status-inactive"}">${escapeHTML(status)}</span>`;
+    }
+
+    function showToast(message, type = "success") {
+      const toast = $("reportToast");
+      const icon = toast.querySelector("i");
+
+      $("reportToastMessage").textContent = message;
+      icon.className = type === "error"
+        ? "fa-solid fa-circle-exclamation rep-toast-icon"
+        : "fa-solid fa-circle-check rep-toast-icon";
+      icon.style.color = type === "error" ? "#dc2626" : "#601D49";
+
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    // =========================================================
+    // DATE FILTERING
+    // =========================================================
+
+    function getDateBounds() {
+      const range = activeFilters.dateRange;
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      if (range === "today") {
+        return { start: startOfToday, end: startOfToday };
+      }
+
+      if (range === "week") {
+        const day = startOfToday.getDay();
+        const diffToMonday = (day + 6) % 7;
+        const start = new Date(startOfToday);
+        start.setDate(start.getDate() - diffToMonday);
+        const end = new Date(start);
+        end.setDate(end.getDate() + 6);
+        return { start, end };
+      }
+
+      if (range === "month") {
+        const start = new Date(now.getFullYear(), now.getMonth(), 1);
+        const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        return { start, end };
+      }
+
+      if (range === "lastmonth") {
+        const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const end = new Date(now.getFullYear(), now.getMonth(), 0);
+        return { start, end };
+      }
+
+      if (range === "custom" && activeFilters.fromDate && activeFilters.toDate) {
+        const start = new Date(activeFilters.fromDate + "T00:00:00");
+        const end = new Date(activeFilters.toDate + "T23:59:59");
+        if (start <= end) return { start, end };
+      }
+
+      return null;
+    }
+
+    function dateInBounds(dateStr, bounds) {
+      if (!bounds) return true;
+      if (!dateStr) return true;
+      const d = new Date(dateStr + "T00:00:00");
+      return d >= bounds.start && d <= bounds.end;
+    }
+
+    // =========================================================
+    // REPORT TYPE MANAGEMENT
+    // =========================================================
+
+    const reportRenderers = {
+      overview: renderOverviewReport,
+      trips: renderTripReport,
+      drivers: renderDriverReport,
+      vehicles: renderVehicleReport,
+      customers: renderCustomerReport,
+      invoices: renderInvoiceReport,
+      payroll: renderPayrollReport
+    };
+
+    function switchReport(type) {
+      activeReport = type;
+
+      document.querySelectorAll(".rep-tab").forEach(tab => {
+        const isActive = tab.dataset.report === type;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+
+      updateFilterAvailability();
+      renderActiveReport();
+    }
+
+    function renderActiveReport() {
+      const renderer = reportRenderers[activeReport];
+      if (renderer) renderer();
+      updateActiveFilterCount();
+    }
+
+    // =========================================================
+    // FILTER MANAGEMENT
+    // =========================================================
+
+    function updateFilterAvailability() {
+      // Trip status only relevant to trips, overview, drivers, vehicles, customers
+      const tripStatusRelevant = ["overview", "trips", "drivers", "vehicles", "customers"].includes(activeReport);
+      $("filterTripStatus").disabled = !tripStatusRelevant;
+      $("filterTripStatus").classList.toggle("opacity-50", !tripStatusRelevant);
+      $("filterTripStatus").classList.toggle("cursor-not-allowed", !tripStatusRelevant);
+
+      // Customer relevant to trips, invoices, overview
+      const customerRelevant = ["overview", "trips", "invoices", "customers"].includes(activeReport);
+      $("filterCustomer").disabled = !customerRelevant;
+      $("filterCustomer").classList.toggle("opacity-50", !customerRelevant);
+      $("filterCustomer").classList.toggle("cursor-not-allowed", !customerRelevant);
+
+      // Driver relevant to trips, drivers, overview, payroll
+      const driverRelevant = ["overview", "trips", "drivers", "payroll"].includes(activeReport);
+      $("filterDriver").disabled = !driverRelevant;
+      $("filterDriver").classList.toggle("opacity-50", !driverRelevant);
+      $("filterDriver").classList.toggle("cursor-not-allowed", !driverRelevant);
+
+      // Vehicle relevant to trips, vehicles, overview
+      const vehicleRelevant = ["overview", "trips", "vehicles"].includes(activeReport);
+      $("filterVehicle").disabled = !vehicleRelevant;
+      $("filterVehicle").classList.toggle("opacity-50", !vehicleRelevant);
+      $("filterVehicle").classList.toggle("cursor-not-allowed", !vehicleRelevant);
+    }
+
+    function updateActiveFilterCount() {
+      let count = 0;
+      if (activeFilters.dateRange) count++;
+      if (activeFilters.tripStatus) count++;
+      if (activeFilters.customer) count++;
+      if (activeFilters.driver) count++;
+      if (activeFilters.vehicle) count++;
+      if (activeFilters.search) count++;
+
+      const badge = $("activeFilterCount");
+      if (count > 0) {
+        badge.textContent = `${count} active filter${count !== 1 ? "s" : ""}`;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
+
+    function applyReportFilters() {
+      activeFilters.dateRange = $("filterDateRange").value;
+      activeFilters.fromDate = $("filterFromDate").value;
+      activeFilters.toDate = $("filterToDate").value;
+      activeFilters.tripStatus = $("filterTripStatus").value;
+      activeFilters.customer = $("filterCustomer").value;
+      activeFilters.driver = $("filterDriver").value;
+      activeFilters.vehicle = $("filterVehicle").value;
+      activeFilters.search = $("reportSearch").value.trim().toLowerCase();
+
+      // Validate custom date range
+      if (activeFilters.dateRange === "custom") {
+        if (!activeFilters.fromDate || !activeFilters.toDate) {
+          showToast("Please select both From and To dates.", "error");
+          return;
+        }
+        if (new Date(activeFilters.fromDate) > new Date(activeFilters.toDate)) {
+          showToast("From Date cannot be after To Date.", "error");
+          return;
+        }
+      }
+
+      renderActiveReport();
+      showToast("Filters applied.");
+    }
+
+    function clearReportFilters() {
+      $("filterDateRange").value = "";
+      $("filterFromDate").value = "";
+      $("filterToDate").value = "";
+      $("filterTripStatus").value = "";
+      $("filterCustomer").value = "";
+      $("filterDriver").value = "";
+      $("filterVehicle").value = "";
+      $("reportSearch").value = "";
+      $("customDateRange").classList.add("hidden");
+
+      activeFilters = {
+        dateRange: "", fromDate: "", toDate: "",
+        tripStatus: "", customer: "", driver: "", vehicle: "", search: ""
+      };
+
+      switchReport("overview");
+      showToast("Filters cleared.");
+    }
+
+    // =========================================================
+    // SEARCH
+    // =========================================================
+
+    function matchesSearch(text) {
+      if (!activeFilters.search) return true;
+      return String(text || "").toLowerCase().includes(activeFilters.search);
+    }
+
+    // =========================================================
+    // FILTERED DATASETS
+    // =========================================================
+
+    function getFilteredTrips() {
+      const bounds = getDateBounds();
+
+      return trips.filter(t => {
+        if (!matchesSearch([t.tripId, t.customerName, t.driver, t.vehicle].join(" "))) return false;
+        if (activeFilters.tripStatus && t.status !== activeFilters.tripStatus) return false;
+        if (activeFilters.customer && t.customerId !== activeFilters.customer) return false;
+        if (activeFilters.driver && t.driverId !== activeFilters.driver) return false;
+        if (activeFilters.vehicle && t.vehicleId !== activeFilters.vehicle) return false;
+        if (bounds && !dateInBounds(t.tripDate, bounds)) return false;
+        return true;
+      });
+    }
+
+    function getFilteredInvoices() {
+      const bounds = getDateBounds();
+
+      return invoices.filter(inv => {
+        if (!matchesSearch([inv.id, inv.customerName, inv.tripId].join(" "))) return false;
+        if (activeFilters.customer && inv.customerId !== activeFilters.customer) return false;
+        if (bounds && !dateInBounds(inv.invoiceDate, bounds)) return false;
+        return true;
+      });
+    }
+
+    function getFilteredPayrolls() {
+      return payrolls.filter(p => {
+        if (!matchesSearch([p.id, p.driverName, p.driverId].join(" "))) return false;
+        if (activeFilters.driver && p.driverId !== activeFilters.driver) return false;
+        return true;
+      });
+    }
+
+    // =========================================================
+    // KPI / MINI CARD HELPERS
+    // =========================================================
+
+    function kpiCard(icon, label, value, sublabel) {
+      return `
+        <div class="rep-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">${escapeHTML(label)}</span>
+            <div class="rep-kpi-icon"><i class="${icon}"></i></div>
+          </div>
+          <div class="rep-kpi-value">${value}</div>
+          <div class="rep-kpi-label">${escapeHTML(sublabel || "")}</div>
+        </div>
+      `;
+    }
+
+    function miniCard(icon, label, value) {
+      return `
+        <div class="rep-mini-card">
+          <div class="rep-mini-icon"><i class="${icon}"></i></div>
+          <div>
+            <div class="rep-mini-value">${value}</div>
+            <div class="rep-mini-label">${escapeHTML(label)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function sectionHeader(title, subtitle) {
+      return `
+        <div class="mb-4">
+          <h2 class="text-sm font-bold text-stone-800">${escapeHTML(title)}</h2>
+          ${subtitle ? `<p class="text-xs text-stone-500 mt-1">${escapeHTML(subtitle)}</p>` : ""}
+        </div>
+      `;
+    }
+
+    function showEmptyState(containerId, hasFilters) {
+      const el = $(containerId);
+      if (!el) return;
+      el.innerHTML = `
+        <div class="rep-card py-14 text-center">
+          <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+            <i class="fa-solid fa-chart-simple text-lg"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-stone-700">No report data found</h3>
+          <p class="text-xs text-stone-500 mt-1">
+            ${hasFilters ? "Try changing your filters or date range." : "There is no data to display for this report."}
+          </p>
+        </div>
+      `;
+    }
+
+    // =========================================================
+    // REPORT: OVERVIEW
+    // =========================================================
+
+    function renderOverviewReport() {
+      const filteredTrips = getFilteredTrips();
+      const filteredInvoices = getFilteredInvoices();
+      const filteredPayrolls = getFilteredPayrolls();
+
+      const completed = filteredTrips.filter(t => t.status === "Completed").length;
+      const pending = filteredTrips.filter(t => t.status === "Pending").length;
+      const cancelled = filteredTrips.filter(t => t.status === "Cancelled").length;
+
+      const totalInvoice = filteredInvoices.reduce((s, i) => s + Number(i.amount || 0), 0);
+      const outstandingInvoice = filteredInvoices
+        .filter(i => i.paymentStatus !== "Paid")
+        .reduce((s, i) => s + Number(i.amount || 0), 0);
+
+      const totalPayroll = filteredPayrolls.reduce((s, p) => s + payrollNetSalary(p), 0);
+
+      const html = `
+        <div class="rep-kpi-grid">
+          ${kpiCard("fa-solid fa-route", "Total Trips", filteredTrips.length, "All recorded trips")}
+          ${kpiCard("fa-solid fa-circle-check", "Completed Trips", completed, "Successfully delivered")}
+          ${kpiCard("fa-solid fa-clock", "Pending Trips", pending, "Awaiting completion")}
+          ${kpiCard("fa-solid fa-ban", "Cancelled Trips", cancelled, "Cancelled trips")}
+          ${kpiCard("fa-solid fa-id-card", "Total Drivers", drivers.length, "Registered drivers")}
+        </div>
+        <div class="rep-kpi-grid">
+          ${kpiCard("fa-solid fa-truck", "Total Vehicles", vehicles.length, "Fleet size")}
+          ${kpiCard("fa-solid fa-users", "Total Customers", customers.length, "Active customers")}
+          ${kpiCard("fa-solid fa-file-invoice", "Invoice Amount", formatCurrency(totalInvoice), "Total invoiced")}
+          ${kpiCard("fa-solid fa-exclamation-circle", "Outstanding", formatCurrency(outstandingInvoice), "Unpaid invoices")}
+          ${kpiCard("fa-solid fa-money-check-dollar", "Payroll Amount", formatCurrency(totalPayroll), "Net salary total")}
+        </div>
+      `;
+
+      $("reportContent").innerHTML = html;
+      $("reportEmptyState").classList.add("hidden");
+    }
+
+    // =========================================================
+    // REPORT: TRIPS
+    // =========================================================
+
+    function renderTripReport() {
+      const filtered = getFilteredTrips();
+      const completed = filtered.filter(t => t.status === "Completed").length;
+      const pending = filtered.filter(t => t.status === "Pending").length;
+      const cancelled = filtered.filter(t => t.status === "Cancelled").length;
+      const inProgress = filtered.filter(t => t.status === "In Progress").length;
+
+      const hasFilters = Boolean(
+        activeFilters.dateRange || activeFilters.tripStatus ||
+        activeFilters.customer || activeFilters.driver ||
+        activeFilters.vehicle || activeFilters.search
+      );
+
+      let html = `
+        <div class="rep-card p-4 mb-4">
+          ${sectionHeader("Trip Report", "Summary of all trips with status breakdown.")}
+          <div class="rep-mini-grid">
+            ${miniCard("fa-solid fa-route", "Total Trips", filtered.length)}
+            ${miniCard("fa-solid fa-circle-check", "Completed", completed)}
+            ${miniCard("fa-solid fa-clock", "Pending", pending)}
+            ${miniCard("fa-solid fa-ban", "Cancelled", cancelled)}
+            ${miniCard("fa-solid fa-spinner", "In Progress", inProgress)}
+          </div>
+        </div>
+      `;
+
+      if (filtered.length === 0) {
+        html += `
+          <div class="rep-card py-14 text-center">
+            <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-route text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700">No trips found</h3>
+            <p class="text-xs text-stone-500 mt-1">
+              ${hasFilters ? "Try changing your filters or date range." : "No trip records available."}
+            </p>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="rep-card overflow-hidden">
+            <div class="p-4 border-b border-stone-200">
+              <h3 class="text-sm font-bold text-stone-800">Trip Details</h3>
+              <p class="text-xs text-stone-500 mt-1">${filtered.length} matching trip${filtered.length !== 1 ? "s" : ""}</p>
+            </div>
+            <div class="rep-table-wrap">
+              <table class="rep-table">
+                <thead>
+                  <tr>
+                    <th>Trip ID</th>
+                    <th>Customer</th>
+                    <th>Route</th>
+                    <th>Vehicle</th>
+                    <th>Driver</th>
+                    <th>Trip Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${filtered.map(t => `
+                    <tr>
+                      <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(t.tripId)}</span></td>
+                      <td><span class="text-xs font-medium text-stone-700">${escapeHTML(t.customerName)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(t.route)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(t.vehicle)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(t.driver)}</span></td>
+                      <td><span class="text-xs text-stone-600">${formatDate(t.tripDate)}</span></td>
+                      <td>${tripStatusBadge(t.status)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      $("reportContent").innerHTML = html;
+      $("reportEmptyState").classList.add("hidden");
+    }
+
+    // =========================================================
+    // REPORT: DRIVERS
+    // =========================================================
+
+    function renderDriverReport() {
+      const bounds = getDateBounds();
+
+      // Driver rows derived from driver dataset + trip aggregation
+      const rows = drivers.map(driver => {
+        const driverTrips = trips.filter(t =>
+          t.driverId === driver.driverId &&
+          (!bounds || dateInBounds(t.tripDate, bounds)) &&
+          (!activeFilters.tripStatus || t.status === activeFilters.tripStatus) &&
+          (!activeFilters.customer || t.customerId === activeFilters.customer) &&
+          (!activeFilters.vehicle || t.vehicleId === activeFilters.vehicle) &&
+          matchesSearch([driver.name, driver.driverId, driver.vehicle].join(" "))
+        );
+
+        return {
+          driver,
+          total: driverTrips.length,
+          completed: driverTrips.filter(t => t.status === "Completed").length,
+          pending: driverTrips.filter(t => t.status === "Pending").length,
+          cancelled: driverTrips.filter(t => t.status === "Cancelled").length
+        };
+      }).filter(r => {
+        // Apply driver filter
+        if (activeFilters.driver && r.driver.driverId !== activeFilters.driver) return false;
+        return true;
+      });
+
+      const activeCount = drivers.filter(d => d.status !== "Inactive").length;
+      const available = drivers.filter(d => d.status === "Available").length;
+      const assigned = drivers.filter(d => d.status === "Assigned").length;
+      const onTrip = drivers.filter(d => d.status === "On Trip").length;
+      const inactive = drivers.filter(d => d.status === "Inactive").length;
+
+      const hasFilters = Boolean(activeFilters.dateRange || activeFilters.tripStatus ||
+        activeFilters.customer || activeFilters.driver ||
+        activeFilters.vehicle || activeFilters.search);
+
+      let html = `
+        <div class="rep-card p-4 mb-4">
+          ${sectionHeader("Driver Report", "Operational summary of drivers and their trip activity.")}
+          <div class="rep-mini-grid">
+            ${miniCard("fa-solid fa-id-card", "Total Drivers", drivers.length)}
+            ${miniCard("fa-solid fa-user-check", "Active", activeCount)}
+            ${miniCard("fa-solid fa-circle-check", "Available", available)}
+            ${miniCard("fa-solid fa-user-tag", "Assigned", assigned)}
+            ${miniCard("fa-solid fa-route", "On Trip", onTrip)}
+            ${miniCard("fa-solid fa-user-slash", "Inactive", inactive)}
+          </div>
+        </div>
+      `;
+
+      if (rows.length === 0) {
+        html += `
+          <div class="rep-card py-14 text-center">
+            <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-id-card text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700">No drivers found</h3>
+            <p class="text-xs text-stone-500 mt-1">
+              ${hasFilters ? "Try changing your filters or date range." : "No driver records available."}
+            </p>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="rep-card overflow-hidden">
+            <div class="p-4 border-b border-stone-200">
+              <h3 class="text-sm font-bold text-stone-800">Driver Details</h3>
+              <p class="text-xs text-stone-500 mt-1">${rows.length} driver${rows.length !== 1 ? "s" : ""}</p>
+            </div>
+            <div class="rep-table-wrap">
+              <table class="rep-table">
+                <thead>
+                  <tr>
+                    <th>Driver ID</th>
+                    <th>Driver Name</th>
+                    <th>Phone</th>
+                    <th>Vehicle</th>
+                    <th>Total Trips</th>
+                    <th>Completed</th>
+                    <th>Pending</th>
+                    <th>Cancelled</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map(r => `
+                    <tr>
+                      <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(r.driver.driverId)}</span></td>
+                      <td><span class="text-xs font-medium text-stone-700">${escapeHTML(r.driver.name)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(r.driver.phone)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(r.driver.vehicle)}</span></td>
+                      <td><span class="text-xs font-semibold text-stone-700">${r.total}</span></td>
+                      <td><span class="text-xs text-green-700 font-medium">${r.completed}</span></td>
+                      <td><span class="text-xs text-amber-700 font-medium">${r.pending}</span></td>
+                      <td><span class="text-xs text-red-600 font-medium">${r.cancelled}</span></td>
+                      <td>${driverStatusBadge(r.driver.status)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      $("reportContent").innerHTML = html;
+      $("reportEmptyState").classList.add("hidden");
+    }
+
+    // =========================================================
+    // REPORT: VEHICLES
+    // =========================================================
+
+    function renderVehicleReport() {
+      const bounds = getDateBounds();
+
+      const rows = vehicles.map(vehicle => {
+        const vehicleTrips = trips.filter(t =>
+          t.vehicleId === vehicle.vehicleId &&
+          (!bounds || dateInBounds(t.tripDate, bounds)) &&
+          (!activeFilters.tripStatus || t.status === activeFilters.tripStatus) &&
+          (!activeFilters.customer || t.customerId === activeFilters.customer) &&
+          (!activeFilters.driver || t.driverId === activeFilters.driver) &&
+          matchesSearch([vehicle.registration, vehicle.vehicleId, vehicle.type].join(" "))
+        );
+
+        const driver = getDriverById(vehicle.driverId);
+
+        return {
+          vehicle,
+          driver,
+          total: vehicleTrips.length,
+          completed: vehicleTrips.filter(t => t.status === "Completed").length,
+          pending: vehicleTrips.filter(t => t.status === "Pending").length,
+          cancelled: vehicleTrips.filter(t => t.status === "Cancelled").length
+        };
+      }).filter(r => {
+        if (activeFilters.vehicle && r.vehicle.vehicleId !== activeFilters.vehicle) return false;
+        return true;
+      });
+
+      const available = vehicles.filter(v => v.status === "Available").length;
+      const assigned = vehicles.filter(v => v.status === "Assigned").length;
+      const onTrip = vehicles.filter(v => v.status === "On Trip").length;
+      const maintenance = vehicles.filter(v => v.status === "Maintenance" || v.status === "Inactive").length;
+
+      const hasFilters = Boolean(activeFilters.dateRange || activeFilters.tripStatus ||
+        activeFilters.customer || activeFilters.driver ||
+        activeFilters.vehicle || activeFilters.search);
+
+      let html = `
+        <div class="rep-card p-4 mb-4">
+          ${sectionHeader("Vehicle Report", "Operational summary of vehicles and their trip activity.")}
+          <div class="rep-mini-grid">
+            ${miniCard("fa-solid fa-truck", "Total Vehicles", vehicles.length)}
+            ${miniCard("fa-solid fa-circle-check", "Available", available)}
+            ${miniCard("fa-solid fa-user-tag", "Assigned", assigned)}
+            ${miniCard("fa-solid fa-route", "On Trip", onTrip)}
+            ${miniCard("fa-solid fa-screwdriver-wrench", "Maintenance", maintenance)}
+          </div>
+        </div>
+      `;
+
+      if (rows.length === 0) {
+        html += `
+          <div class="rep-card py-14 text-center">
+            <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-truck text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700">No vehicles found</h3>
+            <p class="text-xs text-stone-500 mt-1">
+              ${hasFilters ? "Try changing your filters or date range." : "No vehicle records available."}
+            </p>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="rep-card overflow-hidden">
+            <div class="p-4 border-b border-stone-200">
+              <h3 class="text-sm font-bold text-stone-800">Vehicle Details</h3>
+              <p class="text-xs text-stone-500 mt-1">${rows.length} vehicle${rows.length !== 1 ? "s" : ""}</p>
+            </div>
+            <div class="rep-table-wrap">
+              <table class="rep-table">
+                <thead>
+                  <tr>
+                    <th>Vehicle ID</th>
+                    <th>Vehicle Number</th>
+                    <th>Type</th>
+                    <th>Driver</th>
+                    <th>Total Trips</th>
+                    <th>Completed</th>
+                    <th>Pending</th>
+                    <th>Cancelled</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map(r => `
+                    <tr>
+                      <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(r.vehicle.vehicleId)}</span></td>
+                      <td><span class="text-xs font-medium text-stone-700">${escapeHTML(r.vehicle.registration)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(r.vehicle.type)}</span></td>
+                      <td><span class="text-xs text-stone-600">${r.driver ? escapeHTML(r.driver.name) : "—"}</span></td>
+                      <td><span class="text-xs font-semibold text-stone-700">${r.total}</span></td>
+                      <td><span class="text-xs text-green-700 font-medium">${r.completed}</span></td>
+                      <td><span class="text-xs text-amber-700 font-medium">${r.pending}</span></td>
+                      <td><span class="text-xs text-red-600 font-medium">${r.cancelled}</span></td>
+                      <td>${vehicleStatusBadge(r.vehicle.status)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      $("reportContent").innerHTML = html;
+      $("reportEmptyState").classList.add("hidden");
+    }
+
+    // =========================================================
+    // REPORT: CUSTOMERS
+    // =========================================================
+
+    function renderCustomerReport() {
+      const bounds = getDateBounds();
+
+      const rows = customers.map(customer => {
+        const customerTrips = trips.filter(t =>
+          t.customerId === customer.customerId &&
+          (!bounds || dateInBounds(t.tripDate, bounds)) &&
+          (!activeFilters.tripStatus || t.status === activeFilters.tripStatus) &&
+          (!activeFilters.driver || t.driverId === activeFilters.driver) &&
+          (!activeFilters.vehicle || t.vehicleId === activeFilters.vehicle) &&
+          matchesSearch([customer.customerId, customer.name].join(" "))
+        );
+
+        const customerInvoices = invoices.filter(inv =>
+          inv.customerId === customer.customerId &&
+          (!bounds || dateInBounds(inv.invoiceDate, bounds)) &&
+          matchesSearch([customer.customerId, customer.name].join(" "))
+        );
+
+        const totalInvoice = customerInvoices.reduce((s, i) => s + Number(i.amount || 0), 0);
+        const outstanding = customerInvoices
+          .filter(i => i.paymentStatus !== "Paid")
+          .reduce((s, i) => s + Number(i.amount || 0), 0);
+
+        return {
+          customer,
+          total: customerTrips.length,
+          completed: customerTrips.filter(t => t.status === "Completed").length,
+          pending: customerTrips.filter(t => t.status === "Pending").length,
+          cancelled: customerTrips.filter(t => t.status === "Cancelled").length,
+          totalInvoice,
+          outstanding
+        };
+      }).filter(r => {
+        if (activeFilters.customer && r.customer.customerId !== activeFilters.customer) return false;
+        return true;
+      });
+
+      const activeCustomers = customers.filter(c =>
+        trips.some(t => t.customerId === c.customerId && (t.status === "In Progress" || t.status === "Pending"))
+      ).length;
+
+      const hasFilters = Boolean(activeFilters.dateRange || activeFilters.tripStatus ||
+        activeFilters.customer || activeFilters.driver ||
+        activeFilters.vehicle || activeFilters.search);
+
+      let html = `
+        <div class="rep-card p-4 mb-4">
+          ${sectionHeader("Customer Report", "Trip and invoice summary per customer.")}
+          <div class="rep-mini-grid">
+            ${miniCard("fa-solid fa-users", "Total Customers", customers.length)}
+            ${miniCard("fa-solid fa-user-check", "Active Customers", activeCustomers)}
+            ${miniCard("fa-solid fa-user-clock", "Without Active Trips", customers.length - activeCustomers)}
+          </div>
+        </div>
+      `;
+
+      if (rows.length === 0) {
+        html += `
+          <div class="rep-card py-14 text-center">
+            <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-users text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700">No customers found</h3>
+            <p class="text-xs text-stone-500 mt-1">
+              ${hasFilters ? "Try changing your filters or date range." : "No customer records available."}
+            </p>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="rep-card overflow-hidden">
+            <div class="p-4 border-b border-stone-200">
+              <h3 class="text-sm font-bold text-stone-800">Customer Details</h3>
+              <p class="text-xs text-stone-500 mt-1">${rows.length} customer${rows.length !== 1 ? "s" : ""}</p>
+            </div>
+            <div class="rep-table-wrap">
+              <table class="rep-table" style="min-width: 1000px;">
+                <thead>
+                  <tr>
+                    <th>Customer ID</th>
+                    <th>Customer Name</th>
+                    <th>Type</th>
+                    <th>Total Trips</th>
+                    <th>Completed</th>
+                    <th>Pending</th>
+                    <th>Cancelled</th>
+                    <th>Invoice Amount</th>
+                    <th>Outstanding</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map(r => `
+                    <tr>
+                      <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(r.customer.customerId)}</span></td>
+                      <td><span class="text-xs font-medium text-stone-700">${escapeHTML(r.customer.name)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(r.customer.type)}</span></td>
+                      <td><span class="text-xs font-semibold text-stone-700">${r.total}</span></td>
+                      <td><span class="text-xs text-green-700 font-medium">${r.completed}</span></td>
+                      <td><span class="text-xs text-amber-700 font-medium">${r.pending}</span></td>
+                      <td><span class="text-xs text-red-600 font-medium">${r.cancelled}</span></td>
+                      <td><span class="text-xs font-semibold text-stone-700">${formatCurrency(r.totalInvoice)}</span></td>
+                      <td><span class="text-xs font-medium ${r.outstanding > 0 ? 'text-red-600' : 'text-green-700'}">${formatCurrency(r.outstanding)}</span></td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      $("reportContent").innerHTML = html;
+      $("reportEmptyState").classList.add("hidden");
+    }
+
+    // =========================================================
+    // REPORT: INVOICES
+    // =========================================================
+
+    function renderInvoiceReport() {
+      const filtered = getFilteredInvoices();
+
+      const paid = filtered.filter(i => i.paymentStatus === "Paid");
+      const pending = filtered.filter(i => i.paymentStatus === "Pending");
+      const partial = filtered.filter(i => i.paymentStatus === "Partially Paid");
+      const overdue = filtered.filter(i => i.paymentStatus === "Overdue");
+
+      const totalAmount = filtered.reduce((s, i) => s + Number(i.amount || 0), 0);
+      const outstanding = filtered
+        .filter(i => i.paymentStatus !== "Paid")
+        .reduce((s, i) => s + Number(i.amount || 0), 0);
+
+      const hasFilters = Boolean(activeFilters.dateRange || activeFilters.customer || activeFilters.search);
+
+      let html = `
+        <div class="rep-card p-4 mb-4">
+          ${sectionHeader("Invoice Summary", "Summary of invoice amounts and payment status.")}
+          <div class="rep-mini-grid">
+            ${miniCard("fa-solid fa-file-invoice", "Total Invoices", filtered.length)}
+            ${miniCard("fa-solid fa-circle-check", "Paid", paid.length)}
+            ${miniCard("fa-solid fa-clock", "Pending", pending.length)}
+            ${miniCard("fa-solid fa-hourglass-half", "Partially Paid", partial.length)}
+            ${miniCard("fa-solid fa-triangle-exclamation", "Overdue", overdue.length)}
+            ${miniCard("fa-solid fa-indian-rupee-sign", "Total Amount", formatCurrency(totalAmount))}
+            ${miniCard("fa-solid fa-exclamation-circle", "Outstanding", formatCurrency(outstanding))}
+          </div>
+        </div>
+      `;
+
+      if (filtered.length === 0) {
+        html += `
+          <div class="rep-card py-14 text-center">
+            <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-file-invoice text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700">No invoices found</h3>
+            <p class="text-xs text-stone-500 mt-1">
+              ${hasFilters ? "Try changing your filters or date range." : "No invoice records available."}
+            </p>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="rep-card overflow-hidden">
+            <div class="p-4 border-b border-stone-200">
+              <h3 class="text-sm font-bold text-stone-800">Invoice Details</h3>
+              <p class="text-xs text-stone-500 mt-1">${filtered.length} invoice${filtered.length !== 1 ? "s" : ""}</p>
+            </div>
+            <div class="rep-table-wrap">
+              <table class="rep-table">
+                <thead>
+                  <tr>
+                    <th>Invoice ID</th>
+                    <th>Customer</th>
+                    <th>Trip ID</th>
+                    <th>Invoice Date</th>
+                    <th>Amount</th>
+                    <th>Payment Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${filtered.map(i => `
+                    <tr>
+                      <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(i.id)}</span></td>
+                      <td><span class="text-xs font-medium text-stone-700">${escapeHTML(i.customerName)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(i.tripId)}</span></td>
+                      <td><span class="text-xs text-stone-600">${formatDate(i.invoiceDate)}</span></td>
+                      <td><span class="text-xs font-semibold text-stone-700">${formatCurrency(i.amount)}</span></td>
+                      <td>${paymentStatusBadge(i.paymentStatus)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      $("reportContent").innerHTML = html;
+      $("reportEmptyState").classList.add("hidden");
+    }
+
+    // =========================================================
+    // REPORT: PAYROLL
+    // =========================================================
+
+    function renderPayrollReport() {
+      const filtered = getFilteredPayrolls();
+
+      const pending = filtered.filter(p => p.payrollStatus === "Draft" || p.payrollStatus === "Processing");
+      const processed = filtered.filter(p => p.payrollStatus === "Processed");
+      const paid = filtered.filter(p => p.paymentStatus === "Paid");
+
+      const totalAmount = filtered.reduce((s, p) => s + payrollNetSalary(p), 0);
+      const paidAmount = paid.reduce((s, p) => s + payrollNetSalary(p), 0);
+      const outstanding = totalAmount - paidAmount;
+
+      const hasFilters = Boolean(activeFilters.driver || activeFilters.search);
+
+      let html = `
+        <div class="rep-card p-4 mb-4">
+          ${sectionHeader("Payroll Summary", "Summary of driver payroll records and payment status.")}
+          <div class="rep-mini-grid">
+            ${miniCard("fa-solid fa-money-check-dollar", "Total Records", filtered.length)}
+            ${miniCard("fa-solid fa-clock", "Pending", pending.length)}
+            ${miniCard("fa-solid fa-file-circle-check", "Processed", processed.length)}
+            ${miniCard("fa-solid fa-circle-check", "Paid", paid.length)}
+            ${miniCard("fa-solid fa-wallet", "Total Amount", formatCurrency(totalAmount))}
+            ${miniCard("fa-solid fa-exclamation-circle", "Outstanding", formatCurrency(outstanding))}
+          </div>
+        </div>
+      `;
+
+      if (filtered.length === 0) {
+        html += `
+          <div class="rep-card py-14 text-center">
+            <div class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-money-check-dollar text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700">No payroll records found</h3>
+            <p class="text-xs text-stone-500 mt-1">
+              ${hasFilters ? "Try changing your filters." : "No payroll records available."}
+            </p>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="rep-card overflow-hidden">
+            <div class="p-4 border-b border-stone-200">
+              <h3 class="text-sm font-bold text-stone-800">Payroll Details</h3>
+              <p class="text-xs text-stone-500 mt-1">${filtered.length} payroll record${filtered.length !== 1 ? "s" : ""}</p>
+            </div>
+            <div class="rep-table-wrap">
+              <table class="rep-table" style="min-width: 1000px;">
+                <thead>
+                  <tr>
+                    <th>Payroll ID</th>
+                    <th>Driver</th>
+                    <th>Payroll Period</th>
+                    <th>Salary Type</th>
+                    <th>Net Salary</th>
+                    <th>Payroll Status</th>
+                    <th>Payment Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${filtered.map(p => `
+                    <tr>
+                      <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(p.id)}</span></td>
+                      <td><span class="text-xs font-medium text-stone-700">${escapeHTML(p.driverName)}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(p.periodLabel || getPeriodLabel(p.period))}</span></td>
+                      <td><span class="text-xs text-stone-600">${escapeHTML(p.salaryType)}</span></td>
+                      <td><span class="text-xs font-semibold text-stone-700">${formatCurrency(payrollNetSalary(p))}</span></td>
+                      <td>${payrollStatusBadge(p.payrollStatus)}</td>
+                      <td>${paymentStatusBadge(p.paymentStatus)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      $("reportContent").innerHTML = html;
+      $("reportEmptyState").classList.add("hidden");
+    }
+
+    // =========================================================
+    // PRINT REPORT
+    // =========================================================
+
+    function printReport() {
+      showToast("Preparing report for printing...");
+      setTimeout(() => window.print(), 300);
+    }
+
+    // =========================================================
+    // CSV EXPORT
+    // =========================================================
+
+    function exportCSV() {
+      let headers = [];
+      let rows = [];
+      let filename = "report.csv";
+
+      if (activeReport === "overview") {
+        showToast("CSV export is not available for the Overview report.", "error");
+        return;
+      }
+
+      if (activeReport === "trips") {
+        headers = ["Trip ID", "Customer", "Route", "Vehicle", "Driver", "Trip Date", "Status"];
+        rows = getFilteredTrips().map(t => [t.tripId, t.customerName, t.route, t.vehicle, t.driver, t.tripDate, t.status]);
+        filename = "trips-report.csv";
+      } else if (activeReport === "invoices") {
+        headers = ["Invoice ID", "Customer", "Trip ID", "Invoice Date", "Amount", "Payment Status"];
+        rows = getFilteredInvoices().map(i => [i.id, i.customerName, i.tripId, i.invoiceDate, i.amount, i.paymentStatus]);
+        filename = "invoices-report.csv";
+      } else if (activeReport === "payroll") {
+        headers = ["Payroll ID", "Driver", "Period", "Salary Type", "Net Salary", "Payroll Status", "Payment Status"];
+        rows = getFilteredPayrolls().map(p => [p.id, p.driverName, p.periodLabel, p.salaryType, payrollNetSalary(p), p.payrollStatus, p.paymentStatus]);
+        filename = "payroll-report.csv";
+      } else {
+        showToast("CSV export is available for Trips, Invoices, and Payroll reports.", "error");
+        return;
+      }
+
+      if (rows.length === 0) {
+        showToast("No data to export.", "error");
+        return;
+      }
+
+      const escapeCsv = (val) => {
+        const s = String(val ?? "");
+        return s.includes(",") || s.includes('"') || s.includes("\n")
+          ? `"${s.replace(/"/g, '""')}"`
+          : s;
+      };
+
+      const csv = [
+        headers.map(escapeCsv).join(","),
+        ...rows.map(row => row.map(escapeCsv).join(","))
+      ].join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      showToast("Report exported successfully.");
+    }
+
+    // =========================================================
+    // DROPDOWN POPULATION
+    // =========================================================
+
+    function populateFilterDropdowns() {
+      // Customers
+      $("filterCustomer").innerHTML = `<option value="">All Customers</option>` +
+        customers.map(c => `<option value="${escapeHTML(c.customerId)}">${escapeHTML(c.name)}</option>`).join("");
+
+      // Drivers
+      $("filterDriver").innerHTML = `<option value="">All Drivers</option>` +
+        drivers.map(d => `<option value="${escapeHTML(d.driverId)}">${escapeHTML(d.name)}</option>`).join("");
+
+      // Vehicles
+      $("filterVehicle").innerHTML = `<option value="">All Vehicles</option>` +
+        vehicles.map(v => `<option value="${escapeHTML(v.vehicleId)}">${escapeHTML(v.registration)} (${escapeHTML(v.type)})</option>`).join("");
+    }
+
+    // =========================================================
+    // EVENT LISTENERS
+    // =========================================================
+
+    // Report tabs
+    document.querySelectorAll(".rep-tab").forEach(tab => {
+      tab.addEventListener("click", () => switchReport(tab.dataset.report));
+    });
+
+    // Date range toggle
+    $("filterDateRange").addEventListener("change", () => {
+      const isCustom = $("filterDateRange").value === "custom";
+      $("customDateRange").classList.toggle("hidden", !isCustom);
+    });
+
+    // Apply / Clear
+    $("applyFiltersBtn").addEventListener("click", applyReportFilters);
+    $("clearFiltersBtn").addEventListener("click", clearReportFilters);
+
+    // Search (live)
+    $("reportSearch").addEventListener("input", () => {
+      activeFilters.search = $("reportSearch").value.trim().toLowerCase();
+      renderActiveReport();
+    });
+
+    // Print / Export
+    $("printReportBtn").addEventListener("click", printReport);
+    $("exportCsvBtn").addEventListener("click", exportCSV);
+
+    // =========================================================
+    // INITIALIZATION
+    // =========================================================
+
+    function initializeReportsModule() {
+      populateFilterDropdowns();
+      updateFilterAvailability();
+      switchReport("overview");
+    }
+
+    initializeReportsModule();
+  </script>
+
+  <!-- Existing shared navigation JavaScript -->
+  <script src="../../js/nav-sidebar.js"></script>
+
+</body>
+
+</html>

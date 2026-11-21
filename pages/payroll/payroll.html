@@ -1,0 +1,3852 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payroll Management | TMS</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Existing shared navigation stylesheet -->
+  <link rel="stylesheet" href="../../css/nav-sidebar.css">
+
+  <style>
+    /* =========================================================
+       PAYROLL MODULE THEME
+       Mirrors the existing Vehicles / Invoices module design.
+    ========================================================= */
+
+    #payroll-page {
+      --pay-primary: #601D49;
+      --pay-primary-dark: #4B1738;
+      --pay-primary-soft: #F7EFF4;
+      --pay-bg: #FAFAF9;
+      --pay-border: #E7E5E4;
+      --pay-text: #292524;
+      --pay-muted: #78716C;
+      width: 100%;
+      min-width: 0;
+      color: var(--pay-text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #payroll-page * {
+      box-sizing: border-box;
+    }
+
+    #payroll-page .pay-card {
+      background: #fff;
+      border: 1px solid var(--pay-border);
+      border-radius: 10px;
+    }
+
+    /* ---------- Buttons ---------- */
+
+    #payroll-page .pay-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid var(--pay-primary);
+      border-radius: 7px;
+      background: var(--pay-primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #payroll-page .pay-primary-btn:hover {
+      background: var(--pay-primary-dark);
+      border-color: var(--pay-primary-dark);
+    }
+
+    #payroll-page .pay-primary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    #payroll-page .pay-secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--pay-border);
+      border-radius: 7px;
+      background: #fff;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #payroll-page .pay-secondary-btn:hover {
+      background: #f5f5f4;
+    }
+
+    #payroll-page .pay-secondary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    #payroll-page .pay-secondary-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    /* ---------- Inputs ---------- */
+
+    #payroll-page .pay-input,
+    #payroll-page .pay-select,
+    #payroll-page .pay-textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      background: #fff;
+      padding: 9px 11px;
+      color: #292524;
+      font-size: 12px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    #payroll-page .pay-input,
+    #payroll-page .pay-select {
+      height: 38px;
+    }
+
+    #payroll-page .pay-textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    #payroll-page .pay-input:focus,
+    #payroll-page .pay-select:focus,
+    #payroll-page .pay-textarea:focus {
+      border-color: var(--pay-primary);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, .08);
+    }
+
+    #payroll-page .pay-input:disabled,
+    #payroll-page .pay-select:disabled {
+      background: #f5f5f4;
+      color: #a8a29e;
+    }
+
+    #payroll-page .pay-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #57534e;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    #payroll-page .pay-required {
+      color: #dc2626;
+    }
+
+    #payroll-page .pay-error {
+      display: none;
+      margin-top: 5px;
+      color: #dc2626;
+      font-size: 10px;
+    }
+
+    #payroll-page .pay-error.show {
+      display: block;
+    }
+
+    /* =========================================================
+       KPI CARDS — 5 IN ONE ROW
+    ========================================================= */
+
+    #payroll-page .pay-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    #payroll-page .pay-kpi-card {
+      min-width: 0;
+      min-height: 82px;
+      padding: 9px 12px;
+      background: linear-gradient(135deg,
+          #ffffff 0%,
+          #faf5f8 55%,
+          #f7eff4 100%);
+      border: 1px solid rgba(96, 29, 73, 0.16);
+      border-radius: 9px;
+      box-shadow: 0 2px 5px rgba(96, 29, 73, .04),
+        0 4px 10px rgba(96, 29, 73, .035);
+      transition: all .2s ease;
+    }
+
+    #payroll-page .pay-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 29, 73, .28);
+      box-shadow: 0 5px 12px rgba(96, 29, 73, .07);
+    }
+
+    #payroll-page .pay-kpi-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 29px;
+      height: 29px;
+      border-radius: 7px;
+      font-size: 12px;
+      background: rgba(96, 29, 73, .06);
+      color: var(--pay-primary);
+    }
+
+    #payroll-page .pay-kpi-value {
+      margin-top: 5px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #292524;
+      overflow-wrap: anywhere;
+    }
+
+    #payroll-page .pay-kpi-label {
+      margin-top: 3px;
+      color: #78716c;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+    #payroll-page .pay-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    #payroll-page .pay-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Payroll status */
+    #payroll-page .status-draft {
+      color: #57534e;
+      background: #e7e5e4;
+    }
+
+    #payroll-page .status-processing {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    #payroll-page .status-processed {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+
+    /* Payment status */
+    #payroll-page .status-pending {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    #payroll-page .status-paid {
+      color: #15803d;
+      background: #f0fdf4;
+    }
+
+    #payroll-page .status-failed {
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    /* =========================================================
+       COMPACT GRID TABLE — horizontal + vertical grid lines
+    ========================================================= */
+
+    #payroll-page .pay-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    #payroll-page .pay-table {
+      width: 100%;
+      min-width: 1300px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    #payroll-page .pay-table th {
+      padding: 8px 12px;
+      background: #fafaf9;
+      border: 1px solid var(--pay-border);
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    #payroll-page .pay-table td {
+      padding: 6px 12px;
+      border: 1px solid var(--pay-border);
+      color: #57534e;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    #payroll-page .pay-table tbody tr:hover {
+      background: #fdfbfd;
+    }
+
+    /* =========================================================
+       ACTION ICON BUTTONS
+    ========================================================= */
+
+    #payroll-page .pay-action-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    #payroll-page .pay-row-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    #payroll-page .pay-row-action:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 1px;
+    }
+
+    /* =========================================================
+       MODALS
+    ========================================================= */
+
+    #payroll-page .pay-modal-backdrop {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 10000 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(28, 25, 23, .55);
+      backdrop-filter: blur(3px);
+    }
+
+    #payroll-page .pay-modal-backdrop.hidden {
+      display: none !important;
+    }
+
+    #payroll-page .pay-modal-panel {
+      position: relative;
+      width: 100%;
+      max-width: 760px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+    }
+
+    #payroll-page .pay-modal-panel.small {
+      max-width: 460px;
+    }
+
+    #payroll-page .pay-modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px 20px;
+      background: #fff;
+      border-bottom: 1px solid var(--pay-border);
+    }
+
+    #payroll-page .pay-modal-body {
+      padding: 20px;
+    }
+
+    #payroll-page .pay-modal-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      padding: 13px 20px;
+      background: #fff;
+      border-top: 1px solid var(--pay-border);
+    }
+
+    #payroll-page .pay-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 6px;
+      background: #f5f5f4;
+      color: #57534e;
+      cursor: pointer;
+    }
+
+    #payroll-page .pay-close-btn:hover {
+      background: #e7e5e4;
+    }
+
+    /* Form grid */
+
+    #payroll-page .pay-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    #payroll-page .pay-form-field {
+      min-width: 0;
+    }
+
+    #payroll-page .pay-form-field.full,
+    #payroll-page .pay-section-title {
+      grid-column: 1 / -1;
+    }
+
+    #payroll-page .pay-section-title {
+      padding-bottom: 8px;
+      margin-top: 5px;
+      border-bottom: 1px solid #f0eeec;
+      color: #44403c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Driver info preview */
+
+    #payroll-page .pay-driver-preview {
+      grid-column: 1 / -1;
+      padding: 10px 12px;
+      border: 1px dashed rgba(96, 29, 73, .35);
+      border-radius: 8px;
+      background: #fdfbfd;
+      font-size: 11px;
+      color: #57534e;
+    }
+
+    #payroll-page .pay-driver-preview strong {
+      color: var(--pay-primary);
+    }
+
+    /* Earnings / deductions item rows */
+
+    #payroll-page .pay-line-item {
+      display: grid;
+      grid-template-columns: 1fr 130px 32px;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    #payroll-page .pay-line-item input {
+      height: 34px;
+    }
+
+    #payroll-page .pay-line-remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 34px;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      background: #fef2f2;
+      color: #dc2626;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+
+    #payroll-page .pay-line-remove:hover {
+      background: #fee2e2;
+    }
+
+    #payroll-page .pay-add-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      padding: 5px 9px;
+      border: 1px dashed #601d49;
+      border-radius: 6px;
+      background: transparent;
+      color: #601d49;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #payroll-page .pay-add-line:hover {
+      background: #f7eff4;
+    }
+
+    /* Calculation summary inside the form */
+
+    #payroll-page .pay-calc-box {
+      grid-column: 1 / -1;
+      padding: 12px 14px;
+      border: 1.5px solid #601d49;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #fdfbfd 0%, #f7eff4 100%);
+    }
+
+    #payroll-page .pay-calc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 3px 0;
+      font-size: 11px;
+      color: #57534e;
+    }
+
+    #payroll-page .pay-calc-row.total {
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(96, 29, 73, .25);
+      font-size: 13px;
+      font-weight: 700;
+      color: #601d49;
+    }
+
+    #payroll-page .pay-rule-hint {
+      grid-column: 1 / -1;
+      padding: 8px 11px;
+      border-left: 3px solid #601d49;
+      border-radius: 0 6px 6px 0;
+      background: #f7eff4;
+      color: #601d49;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* =========================================================
+       VIEW MODAL
+    ========================================================= */
+
+    #payroll-page #payrollViewModal .pay-modal-panel {
+      max-width: 820px;
+      border: 1.5px solid #601d49;
+    }
+
+    #payroll-page .pay-detail-hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1.5px solid #601d49;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #601d49 0%, #8a2d6a 100%);
+      color: #fff;
+    }
+
+    #payroll-page .pay-detail-hero-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+
+    #payroll-page .pay-detail-hero-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      opacity: .85;
+    }
+
+    #payroll-page .pay-detail-section {
+      margin-bottom: 14px;
+      overflow: hidden;
+      border: 1px solid #601d4897;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(96, 29, 73, .08);
+    }
+
+    #payroll-page .pay-detail-section-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: rgba(96, 29, 72, .082);
+      border-bottom: 1.5px solid #601d49;
+      color: #601d49;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #payroll-page .pay-detail-section-body {
+      padding: 12px 14px;
+    }
+
+    #payroll-page .pay-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      #payroll-page .pay-detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    #payroll-page .pay-detail-item {
+      min-width: 0;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid #601d487d;
+      border-radius: 8px;
+      transition: box-shadow .15s, transform .15s;
+    }
+
+    #payroll-page .pay-detail-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(96, 29, 73, .15);
+    }
+
+    #payroll-page .pay-detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    #payroll-page .pay-detail-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3px;
+      color: #601d49;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    #payroll-page .pay-detail-value {
+      color: #292524;
+      font-size: 12px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    #payroll-page .pay-net-highlight {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--pay-primary);
+    }
+
+    /* Breakdown tables in the view modal */
+
+    #payroll-page .pay-breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #payroll-page .pay-breakdown-table th,
+    #payroll-page .pay-breakdown-table td {
+      padding: 6px 10px;
+      border: 1px solid #e7e5e4;
+      font-size: 11px;
+      text-align: left;
+    }
+
+    #payroll-page .pay-breakdown-table th {
+      background: #fafaf9;
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    #payroll-page .pay-breakdown-table td.amount {
+      text-align: right;
+      font-weight: 600;
+      color: #292524;
+      white-space: nowrap;
+    }
+
+    #payroll-page .pay-breakdown-table tr.total-row td {
+      background: #f7eff4;
+      font-weight: 700;
+      color: #601d49;
+    }
+
+    /* History list */
+
+    #payroll-page .pay-history-item {
+      position: relative;
+      padding: 0 0 12px 18px;
+      margin-left: 5px;
+      border-left: 2px solid #601d49;
+    }
+
+    #payroll-page .pay-history-item:last-child {
+      padding-bottom: 0;
+      border-left-color: transparent;
+    }
+
+    #payroll-page .pay-history-item::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: 2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #601d49;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1.5px #601d49;
+    }
+
+    /* =========================================================
+       PAGINATION
+    ========================================================= */
+
+    #payroll-page .pay-page-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid #e7e5e4;
+      border-radius: 6px;
+      background: #fff;
+      color: #57534e;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    #payroll-page .pay-page-btn.active {
+      border-color: var(--pay-primary);
+      background: var(--pay-primary);
+      color: #fff;
+    }
+
+    #payroll-page .pay-page-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    #payroll-page .pay-toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 11000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 32px);
+      padding: 12px 16px;
+      border: 1px solid #e7e5e4;
+      border-radius: 9px;
+      background: #fff;
+      color: #292524;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: .25s ease;
+    }
+
+    #payroll-page .pay-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    #payroll-page .pay-toast-icon {
+      color: var(--pay-primary);
+      font-size: 15px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+      #payroll-page .pay-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      #payroll-page .pay-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      #payroll-page .pay-modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      #payroll-page .pay-modal-panel {
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0;
+      }
+
+      #payroll-page .pay-modal-body {
+        padding: 15px;
+      }
+
+      #payroll-page .pay-modal-header,
+      #payroll-page .pay-modal-footer {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      #payroll-page .pay-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #payroll-page .pay-form-field.full,
+      #payroll-page .pay-section-title,
+      #payroll-page .pay-driver-preview,
+      #payroll-page .pay-calc-box,
+      #payroll-page .pay-rule-hint {
+        grid-column: auto;
+      }
+
+      #payroll-page .pay-line-item {
+        grid-template-columns: 1fr 100px 32px;
+      }
+
+      #payroll-page .pay-toast {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #payroll-page .pay-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #payroll-page .pay-kpi-card {
+        padding: 9px;
+      }
+
+      #payroll-page .pay-kpi-value {
+        font-size: 18px;
+      }
+
+      #payroll-page .pay-line-item {
+        grid-template-columns: 1fr 80px 32px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-stone-50">
+
+  <!-- =======================================================
+       SHARED SIDEBAR AND NAVBAR
+  ======================================================== -->
+  <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+  <!-- =======================================================
+       MAIN CONTENT
+  ======================================================== -->
+  <main class="tms-main">
+    <div id="payroll-page" class="px-4 py-5 md:px-6 lg:px-4">
+
+      <!-- =====================================================
+           PAGE HEADER
+      ====================================================== -->
+      <section class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-stone-800">Payroll Management</h1>
+          <p class="text-xs text-stone-500 mt-1">
+            Manage driver salaries, payroll calculations, processing, and payment status.
+          </p>
+        </div>
+
+        <button type="button" id="createPayrollBtn" class="pay-primary-btn">
+          <i class="fa-solid fa-plus"></i>
+          Create Payroll
+        </button>
+      </section>
+
+      <!-- =====================================================
+           KPI CARDS — dynamically calculated
+      ====================================================== -->
+      <section class="pay-kpi-grid mb-4">
+
+        <div class="pay-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Total Drivers</span>
+            <div class="pay-kpi-icon"><i class="fa-solid fa-id-card"></i></div>
+          </div>
+          <div class="pay-kpi-value" id="kpiTotalDrivers">0</div>
+          <div class="pay-kpi-label">Drivers in payroll</div>
+        </div>
+
+        <div class="pay-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Pending Payroll</span>
+            <div class="pay-kpi-icon"><i class="fa-solid fa-clock"></i></div>
+          </div>
+          <div class="pay-kpi-value" id="kpiPending">0</div>
+          <div class="pay-kpi-label">Not yet processed</div>
+        </div>
+
+        <div class="pay-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Processed Payroll</span>
+            <div class="pay-kpi-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+          </div>
+          <div class="pay-kpi-value" id="kpiProcessed">0</div>
+          <div class="pay-kpi-label">Ready for payment</div>
+        </div>
+
+        <div class="pay-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Paid Payroll</span>
+            <div class="pay-kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+          <div class="pay-kpi-value" id="kpiPaid">0</div>
+          <div class="pay-kpi-label">Payment completed</div>
+        </div>
+
+        <div class="pay-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Total Payroll</span>
+            <div class="pay-kpi-icon"><i class="fa-solid fa-wallet"></i></div>
+          </div>
+          <div class="pay-kpi-value" id="kpiTotalAmount">₹0</div>
+          <div class="pay-kpi-label">Combined net salary</div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           PAYROLL PERIOD SUMMARY BAR
+      ====================================================== -->
+      <section class="pay-card mb-4 p-4">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div>
+            <h2 id="periodSummaryTitle" class="text-sm font-bold text-stone-800">November 2026</h2>
+            <p id="periodSummaryRange" class="text-xs text-stone-500 mt-1">01 Nov 2026 – 30 Nov 2026</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-stone-600">
+            <span>Drivers: <strong id="summaryDrivers" class="text-stone-800">0</strong></span>
+            <span>Processed: <strong id="summaryProcessed" class="text-stone-800">0</strong></span>
+            <span>Pending: <strong id="summaryPending" class="text-stone-800">0</strong></span>
+            <span>Paid: <strong id="summaryPaid" class="text-stone-800">0</strong></span>
+            <span>Total: <strong id="summaryTotal" class="text-[#601D49]">₹0</strong></span>
+            <span>Outstanding: <strong id="summaryOutstanding" class="text-red-600">₹0</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           PAYROLL TABLE CARD (search + filters + table)
+      ====================================================== -->
+      <section class="pay-card overflow-hidden">
+
+        <!-- TABLE HEADER + SEARCH + FILTERS -->
+        <div class="p-4 border-b border-stone-200">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-bold text-stone-800">All Payroll Records</h2>
+              <p class="text-xs text-stone-500 mt-1">
+                View and manage driver payroll records.
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <!-- Search Input -->
+              <div class="relative flex-1 sm:flex-none sm:w-60">
+                <i
+                  class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[11px] pointer-events-none"></i>
+                <input type="search" id="payrollSearch"
+                  class="pay-input !h-[34px] !py-0 !pl-9 !pr-3 !text-[11px] !rounded-md"
+                  placeholder="Search payroll..." aria-label="Search payroll" />
+              </div>
+
+              <!-- Clear Filters -->
+              <button type="button" id="clearFiltersBtn"
+                class="pay-secondary-btn !h-[34px] !min-h-[34px] !px-3 !gap-2 !text-[11px] !rounded-md whitespace-nowrap">
+                <i class="fa-solid fa-rotate-left text-[10px]"></i>
+                <span>Clear Filters</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- FILTERS -->
+          <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2 mt-4">
+            <select id="filterPeriod" class="pay-select" aria-label="Filter by payroll period">
+              <option value="">All Periods</option>
+            </select>
+
+            <select id="filterPayrollStatus" class="pay-select" aria-label="Filter by payroll status">
+              <option value="">All Payroll Status</option>
+              <option>Draft</option>
+              <option>Processing</option>
+              <option>Processed</option>
+            </select>
+
+            <select id="filterPaymentStatus" class="pay-select" aria-label="Filter by payment status">
+              <option value="">All Payment Status</option>
+              <option>Pending</option>
+              <option>Paid</option>
+              <option>Failed</option>
+            </select>
+
+            <select id="filterDriver" class="pay-select" aria-label="Filter by driver">
+              <option value="">All Drivers</option>
+            </select>
+
+            <select id="filterSalaryType" class="pay-select" aria-label="Filter by salary type">
+              <option value="">All Salary Types</option>
+              <option>Monthly</option>
+              <option>Per Trip</option>
+              <option>Daily</option>
+            </select>
+
+            <select id="filterMonth" class="pay-select" aria-label="Filter by month">
+              <option value="">All Months</option>
+              <option value="2026-08">August 2026</option>
+              <option value="2026-09">September 2026</option>
+              <option value="2026-10">October 2026</option>
+              <option value="2026-11">November 2026</option>
+              <option value="2026-12">December 2026</option>
+            </select>
+          </div>
+
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+            <p id="filterResultText" class="text-[10px] text-stone-400"></p>
+            <span id="tableCount" class="rounded-full bg-stone-100 px-3 py-1 text-[10px] font-semibold text-stone-600">
+              0 Payrolls
+            </span>
+          </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="pay-table-wrap">
+          <table class="pay-table">
+            <thead>
+              <tr>
+                <th>Payroll ID</th>
+                <th>Driver</th>
+                <th>Period</th>
+                <th>Salary Type</th>
+                <th>Base Salary</th>
+                <th>Earnings</th>
+                <th>Deductions</th>
+                <th>Net Salary</th>
+                <th>Payroll Status</th>
+                <th>Payment Status</th>
+                <th class="text-center w-[160px]">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="payrollTableBody"></tbody>
+          </table>
+
+          <!-- EMPTY STATE -->
+          <div id="payrollEmptyState" class="hidden py-14 text-center">
+            <div
+              class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-money-check-dollar text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700" id="emptyTitle">No payroll records found</h3>
+            <p class="text-xs text-stone-500 mt-1" id="emptyDescription">
+              Try changing your filters or create a new payroll record.
+            </p>
+            <button type="button" id="emptyCreateBtn" class="pay-primary-btn mt-4">
+              <i class="fa-solid fa-plus"></i>
+              Create Payroll
+            </button>
+          </div>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-stone-200">
+          <p id="paginationInfo" class="text-xs text-stone-500">
+            Showing 0 payroll records
+          </p>
+          <div id="paginationControls" class="flex items-center gap-1"></div>
+        </div>
+      </section>
+
+      <p class="mt-4 text-center text-[10px] text-stone-400">
+        TMS Payroll Management Module
+      </p>
+
+      <!-- =====================================================
+           CREATE / EDIT PAYROLL MODAL
+      ====================================================== -->
+      <div id="payrollFormModal" class="pay-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="payrollFormTitle">
+
+        <div class="pay-modal-panel">
+          <div class="pay-modal-header">
+            <div>
+              <h2 id="payrollFormTitle" class="text-base font-bold text-stone-800">
+                Create Payroll
+              </h2>
+              <p class="text-xs text-stone-500 mt-1">
+                Record driver salary, earnings, deductions, and payroll status.
+              </p>
+            </div>
+            <button type="button" class="pay-close-btn" data-close-modal="payrollFormModal" aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <form id="payrollForm" novalidate>
+            <div class="pay-modal-body">
+              <div class="pay-form-grid">
+
+                <!-- A. PAYROLL INFORMATION -->
+                <h3 class="pay-section-title">Payroll Information</h3>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formPayrollId">Payroll ID</label>
+                  <input id="formPayrollId" class="pay-input bg-stone-50" readonly>
+                  <p class="mt-1 text-[9px] text-stone-400">Automatically generated.</p>
+                </div>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formPayrollPeriod">
+                    Payroll Period <span class="pay-required">*</span>
+                  </label>
+                  <select id="formPayrollPeriod" class="pay-select">
+                    <option value="">Select payroll period</option>
+                  </select>
+                  <p class="pay-error" id="errorPayrollPeriod"></p>
+                </div>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formDriver">
+                    Driver <span class="pay-required">*</span>
+                  </label>
+                  <select id="formDriver" class="pay-select">
+                    <option value="">Select driver</option>
+                  </select>
+                  <p class="pay-error" id="errorDriver"></p>
+                </div>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formPayrollStatus">Payroll Status</label>
+                  <select id="formPayrollStatus" class="pay-select">
+                    <option>Draft</option>
+                    <option>Processing</option>
+                    <option>Processed</option>
+                  </select>
+                </div>
+
+                <!-- Driver info preview -->
+                <div id="driverPreview" class="pay-driver-preview hidden">
+                  <div class="flex flex-wrap gap-x-5 gap-y-1">
+                    <span>Driver: <strong id="previewDriverName">—</strong></span>
+                    <span>Driver ID: <strong id="previewDriverId">—</strong></span>
+                    <span>Phone: <strong id="previewDriverPhone">—</strong></span>
+                    <span>Vehicle: <strong id="previewDriverVehicle">—</strong></span>
+                    <span>Assignment: <strong id="previewDriverAssignment">—</strong></span>
+                  </div>
+                </div>
+
+                <!-- B. SALARY INFORMATION -->
+                <h3 class="pay-section-title">Salary Information</h3>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formSalaryType">
+                    Salary Type <span class="pay-required">*</span>
+                  </label>
+                  <select id="formSalaryType" class="pay-select">
+                    <option value="">Select salary type</option>
+                    <option>Monthly</option>
+                    <option>Per Trip</option>
+                    <option>Daily</option>
+                  </select>
+                  <p class="pay-error" id="errorSalaryType"></p>
+                </div>
+
+                <!-- Monthly base -->
+                <div class="pay-form-field" id="monthlyField">
+                  <label class="pay-label" for="formBaseSalary">
+                    Base Monthly Salary (₹) <span class="pay-required">*</span>
+                  </label>
+                  <input id="formBaseSalary" type="number" min="0" step="1" class="pay-input"
+                    placeholder="e.g. 30000">
+                  <p class="pay-error" id="errorBaseSalary"></p>
+                </div>
+
+                <!-- Per-trip fields -->
+                <div class="pay-form-field hidden" id="perTripRateField">
+                  <label class="pay-label" for="formTripRate">
+                    Per Trip Rate (₹) <span class="pay-required">*</span>
+                  </label>
+                  <input id="formTripRate" type="number" min="0" step="1" class="pay-input" placeholder="e.g. 1200">
+                  <p class="pay-error" id="errorTripRate"></p>
+                </div>
+
+                <div class="pay-form-field hidden" id="tripsCompletedField">
+                  <label class="pay-label" for="formTripsCompleted">
+                    Trips Completed <span class="pay-required">*</span>
+                  </label>
+                  <input id="formTripsCompleted" type="number" min="0" step="1" class="pay-input" placeholder="e.g. 20">
+                  <p class="pay-error" id="errorTripsCompleted"></p>
+                </div>
+
+                <!-- Daily fields -->
+                <div class="pay-form-field hidden" id="dailyRateField">
+                  <label class="pay-label" for="formDailyRate">
+                    Daily Rate (₹) <span class="pay-required">*</span>
+                  </label>
+                  <input id="formDailyRate" type="number" min="0" step="1" class="pay-input" placeholder="e.g. 1000">
+                  <p class="pay-error" id="errorDailyRate"></p>
+                </div>
+
+                <div class="pay-form-field hidden" id="workingDaysField">
+                  <label class="pay-label" for="formWorkingDays">
+                    Working Days <span class="pay-required">*</span>
+                  </label>
+                  <input id="formWorkingDays" type="number" min="0" max="31" step="1" class="pay-input"
+                    placeholder="e.g. 24">
+                  <p class="pay-error" id="errorWorkingDays"></p>
+                </div>
+
+                <!-- Calculation rule hint -->
+                <div id="ruleHint" class="pay-rule-hint hidden"></div>
+
+                <!-- C. EARNINGS -->
+                <h3 class="pay-section-title">Additional Earnings</h3>
+
+                <div class="pay-form-field full">
+                  <div id="earningsList"></div>
+                  <button type="button" id="addEarningBtn" class="pay-add-line">
+                    <i class="fa-solid fa-plus text-[9px]"></i> Add Earning
+                  </button>
+                  <p class="pay-error" id="errorEarnings"></p>
+                </div>
+
+                <!-- D. DEDUCTIONS -->
+                <h3 class="pay-section-title">Deductions</h3>
+
+                <div class="pay-form-field full">
+                  <div id="deductionsList"></div>
+                  <button type="button" id="addDeductionBtn" class="pay-add-line">
+                    <i class="fa-solid fa-plus text-[9px]"></i> Add Deduction
+                  </button>
+                  <p class="pay-error" id="errorDeductions"></p>
+                </div>
+
+                <!-- LIVE CALCULATION SUMMARY -->
+                <div class="pay-calc-box">
+                  <div class="pay-calc-row">
+                    <span>Base / Calculated Salary</span>
+                    <span id="calcBase">₹0</span>
+                  </div>
+                  <div class="pay-calc-row">
+                    <span>Additional Earnings</span>
+                    <span id="calcEarnings">+ ₹0</span>
+                  </div>
+                  <div class="pay-calc-row">
+                    <span>Total Deductions</span>
+                    <span id="calcDeductions">− ₹0</span>
+                  </div>
+                  <div class="pay-calc-row total">
+                    <span>Net Salary</span>
+                    <span id="calcNet">₹0</span>
+                  </div>
+                </div>
+
+                <div class="pay-form-field full">
+                  <label class="pay-label" for="formNotes">Notes</label>
+                  <textarea id="formNotes" rows="2" class="pay-textarea"
+                    placeholder="Any payroll remarks..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="pay-modal-footer">
+              <button type="button" class="pay-secondary-btn" data-close-modal="payrollFormModal">Cancel</button>
+              <button type="submit" class="pay-primary-btn" id="savePayrollBtn">
+                <i class="fa-solid fa-check"></i>
+                Save Payroll
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           VIEW PAYROLL MODAL
+      ====================================================== -->
+      <div id="payrollViewModal" class="pay-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="payrollViewTitle">
+
+        <div class="pay-modal-panel">
+          <div class="pay-modal-header">
+            <div>
+              <h2 id="payrollViewTitle" class="text-base font-bold text-stone-800">
+                Payroll Details
+              </h2>
+              <p id="viewSubtitle" class="text-xs text-stone-500 mt-1"></p>
+            </div>
+            <button type="button" class="pay-close-btn" data-close-modal="payrollViewModal" aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="pay-modal-body">
+            <!-- HERO -->
+            <div class="pay-detail-hero">
+              <div>
+                <div class="pay-detail-hero-title" id="viewHeroTitle">Payroll</div>
+                <div class="pay-detail-hero-sub" id="viewHeroSub">—</div>
+              </div>
+              <div class="flex flex-col items-end gap-1">
+                <div id="viewHeroPayrollStatus"></div>
+                <div id="viewHeroPaymentStatus"></div>
+              </div>
+            </div>
+
+            <!-- PAYROLL INFO -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-money-check-dollar"></i> Payroll Information
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewPayrollInfo" class="pay-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- DRIVER INFO -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-id-card"></i> Driver Information
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewDriverInfo" class="pay-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- SALARY INFO -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-wallet"></i> Salary Information
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewSalaryInfo" class="pay-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- EARNINGS BREAKDOWN -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-plus-circle"></i> Earnings
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewEarningsBreakdown"></div>
+              </div>
+            </div>
+
+            <!-- DEDUCTIONS BREAKDOWN -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-minus-circle"></i> Deductions
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewDeductionsBreakdown"></div>
+              </div>
+            </div>
+
+            <!-- NET SALARY -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-indian-rupee-sign"></i> Net Salary
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewNetSalary" class="pay-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- PAYMENT HISTORY -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-clock-rotate-left"></i> Payment History
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewPaymentHistory"></div>
+              </div>
+            </div>
+
+            <!-- DRIVER PAYROLL HISTORY -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-solid fa-list-check"></i> Recent Payroll (This Driver)
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewDriverHistory"></div>
+              </div>
+            </div>
+
+            <!-- NOTES -->
+            <div class="pay-detail-section">
+              <div class="pay-detail-section-head">
+                <i class="fa-regular fa-note-sticky"></i> Notes
+              </div>
+              <div class="pay-detail-section-body">
+                <div id="viewNotes" class="text-xs text-stone-600"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pay-modal-footer">
+            <button type="button" class="pay-secondary-btn" data-close-modal="payrollViewModal">Close</button>
+            <button type="button" id="viewEditBtn" class="pay-secondary-btn hidden">
+              <i class="fa-regular fa-pen-to-square"></i>
+              Edit
+            </button>
+            <button type="button" id="viewProcessBtn" class="pay-primary-btn hidden">
+              <i class="fa-solid fa-gears"></i>
+              Process Payroll
+            </button>
+            <button type="button" id="viewPaymentBtn" class="pay-primary-btn hidden">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              Record Payment
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           PROCESS PAYROLL CONFIRMATION MODAL
+      ====================================================== -->
+      <div id="payrollProcessModal" class="pay-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="processPayrollTitle">
+
+        <div class="pay-modal-panel small">
+          <div class="pay-modal-body text-center py-7">
+            <div class="mx-auto mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600">
+              <i class="fa-solid fa-gears text-lg"></i>
+            </div>
+
+            <h2 id="processPayrollTitle" class="text-base font-bold text-stone-800">
+              Process Payroll?
+            </h2>
+
+            <p class="text-xs text-stone-500 mt-2 leading-5">
+              This will mark the payroll as processed and ready for payment.
+            </p>
+
+            <div id="processPayrollSummary"
+              class="mt-3 rounded-md bg-stone-50 p-3 text-left text-[11px] text-stone-700 leading-5"></div>
+
+            <div class="flex justify-center gap-2 mt-6">
+              <button type="button" class="pay-secondary-btn" data-close-modal="payrollProcessModal">Cancel</button>
+              <button type="button" id="confirmProcessBtn" class="pay-primary-btn">
+                <i class="fa-solid fa-gears"></i>
+                Process Payroll
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           RECORD PAYMENT MODAL
+      ====================================================== -->
+      <div id="payrollPaymentModal" class="pay-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="recordPaymentTitle">
+
+        <div class="pay-modal-panel">
+          <div class="pay-modal-header">
+            <div>
+              <h2 id="recordPaymentTitle" class="text-base font-bold text-stone-800">
+                Record Payment
+              </h2>
+              <p class="text-xs text-stone-500 mt-1">
+                Record the salary payment for this payroll.
+              </p>
+            </div>
+            <button type="button" class="pay-close-btn" data-close-modal="payrollPaymentModal"
+              aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <form id="paymentForm" novalidate>
+            <div class="pay-modal-body">
+              <div id="paymentSummary"
+                class="mb-4 rounded-md border border-[#601d49]/25 bg-[#f7eff4] p-3 text-[11px] text-stone-700 leading-5">
+              </div>
+
+              <div class="pay-form-grid">
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formPaymentDate">
+                    Payment Date <span class="pay-required">*</span>
+                  </label>
+                  <input id="formPaymentDate" type="date" class="pay-input">
+                  <p class="pay-error" id="errorPaymentDate"></p>
+                </div>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formPaymentMethod">
+                    Payment Method <span class="pay-required">*</span>
+                  </label>
+                  <select id="formPaymentMethod" class="pay-select">
+                    <option value="">Select method</option>
+                    <option>Bank Transfer</option>
+                    <option>UPI</option>
+                    <option>Cash</option>
+                    <option>Cheque</option>
+                  </select>
+                  <p class="pay-error" id="errorPaymentMethod"></p>
+                </div>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formPaymentReference">Reference Number</label>
+                  <input id="formPaymentReference" class="pay-input" placeholder="e.g. TXN123456789">
+                </div>
+
+                <div class="pay-form-field">
+                  <label class="pay-label" for="formPaymentStatus">
+                    Payment Status <span class="pay-required">*</span>
+                  </label>
+                  <select id="formPaymentStatus" class="pay-select">
+                    <option>Paid</option>
+                    <option>Failed</option>
+                  </select>
+                  <p class="pay-error" id="errorPaymentStatus"></p>
+                </div>
+
+                <div class="pay-form-field full">
+                  <label class="pay-label" for="formPaymentNotes">Notes</label>
+                  <textarea id="formPaymentNotes" rows="2" class="pay-textarea"
+                    placeholder="Optional payment remarks..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="pay-modal-footer">
+              <button type="button" class="pay-secondary-btn" data-close-modal="payrollPaymentModal">Cancel</button>
+              <button type="submit" class="pay-primary-btn" id="confirmPaymentBtn">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                Record Payment
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TOAST -->
+      <div id="payrollToast" class="pay-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check pay-toast-icon"></i>
+        <span id="payrollToastMessage"></span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================================
+       PAYROLL MANAGEMENT JAVASCRIPT
+  ========================================================== -->
+  <script>
+    "use strict";
+
+    // =========================================================
+    // DRIVER DATA
+    // =========================================================
+
+    /**
+     * Master driver catalogue.
+     * Payroll records reference these driver IDs.
+     */
+    const drivers = [
+      {
+        driverId: "DRV-1001",
+        name: "Rahul Patil",
+        phone: "+91 98765 43210",
+        vehicle: "MH-12-AB-1234",
+        assignment: "Assigned to TRP-1021",
+        salaryType: "Monthly",
+        baseSalary: 30000
+      },
+      {
+        driverId: "DRV-1002",
+        name: "Amit Shinde",
+        phone: "+91 98220 11223",
+        vehicle: "MH-14-CD-4589",
+        assignment: "Assigned to TRP-1022",
+        salaryType: "Per Trip",
+        baseSalary: 1200
+      },
+      {
+        driverId: "DRV-1003",
+        name: "Suresh Jadhav",
+        phone: "+91 99887 66554",
+        vehicle: "MH-12-EF-7890",
+        assignment: "On Trip TRP-1024",
+        salaryType: "Daily",
+        baseSalary: 1000
+      },
+      {
+        driverId: "DRV-1004",
+        name: "Vijay More",
+        phone: "+91 97654 32109",
+        vehicle: "MH-15-GH-2468",
+        assignment: "Available",
+        salaryType: "Monthly",
+        baseSalary: 28000
+      },
+      {
+        driverId: "DRV-1005",
+        name: "Prakash Pawar",
+        phone: "+91 91234 56789",
+        vehicle: "MH-12-JK-1357",
+        assignment: "On Trip TRP-1026",
+        salaryType: "Per Trip",
+        baseSalary: 1300
+      },
+      {
+        driverId: "DRV-1006",
+        name: "Akash Deshmukh",
+        phone: "+91 90000 12345",
+        vehicle: "MH-13-LM-8642",
+        assignment: "Assigned to TRP-1027",
+        salaryType: "Daily",
+        baseSalary: 950
+      },
+      {
+        driverId: "DRV-1007",
+        name: "Rohit Shinde",
+        phone: "+91 98111 22334",
+        vehicle: "MH-12-NP-9753",
+        assignment: "Available",
+        salaryType: "Monthly",
+        baseSalary: 31000
+      },
+      {
+        driverId: "DRV-1008",
+        name: "Nilesh Gaikwad",
+        phone: "+91 99333 44556",
+        vehicle: "MH-15-UV-5319",
+        assignment: "On Trip TRP-1028",
+        salaryType: "Per Trip",
+        baseSalary: 1400
+      },
+      {
+        driverId: "DRV-1009",
+        name: "Mahesh Chavan",
+        phone: "+91 98444 55667",
+        vehicle: "MH-14-YZ-3197",
+        assignment: "Assigned to TRP-1029",
+        salaryType: "Daily",
+        baseSalary: 1050
+      },
+      {
+        driverId: "DRV-1010",
+        name: "Sunil Deshmukh",
+        phone: "+91 97777 88990",
+        vehicle: "MH-12-CD-5821",
+        assignment: "On Trip TRP-1030",
+        salaryType: "Monthly",
+        baseSalary: 29500
+      },
+      {
+        driverId: "DRV-1011",
+        name: "Rajesh Kumar",
+        phone: "+91 96666 77889",
+        vehicle: "MH-12-GH-1938",
+        assignment: "Available",
+        salaryType: "Per Trip",
+        baseSalary: 1250
+      },
+      {
+        driverId: "DRV-1012",
+        name: "Vikas Sharma",
+        phone: "+91 95555 66778",
+        vehicle: "MH-15-EF-7293",
+        assignment: "Assigned to TRP-1031",
+        salaryType: "Daily",
+        baseSalary: 980
+      }
+    ];
+
+    // =========================================================
+    // PAYROLL DATA
+    // =========================================================
+
+    /**
+     * Each payroll record.
+     * earnings / deductions are arrays of { description, amount }.
+     * paymentHistory is an array of payment entries.
+     */
+    let payrolls = [
+      {
+        id: "PAY-1001",
+        driverId: "DRV-1001",
+        driverName: "Rahul Patil",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Monthly",
+        baseSalary: 30000,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Trip Incentive", amount: 4000 },
+          { description: "Bonus", amount: 2000 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 2000 },
+          { description: "Penalty", amount: 500 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "November salary settled.",
+        paymentHistory: [
+          {
+            date: "2026-12-02",
+            amount: 33500,
+            method: "Bank Transfer",
+            reference: "TXN100234567",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1002",
+        driverId: "DRV-1002",
+        driverName: "Amit Shinde",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Per Trip",
+        baseSalary: null,
+        tripRate: 1200,
+        tripsCompleted: 20,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Trip Incentive", amount: 2000 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 1000 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Pending",
+        notes: "Awaiting bank transfer.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1003",
+        driverId: "DRV-1003",
+        driverName: "Suresh Jadhav",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Daily",
+        baseSalary: null,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: 1000,
+        workingDays: 24,
+        earnings: [
+          { description: "Overtime", amount: 1500 }
+        ],
+        deductions: [
+          { description: "Absence Deduction", amount: 500 }
+        ],
+        payrollStatus: "Draft",
+        paymentStatus: "Pending",
+        notes: "Draft — pending confirmation.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1004",
+        driverId: "DRV-1004",
+        driverName: "Vijay More",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Monthly",
+        baseSalary: 28000,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Bonus", amount: 3000 }
+        ],
+        deductions: [
+          { description: "Loan Deduction", amount: 2000 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary completed.",
+        paymentHistory: [
+          {
+            date: "2026-11-01",
+            amount: 29000,
+            method: "Bank Transfer",
+            reference: "TXN101122334",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1005",
+        driverId: "DRV-1005",
+        driverName: "Prakash Pawar",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Per Trip",
+        baseSalary: null,
+        tripRate: 1300,
+        tripsCompleted: 18,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Overtime", amount: 1500 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 2000 }
+        ],
+        payrollStatus: "Processing",
+        paymentStatus: "Pending",
+        notes: "Currently processing.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1006",
+        driverId: "DRV-1006",
+        driverName: "Akash Deshmukh",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Daily",
+        baseSalary: null,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: 950,
+        workingDays: 22,
+        earnings: [
+          { description: "Other Allowance", amount: 1200 }
+        ],
+        deductions: [
+          { description: "Penalty", amount: 400 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Pending",
+        notes: "Awaiting payment confirmation.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1007",
+        driverId: "DRV-1007",
+        driverName: "Rohit Shinde",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Monthly",
+        baseSalary: 31000,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Trip Incentive", amount: 3500 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 2500 }
+        ],
+        payrollStatus: "Draft",
+        paymentStatus: "Pending",
+        notes: "Draft payroll for review.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1008",
+        driverId: "DRV-1008",
+        driverName: "Nilesh Gaikwad",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Per Trip",
+        baseSalary: null,
+        tripRate: 1400,
+        tripsCompleted: 22,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Bonus", amount: 2500 }
+        ],
+        deductions: [
+          { description: "Loan Deduction", amount: 1500 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary paid.",
+        paymentHistory: [
+          {
+            date: "2026-11-02",
+            amount: 31800,
+            method: "Bank Transfer",
+            reference: "TXN101122556",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1009",
+        driverId: "DRV-1009",
+        driverName: "Mahesh Chavan",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Daily",
+        baseSalary: null,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: 1050,
+        workingDays: 25,
+        earnings: [
+          { description: "Overtime", amount: 2000 }
+        ],
+        deductions: [
+          { description: "Absence Deduction", amount: 700 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "Paid in full.",
+        paymentHistory: [
+          {
+            date: "2026-12-03",
+            amount: 27550,
+            method: "UPI",
+            reference: "UPI100234771",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1010",
+        driverId: "DRV-1010",
+        driverName: "Sunil Deshmukh",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Monthly",
+        baseSalary: 29500,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Trip Incentive", amount: 2500 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 2000 }
+        ],
+        payrollStatus: "Draft",
+        paymentStatus: "Pending",
+        notes: "Draft — pending approval.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1011",
+        driverId: "DRV-1011",
+        driverName: "Rajesh Kumar",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Per Trip",
+        baseSalary: null,
+        tripRate: 1250,
+        tripsCompleted: 19,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Bonus", amount: 2000 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 1000 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary settled.",
+        paymentHistory: [
+          {
+            date: "2026-11-03",
+            amount: 24750,
+            method: "Cash",
+            reference: "CASH-1021",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1012",
+        driverId: "DRV-1012",
+        driverName: "Vikas Sharma",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Daily",
+        baseSalary: null,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: 980,
+        workingDays: 23,
+        earnings: [
+          { description: "Overtime", amount: 1800 }
+        ],
+        deductions: [
+          { description: "Penalty", amount: 300 }
+        ],
+        payrollStatus: "Draft",
+        paymentStatus: "Pending",
+        notes: "Draft — awaiting review.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1013",
+        driverId: "DRV-1001",
+        driverName: "Rahul Patil",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Monthly",
+        baseSalary: 30000,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Trip Incentive", amount: 3000 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 1500 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary paid.",
+        paymentHistory: [
+          {
+            date: "2026-11-02",
+            amount: 31500,
+            method: "Bank Transfer",
+            reference: "TXN100998877",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1014",
+        driverId: "DRV-1002",
+        driverName: "Amit Shinde",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Per Trip",
+        baseSalary: null,
+        tripRate: 1200,
+        tripsCompleted: 21,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Trip Incentive", amount: 2000 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 1000 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary paid.",
+        paymentHistory: [
+          {
+            date: "2026-11-02",
+            amount: 26200,
+            method: "Bank Transfer",
+            reference: "TXN100998811",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1015",
+        driverId: "DRV-1003",
+        driverName: "Suresh Jadhav",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Daily",
+        baseSalary: null,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: 1000,
+        workingDays: 25,
+        earnings: [
+          { description: "Overtime", amount: 1500 }
+        ],
+        deductions: [
+          { description: "Absence Deduction", amount: 500 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary paid.",
+        paymentHistory: [
+          {
+            date: "2026-11-02",
+            amount: 26000,
+            method: "Bank Transfer",
+            reference: "TXN100998822",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1016",
+        driverId: "DRV-1004",
+        driverName: "Vijay More",
+        period: "2026-11",
+        periodLabel: "November 2026",
+        salaryType: "Monthly",
+        baseSalary: 28000,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Bonus", amount: 2500 }
+        ],
+        deductions: [
+          { description: "Loan Deduction", amount: 2000 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Pending",
+        notes: "Awaiting payment.",
+        paymentHistory: []
+      },
+      {
+        id: "PAY-1017",
+        driverId: "DRV-1007",
+        driverName: "Rohit Shinde",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Monthly",
+        baseSalary: 31000,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Trip Incentive", amount: 3000 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 2000 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary settled.",
+        paymentHistory: [
+          {
+            date: "2026-11-04",
+            amount: 32000,
+            method: "Bank Transfer",
+            reference: "TXN101001234",
+            status: "Paid"
+          }
+        ]
+      },
+      {
+        id: "PAY-1018",
+        driverId: "DRV-1010",
+        driverName: "Sunil Deshmukh",
+        period: "2026-10",
+        periodLabel: "October 2026",
+        salaryType: "Monthly",
+        baseSalary: 29500,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: [
+          { description: "Bonus", amount: 2000 }
+        ],
+        deductions: [
+          { description: "Advance", amount: 1500 }
+        ],
+        payrollStatus: "Processed",
+        paymentStatus: "Paid",
+        notes: "October salary settled.",
+        paymentHistory: [
+          {
+            date: "2026-11-04",
+            amount: 30000,
+            method: "Cheque",
+            reference: "CHQ-100234",
+            status: "Paid"
+          }
+        ]
+      }
+    ];
+
+    // =========================================================
+    // DOM REFERENCES
+    // =========================================================
+
+    const $ = (id) => document.getElementById(id);
+
+    const pageSize = 10;
+    let currentPage = 1;
+    let editingPayrollId = null;
+    let viewingPayrollId = null;
+    let processingPayrollId = null;
+    let payingPayrollId = null;
+    let toastTimer = null;
+
+    const formModal = $("payrollFormModal");
+    const viewModal = $("payrollViewModal");
+    const processModal = $("payrollProcessModal");
+    const paymentModal = $("payrollPaymentModal");
+    const payrollForm = $("payrollForm");
+    const paymentForm = $("paymentForm");
+
+    // =========================================================
+    // HELPER FUNCTIONS
+    // =========================================================
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function formatDate(date) {
+      if (!date) return "—";
+      const parsed = new Date(date + "T00:00:00");
+      if (Number.isNaN(parsed.getTime())) return "—";
+      return parsed.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function formatCurrency(amount) {
+      if (amount === null || amount === undefined || amount === "") return "₹0";
+      return "₹" + Number(amount).toLocaleString("en-IN");
+    }
+
+    function getPeriodLabel(period) {
+      if (!period) return "—";
+      const [year, month] = period.split("-");
+      const date = new Date(Number(year), Number(month) - 1, 1);
+      return date.toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+    }
+
+    function getPeriodRange(period) {
+      if (!period) return "—";
+      const [year, month] = period.split("-");
+      const start = new Date(Number(year), Number(month) - 1, 1);
+      const end = new Date(Number(year), Number(month), 0);
+
+      const formatShort = (d) => d.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+
+      return `${formatShort(start)} – ${formatShort(end)}`;
+    }
+
+    function getDriverById(driverId) {
+      return drivers.find(driver => driver.driverId === driverId);
+    }
+
+    function getPayrollById(id) {
+      return payrolls.find(payroll => payroll.id === id);
+    }
+
+    function generatePayrollId() {
+      const maxNumber = payrolls.reduce((max, payroll) => {
+        const number = Number(payroll.id.replace("PAY-", "")) || 0;
+        return Math.max(max, number);
+      }, 0);
+      return `PAY-${String(maxNumber + 1).padStart(4, "0")}`;
+    }
+
+    function showToast(message, type = "success") {
+      const toast = $("payrollToast");
+      const icon = toast.querySelector("i");
+
+      $("payrollToastMessage").textContent = message;
+
+      icon.className = type === "error"
+        ? "fa-solid fa-circle-exclamation pay-toast-icon"
+        : "fa-solid fa-circle-check pay-toast-icon";
+
+      icon.style.color = type === "error" ? "#dc2626" : "#601D49";
+
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3200);
+    }
+
+    function payrollStatusBadge(status) {
+      const map = {
+        "Draft": "status-draft",
+        "Processing": "status-processing",
+        "Processed": "status-processed"
+      };
+      return `<span class="pay-status ${map[status] || "status-draft"}">${escapeHTML(status)}</span>`;
+    }
+
+    function paymentStatusBadge(status) {
+      const map = {
+        "Pending": "status-pending",
+        "Paid": "status-paid",
+        "Failed": "status-failed"
+      };
+      return `<span class="pay-status ${map[status] || "status-pending"}">${escapeHTML(status)}</span>`;
+    }
+
+    // =========================================================
+    // PAYROLL CALCULATIONS
+    // =========================================================
+
+    function calculateBaseSalary(payroll) {
+      if (payroll.salaryType === "Per Trip") {
+        return Number(payroll.tripRate || 0) * Number(payroll.tripsCompleted || 0);
+      }
+      if (payroll.salaryType === "Daily") {
+        return Number(payroll.dailyRate || 0) * Number(payroll.workingDays || 0);
+      }
+      return Number(payroll.baseSalary || 0);
+    }
+
+    function calculateEarnings(payroll) {
+      return (payroll.earnings || []).reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
+      );
+    }
+
+    function calculateDeductions(payroll) {
+      return (payroll.deductions || []).reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
+      );
+    }
+
+    function calculateNetSalary(payroll) {
+      return calculateBaseSalary(payroll) +
+        calculateEarnings(payroll) -
+        calculateDeductions(payroll);
+    }
+
+    // =========================================================
+    // KPI CALCULATIONS
+    // =========================================================
+
+    function calculateKPIs(filteredList = null) {
+      const list = filteredList || payrolls;
+
+      // Unique drivers in the current view
+      const uniqueDrivers = new Set(list.map(p => p.driverId));
+
+      $("kpiTotalDrivers").textContent = uniqueDrivers.size;
+
+      $("kpiPending").textContent =
+        list.filter(p => p.payrollStatus === "Draft" || p.payrollStatus === "Processing").length;
+
+      $("kpiProcessed").textContent =
+        list.filter(p => p.payrollStatus === "Processed").length;
+
+      $("kpiPaid").textContent =
+        list.filter(p => p.paymentStatus === "Paid").length;
+
+      const totalAmount = list.reduce((sum, p) => sum + calculateNetSalary(p), 0);
+      $("kpiTotalAmount").textContent = formatCurrency(totalAmount);
+    }
+
+    // =========================================================
+    // PERIOD SUMMARY
+    // =========================================================
+
+    function updatePeriodSummary(list) {
+      const uniqueDrivers = new Set(list.map(p => p.driverId));
+
+      $("summaryDrivers").textContent = uniqueDrivers.size;
+      $("summaryProcessed").textContent =
+        list.filter(p => p.payrollStatus === "Processed").length;
+      $("summaryPending").textContent =
+        list.filter(p => p.payrollStatus === "Draft" || p.payrollStatus === "Processing").length;
+      $("summaryPaid").textContent =
+        list.filter(p => p.paymentStatus === "Paid").length;
+
+      const total = list.reduce((sum, p) => sum + calculateNetSalary(p), 0);
+      const paid = list
+        .filter(p => p.paymentStatus === "Paid")
+        .reduce((sum, p) => sum + calculateNetSalary(p), 0);
+
+      $("summaryTotal").textContent = formatCurrency(total);
+      $("summaryOutstanding").textContent = formatCurrency(Math.max(0, total - paid));
+
+      // Period header title - use selected filter or most common period
+      const periodFilter = $("filterPeriod").value;
+      if (periodFilter) {
+        $("periodSummaryTitle").textContent = getPeriodLabel(periodFilter);
+        $("periodSummaryRange").textContent = getPeriodRange(periodFilter);
+      } else if (list.length) {
+        const counts = {};
+        list.forEach(p => { counts[p.period] = (counts[p.period] || 0) + 1; });
+        const top = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+        $("periodSummaryTitle").textContent = getPeriodLabel(top);
+        $("periodSummaryRange").textContent = getPeriodRange(top);
+      } else {
+        $("periodSummaryTitle").textContent = "No Period Selected";
+        $("periodSummaryRange").textContent = "—";
+      }
+    }
+
+    // =========================================================
+    // SEARCH & FILTER
+    // =========================================================
+
+    function filterPayroll() {
+      const search = $("payrollSearch").value.trim().toLowerCase();
+      const period = $("filterPeriod").value;
+      const payrollStatus = $("filterPayrollStatus").value;
+      const paymentStatus = $("filterPaymentStatus").value;
+      const driverId = $("filterDriver").value;
+      const salaryType = $("filterSalaryType").value;
+      const month = $("filterMonth").value;
+
+      return payrolls.filter(payroll => {
+        const driver = getDriverById(payroll.driverId);
+
+        const searchable = [
+          payroll.id,
+          payroll.driverName,
+          payroll.driverId,
+          driver ? driver.phone : "",
+          driver ? driver.vehicle : ""
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = !search || searchable.includes(search);
+        const matchesPeriod = !period || payroll.period === period;
+        const matchesPayrollStatus = !payrollStatus || payroll.payrollStatus === payrollStatus;
+        const matchesPaymentStatus = !paymentStatus || payroll.paymentStatus === paymentStatus;
+        const matchesDriver = !driverId || payroll.driverId === driverId;
+        const matchesSalaryType = !salaryType || payroll.salaryType === salaryType;
+        const matchesMonth = !month || payroll.period === month;
+
+        return matchesSearch &&
+          matchesPeriod &&
+          matchesPayrollStatus &&
+          matchesPaymentStatus &&
+          matchesDriver &&
+          matchesSalaryType &&
+          matchesMonth;
+      });
+    }
+
+    function clearFilters() {
+      $("payrollSearch").value = "";
+      $("filterPeriod").value = "";
+      $("filterPayrollStatus").value = "";
+      $("filterPaymentStatus").value = "";
+      $("filterDriver").value = "";
+      $("filterSalaryType").value = "";
+      $("filterMonth").value = "";
+
+      currentPage = 1;
+      renderPayrolls();
+    }
+
+    // =========================================================
+    // TABLE RENDERING
+    // =========================================================
+
+    function renderPayrolls() {
+      const filtered = filterPayroll();
+
+      calculateKPIs(filtered);
+      updatePeriodSummary(filtered);
+
+      const total = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const pageItems = filtered.slice(startIndex, startIndex + pageSize);
+
+      $("tableCount").textContent = `${total} Payroll${total !== 1 ? "s" : ""}`;
+      $("filterResultText").textContent =
+        `${total} matching record${total !== 1 ? "s" : ""}`;
+
+      const tbody = $("payrollTableBody");
+      const emptyState = $("payrollEmptyState");
+
+      if (pageItems.length === 0) {
+        tbody.innerHTML = "";
+        emptyState.classList.remove("hidden");
+
+        const hasFilters = Boolean(
+          $("payrollSearch").value ||
+          $("filterPeriod").value ||
+          $("filterPayrollStatus").value ||
+          $("filterPaymentStatus").value ||
+          $("filterDriver").value ||
+          $("filterSalaryType").value ||
+          $("filterMonth").value
+        );
+
+        $("emptyTitle").textContent = hasFilters
+          ? "No payroll records found"
+          : "No payroll records available";
+
+        $("emptyDescription").textContent = hasFilters
+          ? "Try changing your filters or create a new payroll record."
+          : "Create your first payroll record to start managing driver salaries.";
+
+        $("emptyCreateBtn").classList.toggle("hidden", hasFilters);
+      } else {
+        emptyState.classList.add("hidden");
+
+        tbody.innerHTML = pageItems.map(payroll => {
+          const driver = getDriverById(payroll.driverId);
+          const base = calculateBaseSalary(payroll);
+          const earnings = calculateEarnings(payroll);
+          const deductions = calculateDeductions(payroll);
+          const net = calculateNetSalary(payroll);
+
+          // Status-driven actions
+          const actions = buildActions(payroll);
+
+          return `
+            <tr>
+              <td>
+                <div class="text-xs font-bold text-[#601D49]">${escapeHTML(payroll.id)}</div>
+                <div class="text-[10px] text-stone-400">${escapeHTML(getPeriodLabel(payroll.period))}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-semibold text-stone-700">${escapeHTML(payroll.driverName)}</div>
+                <div class="text-[10px] text-stone-400">${escapeHTML(payroll.driverId)}${driver ? " · " + escapeHTML(driver.vehicle) : ""}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-medium text-stone-700">${escapeHTML(getPeriodLabel(payroll.period))}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-medium text-stone-700">${escapeHTML(payroll.salaryType)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-semibold text-stone-700">${formatCurrency(base)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-medium text-green-700">+${formatCurrency(earnings)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-medium text-red-600">−${formatCurrency(deductions)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-bold text-stone-800">${formatCurrency(net)}</div>
+              </td>
+
+              <td>${payrollStatusBadge(payroll.payrollStatus)}</td>
+
+              <td>${paymentStatusBadge(payroll.paymentStatus)}</td>
+
+              <td>
+                <div class="pay-action-group">${actions}</div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      renderPagination(total, totalPages, startIndex, pageItems.length);
+    }
+
+    /**
+     * Build action icon buttons based on the payroll status flow.
+     * Draft       -> View, Edit, Process, Delete
+     * Processing  -> View, Process (complete processing)
+     * Processed   -> View, Payment
+     * Paid        -> View
+     */
+    function buildActions(payroll) {
+      const id = escapeHTML(payroll.id);
+      const buttons = [];
+
+      // View always available
+      buttons.push(`
+        <button type="button" class="pay-row-action text-stone-500 hover:text-blue-600 hover:bg-blue-50"
+          data-action="view" data-id="${id}"
+          title="View Payroll" aria-label="View Payroll ${id}">
+          <i class="fa-solid fa-eye text-[11px]"></i>
+        </button>
+      `);
+
+      // Draft: Edit
+      if (payroll.payrollStatus === "Draft") {
+        buttons.push(`
+          <button type="button" class="pay-row-action text-[#601D49] hover:bg-[#601D49]/10"
+            data-action="edit" data-id="${id}"
+            title="Edit Payroll" aria-label="Edit Payroll ${id}">
+            <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+          </button>
+        `);
+      }
+
+      // Draft or Processing: Process
+      if (payroll.payrollStatus === "Draft" || payroll.payrollStatus === "Processing") {
+        buttons.push(`
+          <button type="button" class="pay-row-action text-blue-600 hover:bg-blue-50"
+            data-action="process" data-id="${id}"
+            title="Process Payroll" aria-label="Process Payroll ${id}">
+            <i class="fa-solid fa-gears text-[11px]"></i>
+          </button>
+        `);
+      }
+
+      // Processed + Payment not Paid: Record Payment
+      if (payroll.payrollStatus === "Processed" && payroll.paymentStatus !== "Paid") {
+        buttons.push(`
+          <button type="button" class="pay-row-action text-green-600 hover:bg-green-50"
+            data-action="payment" data-id="${id}"
+            title="Record Payment" aria-label="Record Payment ${id}">
+            <i class="fa-solid fa-money-bill-wave text-[11px]"></i>
+          </button>
+        `);
+      }
+
+      // Draft only: Delete (cancel)
+      if (payroll.payrollStatus === "Draft") {
+        buttons.push(`
+          <button type="button" class="pay-row-action text-stone-500 hover:text-red-600 hover:bg-red-50"
+            data-action="delete" data-id="${id}"
+            title="Delete Payroll" aria-label="Delete Payroll ${id}">
+            <i class="fa-solid fa-trash text-[11px]"></i>
+          </button>
+        `);
+      }
+
+      return buttons.join("");
+    }
+
+    // =========================================================
+    // PAGINATION
+    // =========================================================
+
+    function renderPagination(total, totalPages, startIndex, visibleCount) {
+      const info = total === 0
+        ? "Showing 0 payroll records"
+        : `Showing ${startIndex + 1}–${startIndex + visibleCount} of ${total} payroll records`;
+
+      $("paginationInfo").textContent = info;
+
+      const controls = $("paginationControls");
+
+      if (totalPages <= 1) {
+        controls.innerHTML = "";
+        return;
+      }
+
+      let html = `
+        <button type="button" data-page="${currentPage - 1}"
+          ${currentPage === 1 ? "disabled" : ""}
+          class="pay-page-btn" aria-label="Previous page">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      for (let page = 1; page <= totalPages; page++) {
+        html += `
+          <button type="button" data-page="${page}"
+            class="pay-page-btn ${page === currentPage ? "active" : ""}"
+            aria-label="Page ${page}">
+            ${page}
+          </button>
+        `;
+      }
+
+      html += `
+        <button type="button" data-page="${currentPage + 1}"
+          ${currentPage === totalPages ? "disabled" : ""}
+          class="pay-page-btn" aria-label="Next page">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      controls.innerHTML = html;
+    }
+
+    $("paginationControls").addEventListener("click", event => {
+      const button = event.target.closest("[data-page]");
+      if (!button || button.disabled) return;
+
+      currentPage = Number(button.dataset.page);
+      renderPayrolls();
+    });
+
+    // =========================================================
+    // MODAL HANDLING
+    // =========================================================
+
+    function openModal(modal) {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+
+      const focusable = modal.querySelector(
+        "input:not([readonly]):not([disabled]), select:not([disabled]), textarea, button"
+      );
+
+      if (focusable) {
+        setTimeout(() => focusable.focus(), 50);
+      }
+    }
+
+    function closeModal(modal) {
+      modal.classList.add("hidden");
+
+      const anyOpen = [formModal, viewModal, processModal, paymentModal]
+        .some(item => !item.classList.contains("hidden"));
+
+      if (!anyOpen) {
+        document.body.style.overflow = "";
+      }
+    }
+
+    document.querySelectorAll("[data-close-modal]").forEach(button => {
+      button.addEventListener("click", () => {
+        const modal = $(button.dataset.closeModal);
+        if (modal) closeModal(modal);
+      });
+    });
+
+    [formModal, viewModal, processModal, paymentModal].forEach(modal => {
+      modal.addEventListener("click", event => {
+        if (event.target === modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        [formModal, viewModal, processModal, paymentModal].forEach(modal => {
+          if (!modal.classList.contains("hidden")) {
+            closeModal(modal);
+          }
+        });
+      }
+    });
+
+    // =========================================================
+    // DROPDOWN POPULATION
+    // =========================================================
+
+    function populateDriverDropdowns() {
+      // Form dropdown
+      const formSelect = $("formDriver");
+      formSelect.innerHTML = `<option value="">Select driver</option>` +
+        drivers.map(driver =>
+          `<option value="${escapeHTML(driver.driverId)}">${escapeHTML(driver.name)} — ${escapeHTML(driver.driverId)}</option>`
+        ).join("");
+
+      // Filter dropdown
+      const filterSelect = $("filterDriver");
+      filterSelect.innerHTML = `<option value="">All Drivers</option>` +
+        drivers.map(driver =>
+          `<option value="${escapeHTML(driver.driverId)}">${escapeHTML(driver.name)}</option>`
+        ).join("");
+    }
+
+    function populatePeriodDropdowns() {
+      // Build unique periods from existing data, plus a few standard periods.
+      const periods = new Set(payrolls.map(p => p.period));
+      ["2026-08", "2026-09", "2026-10", "2026-11", "2026-12"].forEach(p => periods.add(p));
+
+      const sorted = Array.from(periods).sort().reverse();
+
+      const formSelect = $("formPayrollPeriod");
+      formSelect.innerHTML = `<option value="">Select payroll period</option>` +
+        sorted.map(period =>
+          `<option value="${escapeHTML(period)}">${escapeHTML(getPeriodLabel(period))}</option>`
+        ).join("");
+
+      const filterSelect = $("filterPeriod");
+      filterSelect.innerHTML = `<option value="">All Periods</option>` +
+        sorted.map(period =>
+          `<option value="${escapeHTML(period)}">${escapeHTML(getPeriodLabel(period))}</option>`
+        ).join("");
+    }
+
+    // =========================================================
+    // DRIVER PREVIEW (FORM)
+    // =========================================================
+
+    function updateDriverPreview() {
+      const driverId = $("formDriver").value;
+      const preview = $("driverPreview");
+
+      if (!driverId) {
+        preview.classList.add("hidden");
+        return;
+      }
+
+      const driver = getDriverById(driverId);
+      if (!driver) {
+        preview.classList.add("hidden");
+        return;
+      }
+
+      preview.classList.remove("hidden");
+      $("previewDriverName").textContent = driver.name;
+      $("previewDriverId").textContent = driver.driverId;
+      $("previewDriverPhone").textContent = driver.phone;
+      $("previewDriverVehicle").textContent = driver.vehicle;
+      $("previewDriverAssignment").textContent = driver.assignment;
+    }
+
+    // =========================================================
+    // SALARY TYPE FIELDS
+    // =========================================================
+
+    function updateSalaryTypeFields() {
+      const type = $("formSalaryType").value;
+
+      // Toggle field visibility
+      $("monthlyField").classList.toggle("hidden", type !== "Monthly");
+      $("perTripRateField").classList.toggle("hidden", type !== "Per Trip");
+      $("tripsCompletedField").classList.toggle("hidden", type !== "Per Trip");
+      $("dailyRateField").classList.toggle("hidden", type !== "Daily");
+      $("workingDaysField").classList.toggle("hidden", type !== "Daily");
+
+      // Update rule hint
+      const hint = $("ruleHint");
+      if (!type) {
+        hint.classList.add("hidden");
+      } else {
+        hint.classList.remove("hidden");
+        if (type === "Monthly") {
+          hint.textContent = "Rule: Base Salary + Earnings − Deductions";
+        } else if (type === "Per Trip") {
+          hint.textContent = "Rule: Trips Completed × Trip Rate + Earnings − Deductions";
+        } else {
+          hint.textContent = "Rule: Working Days × Daily Rate + Earnings − Deductions";
+        }
+      }
+
+      updateLiveCalculation();
+    }
+
+    // =========================================================
+    // EARNINGS / DEDUCTIONS LINE ITEMS
+    // =========================================================
+
+    function addLineItem(containerId, type, description = "", amount = "") {
+      const container = $(containerId);
+      const row = document.createElement("div");
+      row.className = "pay-line-item";
+      row.innerHTML = `
+        <input type="text" class="pay-input" placeholder="Description"
+          value="${escapeHTML(description)}" data-line="${type}" data-field="description">
+        <input type="number" class="pay-input" placeholder="0" min="0" step="1"
+          value="${amount === "" ? "" : Number(amount)}" data-line="${type}" data-field="amount">
+        <button type="button" class="pay-line-remove" aria-label="Remove ${type} item" title="Remove">
+          <i class="fa-solid fa-xmark text-[11px]"></i>
+        </button>
+      `;
+
+      row.querySelector(".pay-line-remove").addEventListener("click", () => {
+        row.remove();
+        updateLiveCalculation();
+      });
+
+      container.appendChild(row);
+    }
+
+    function getLineItems(containerId) {
+      const container = $(containerId);
+      const items = [];
+
+      container.querySelectorAll(".pay-line-item").forEach(row => {
+        const description = row.querySelector('[data-field="description"]').value.trim();
+        const amount = Number(row.querySelector('[data-field="amount"]').value) || 0;
+
+        if (description || amount > 0) {
+          items.push({ description: description || "Item", amount });
+        }
+      });
+
+      return items;
+    }
+
+    function resetLineItems() {
+      $("earningsList").innerHTML = "";
+      $("deductionsList").innerHTML = "";
+    }
+
+    // =========================================================
+    // LIVE CALCULATION IN FORM
+    // =========================================================
+
+    function updateLiveCalculation() {
+      const salaryType = $("formSalaryType").value;
+
+      let base = 0;
+
+      if (salaryType === "Monthly") {
+        base = Number($("formBaseSalary").value) || 0;
+      } else if (salaryType === "Per Trip") {
+        base = (Number($("formTripRate").value) || 0) *
+          (Number($("formTripsCompleted").value) || 0);
+      } else if (salaryType === "Daily") {
+        base = (Number($("formDailyRate").value) || 0) *
+          (Number($("formWorkingDays").value) || 0);
+      }
+
+      const earnings = getLineItems("earningsList")
+        .reduce((sum, item) => sum + item.amount, 0);
+
+      const deductions = getLineItems("deductionsList")
+        .reduce((sum, item) => sum + item.amount, 0);
+
+      const net = base + earnings - deductions;
+
+      $("calcBase").textContent = formatCurrency(base);
+      $("calcEarnings").textContent = "+ " + formatCurrency(earnings);
+      $("calcDeductions").textContent = "− " + formatCurrency(deductions);
+      $("calcNet").textContent = formatCurrency(net);
+    }
+
+    // =========================================================
+    // VALIDATION
+    // =========================================================
+
+    function clearFormErrors() {
+      document.querySelectorAll("#payroll-page .pay-error").forEach(error => {
+        error.textContent = "";
+        error.classList.remove("show");
+      });
+    }
+
+    function showFieldError(field, message) {
+      const error = $("error" + field);
+      if (!error) return;
+      error.textContent = message;
+      error.classList.add("show");
+    }
+
+    function validatePayrollForm() {
+      clearFormErrors();
+      let valid = true;
+
+      const period = $("formPayrollPeriod").value;
+      const driverId = $("formDriver").value;
+      const salaryType = $("formSalaryType").value;
+
+      if (!period) {
+        showFieldError("PayrollPeriod", "Payroll period is required.");
+        valid = false;
+      }
+
+      if (!driverId) {
+        showFieldError("Driver", "Driver is required.");
+        valid = false;
+      }
+
+      if (!salaryType) {
+        showFieldError("SalaryType", "Salary type is required.");
+        valid = false;
+      }
+
+      // Salary-type-specific validation
+      if (salaryType === "Monthly") {
+        const base = Number($("formBaseSalary").value);
+        if (!Number.isFinite(base) || base < 0) {
+          showFieldError("BaseSalary", "Base salary cannot be negative.");
+          valid = false;
+        }
+      }
+
+      if (salaryType === "Per Trip") {
+        const rate = Number($("formTripRate").value);
+        const trips = Number($("formTripsCompleted").value);
+
+        if (!Number.isFinite(rate) || rate <= 0) {
+          showFieldError("TripRate", "Trip rate is required for per-trip payroll.");
+          valid = false;
+        }
+
+        if (!Number.isFinite(trips) || trips < 0) {
+          showFieldError("TripsCompleted", "Completed trips cannot be negative.");
+          valid = false;
+        }
+      }
+
+      if (salaryType === "Daily") {
+        const rate = Number($("formDailyRate").value);
+        const days = Number($("formWorkingDays").value);
+
+        if (!Number.isFinite(rate) || rate <= 0) {
+          showFieldError("DailyRate", "Daily rate is required for daily payroll.");
+          valid = false;
+        }
+
+        if (!Number.isFinite(days) || days < 0 || days > 31) {
+          showFieldError("WorkingDays", "Working days must be between 0 and 31.");
+          valid = false;
+        }
+      }
+
+      // Deductions cannot exceed total earnings
+      const earnings = getLineItems("earningsList")
+        .reduce((sum, item) => sum + item.amount, 0);
+
+      const deductions = getLineItems("deductionsList")
+        .reduce((sum, item) => sum + item.amount, 0);
+
+      let base = 0;
+      if (salaryType === "Monthly") base = Number($("formBaseSalary").value) || 0;
+      if (salaryType === "Per Trip") {
+        base = (Number($("formTripRate").value) || 0) *
+          (Number($("formTripsCompleted").value) || 0);
+      }
+      if (salaryType === "Daily") {
+        base = (Number($("formDailyRate").value) || 0) *
+          (Number($("formWorkingDays").value) || 0);
+      }
+
+      if (deductions > base + earnings) {
+        showFieldError("Deductions", "Deduction cannot exceed total earnings.");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    // =========================================================
+    // OPEN MODALS
+    // =========================================================
+
+    function openCreatePayrollModal() {
+      editingPayrollId = null;
+      payrollForm.reset();
+      clearFormErrors();
+      resetLineItems();
+      populateDriverDropdowns();
+      populatePeriodDropdowns();
+
+      $("payrollFormTitle").textContent = "Create Payroll";
+      $("savePayrollBtn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Save Payroll';
+
+      $("formPayrollId").value = generatePayrollId();
+      $("formPayrollStatus").value = "Draft";
+      $("formPayrollStatus").disabled = false;
+
+      // Default to current month period
+      const now = new Date();
+      const currentPeriod =
+        `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+      const periodSelect = $("formPayrollPeriod");
+      if (!Array.from(periodSelect.options).some(opt => opt.value === currentPeriod)) {
+        const opt = document.createElement("option");
+        opt.value = currentPeriod;
+        opt.textContent = getPeriodLabel(currentPeriod);
+        periodSelect.appendChild(opt);
+      }
+      periodSelect.value = currentPeriod;
+
+      $("driverPreview").classList.add("hidden");
+      $("ruleHint").classList.add("hidden");
+      updateSalaryTypeFields();
+      updateLiveCalculation();
+
+      openModal(formModal);
+    }
+
+    function openEditPayrollModal(id) {
+      const payroll = getPayrollById(id);
+      if (!payroll) return;
+
+      if (payroll.payrollStatus === "Processed" || payroll.payrollStatus === "Processing") {
+        showToast("Processed payrolls cannot be edited.", "error");
+        return;
+      }
+
+      editingPayrollId = id;
+      payrollForm.reset();
+      clearFormErrors();
+      resetLineItems();
+      populateDriverDropdowns();
+      populatePeriodDropdowns();
+
+      $("payrollFormTitle").textContent = "Edit Payroll";
+      $("savePayrollBtn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Update Payroll';
+
+      $("formPayrollId").value = payroll.id;
+      $("formPayrollPeriod").value = payroll.period;
+      $("formDriver").value = payroll.driverId;
+      $("formPayrollStatus").value = payroll.payrollStatus;
+      $("formPayrollStatus").disabled = false;
+      $("formSalaryType").value = payroll.salaryType;
+
+      $("formBaseSalary").value = payroll.baseSalary ?? "";
+      $("formTripRate").value = payroll.tripRate ?? "";
+      $("formTripsCompleted").value = payroll.tripsCompleted ?? "";
+      $("formDailyRate").value = payroll.dailyRate ?? "";
+      $("formWorkingDays").value = payroll.workingDays ?? "";
+
+      // Populate earnings
+      (payroll.earnings || []).forEach(item => {
+        addLineItem("earningsList", "earning", item.description, item.amount);
+      });
+
+      // Populate deductions
+      (payroll.deductions || []).forEach(item => {
+        addLineItem("deductionsList", "deduction", item.description, item.amount);
+      });
+
+      $("formNotes").value = payroll.notes || "";
+
+      updateDriverPreview();
+      updateSalaryTypeFields();
+      updateLiveCalculation();
+
+      openModal(formModal);
+    }
+
+    // =========================================================
+    // SAVE PAYROLL (CREATE / UPDATE)
+    // =========================================================
+
+    function getPayrollFormData() {
+      const driverId = $("formDriver").value;
+      const driver = getDriverById(driverId);
+      const salaryType = $("formSalaryType").value;
+
+      const data = {
+        driverId: driverId,
+        driverName: driver ? driver.name : "",
+        period: $("formPayrollPeriod").value,
+        periodLabel: getPeriodLabel($("formPayrollPeriod").value),
+        salaryType: salaryType,
+        baseSalary: null,
+        tripRate: null,
+        tripsCompleted: null,
+        dailyRate: null,
+        workingDays: null,
+        earnings: getLineItems("earningsList"),
+        deductions: getLineItems("deductionsList"),
+        payrollStatus: $("formPayrollStatus").value,
+        notes: $("formNotes").value.trim()
+      };
+
+      if (salaryType === "Monthly") {
+        data.baseSalary = Number($("formBaseSalary").value) || 0;
+      } else if (salaryType === "Per Trip") {
+        data.tripRate = Number($("formTripRate").value) || 0;
+        data.tripsCompleted = Number($("formTripsCompleted").value) || 0;
+      } else if (salaryType === "Daily") {
+        data.dailyRate = Number($("formDailyRate").value) || 0;
+        data.workingDays = Number($("formWorkingDays").value) || 0;
+      }
+
+      return data;
+    }
+
+    function savePayroll(event) {
+      event.preventDefault();
+
+      if (!validatePayrollForm()) {
+        showToast("Please complete all required fields.", "error");
+        return;
+      }
+
+      const data = getPayrollFormData();
+
+      if (editingPayrollId) {
+        const index = payrolls.findIndex(p => p.id === editingPayrollId);
+        if (index === -1) return;
+
+        payrolls[index] = {
+          ...payrolls[index],
+          ...data
+        };
+
+        closeModal(formModal);
+        renderPayrolls();
+        showToast("Payroll updated successfully.");
+      } else {
+        const newPayroll = {
+          id: generatePayrollId(),
+          ...data,
+          paymentStatus: "Pending",
+          paymentHistory: []
+        };
+
+        payrolls.unshift(newPayroll);
+
+        closeModal(formModal);
+        currentPage = 1;
+        renderPayrolls();
+        showToast("Payroll created successfully.");
+      }
+    }
+
+    // =========================================================
+    // VIEW PAYROLL
+    // =========================================================
+
+    function detailItem(label, value, full = false) {
+      return `
+        <div class="pay-detail-item ${full ? "full" : ""}">
+          <p class="pay-detail-label">${escapeHTML(label)}</p>
+          <p class="pay-detail-value">${escapeHTML(value || "—")}</p>
+        </div>
+      `;
+    }
+
+    function renderEarningsTable(payroll) {
+      const base = calculateBaseSalary(payroll);
+      const rows = [];
+
+      // Base salary row depends on salary type
+      if (payroll.salaryType === "Monthly") {
+        rows.push({
+          label: "Base Monthly Salary",
+          amount: payroll.baseSalary
+        });
+      } else if (payroll.salaryType === "Per Trip") {
+        rows.push({
+          label: `Trips: ${payroll.tripsCompleted} × ₹${Number(payroll.tripRate).toLocaleString("en-IN")}`,
+          amount: base
+        });
+      } else if (payroll.salaryType === "Daily") {
+        rows.push({
+          label: `Days: ${payroll.workingDays} × ₹${Number(payroll.dailyRate).toLocaleString("en-IN")}`,
+          amount: base
+        });
+      }
+
+      (payroll.earnings || []).forEach(item => {
+        rows.push({ label: item.description, amount: item.amount });
+      });
+
+      const total = base + calculateEarnings(payroll);
+
+      return `
+        <table class="pay-breakdown-table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th style="width:130px" class="text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>${escapeHTML(r.label)}</td>
+                <td class="amount">${formatCurrency(r.amount)}</td>
+              </tr>
+            `).join("")}
+            <tr class="total-row">
+              <td>Total Earnings</td>
+              <td class="amount">${formatCurrency(total)}</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderDeductionsTable(payroll) {
+      const deductions = payroll.deductions || [];
+      const total = calculateDeductions(payroll);
+
+      if (deductions.length === 0) {
+        return `
+          <div class="rounded-lg border border-dashed border-stone-200 px-4 py-5 text-center">
+            <i class="fa-solid fa-circle-minus text-lg text-stone-300"></i>
+            <p class="mt-2 text-xs font-semibold text-stone-600">No deductions recorded</p>
+          </div>
+        `;
+      }
+
+      return `
+        <table class="pay-breakdown-table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th style="width:130px" class="text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${deductions.map(d => `
+              <tr>
+                <td>${escapeHTML(d.description)}</td>
+                <td class="amount">${formatCurrency(d.amount)}</td>
+              </tr>
+            `).join("")}
+            <tr class="total-row">
+              <td>Total Deductions</td>
+              <td class="amount">${formatCurrency(total)}</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderPaymentHistory(payroll) {
+      const history = payroll.paymentHistory || [];
+
+      if (!history.length) {
+        return `
+          <div class="rounded-lg border border-dashed border-stone-200 px-4 py-5 text-center">
+            <i class="fa-solid fa-receipt text-lg text-stone-300"></i>
+            <p class="mt-2 text-xs font-semibold text-stone-600">No payment recorded yet</p>
+          </div>
+        `;
+      }
+
+      return history.map(payment => `
+        <div class="pay-history-item">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-bold text-[#601D49]">
+              ${formatCurrency(payment.amount)}
+            </span>
+            <span class="text-[10px] text-stone-400">
+              ${formatDate(payment.date)}
+            </span>
+          </div>
+          <p class="mt-1 text-xs font-semibold text-stone-700">
+            ${escapeHTML(payment.method)}
+          </p>
+          <p class="mt-1 text-[10px] text-stone-500">
+            Ref: ${escapeHTML(payment.reference || "—")}
+          </p>
+          <p class="mt-1 text-[10px] text-stone-500">
+            Status: ${escapeHTML(payment.status)}
+          </p>
+        </div>
+      `).join("");
+    }
+
+    function renderDriverHistory(payroll) {
+      const recent = payrolls
+        .filter(p => p.driverId === payroll.driverId && p.id !== payroll.id)
+        .sort((a, b) => b.period.localeCompare(a.period))
+        .slice(0, 3);
+
+      if (!recent.length) {
+        return `
+          <div class="rounded-lg border border-dashed border-stone-200 px-4 py-5 text-center">
+            <i class="fa-solid fa-list-check text-lg text-stone-300"></i>
+            <p class="mt-2 text-xs font-semibold text-stone-600">No previous payroll records</p>
+          </div>
+        `;
+      }
+
+      return recent.map(p => `
+        <div class="pay-history-item">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-bold text-[#601D49]">
+              ${escapeHTML(p.periodLabel)}
+            </span>
+            <span class="text-[10px] text-stone-400">
+              ${formatCurrency(calculateNetSalary(p))}
+            </span>
+          </div>
+          <p class="mt-1 text-[10px] text-stone-500">
+            ${escapeHTML(p.payrollStatus)} · ${escapeHTML(p.paymentStatus)}
+          </p>
+        </div>
+      `).join("");
+    }
+
+    function openViewPayrollModal(id) {
+      const payroll = getPayrollById(id);
+      if (!payroll) return;
+
+      viewingPayrollId = id;
+
+      const driver = getDriverById(payroll.driverId);
+      const base = calculateBaseSalary(payroll);
+      const earnings = calculateEarnings(payroll);
+      const deductions = calculateDeductions(payroll);
+      const net = calculateNetSalary(payroll);
+
+      $("viewSubtitle").textContent = `${payroll.id} · ${payroll.driverName}`;
+      $("viewHeroTitle").textContent = `${payroll.id} • ${payroll.driverName}`;
+      $("viewHeroSub").textContent = `${payroll.periodLabel} • ${formatCurrency(net)}`;
+      $("viewHeroPayrollStatus").innerHTML = payrollStatusBadge(payroll.payrollStatus);
+      $("viewHeroPaymentStatus").innerHTML = paymentStatusBadge(payroll.paymentStatus);
+
+      // Payroll information
+      $("viewPayrollInfo").innerHTML = [
+        detailItem("Payroll ID", payroll.id),
+        detailItem("Payroll Period", payroll.periodLabel),
+        detailItem("Payroll Status", payroll.payrollStatus),
+        detailItem("Payment Status", payroll.paymentStatus)
+      ].join("");
+
+      // Driver information
+      $("viewDriverInfo").innerHTML = [
+        detailItem("Driver Name", payroll.driverName),
+        detailItem("Driver ID", payroll.driverId),
+        detailItem("Phone", driver ? driver.phone : "—"),
+        detailItem("Vehicle", driver ? driver.vehicle : "—"),
+        detailItem("Assignment", driver ? driver.assignment : "—")
+      ].join("");
+
+      // Salary information
+      const salaryItems = [
+        detailItem("Salary Type", payroll.salaryType)
+      ];
+
+      if (payroll.salaryType === "Monthly") {
+        salaryItems.push(detailItem("Base Monthly Salary", formatCurrency(payroll.baseSalary)));
+      } else if (payroll.salaryType === "Per Trip") {
+        salaryItems.push(detailItem("Trip Rate", formatCurrency(payroll.tripRate)));
+        salaryItems.push(detailItem("Trips Completed", String(payroll.tripsCompleted)));
+      } else if (payroll.salaryType === "Daily") {
+        salaryItems.push(detailItem("Daily Rate", formatCurrency(payroll.dailyRate)));
+        salaryItems.push(detailItem("Working Days", String(payroll.workingDays)));
+      }
+
+      salaryItems.push(detailItem("Calculated Base", formatCurrency(base)));
+
+      $("viewSalaryInfo").innerHTML = salaryItems.join("");
+
+      // Earnings & deductions tables
+      $("viewEarningsBreakdown").innerHTML = renderEarningsTable(payroll);
+      $("viewDeductionsBreakdown").innerHTML = renderDeductionsTable(payroll);
+
+      // Net salary
+      $("viewNetSalary").innerHTML = `
+        <div class="pay-detail-item">
+          <p class="pay-detail-label">Calculated Base</p>
+          <p class="pay-detail-value">${formatCurrency(base)}</p>
+        </div>
+        <div class="pay-detail-item">
+          <p class="pay-detail-label">Total Earnings</p>
+          <p class="pay-detail-value">${formatCurrency(earnings)}</p>
+        </div>
+        <div class="pay-detail-item">
+          <p class="pay-detail-label">Total Deductions</p>
+          <p class="pay-detail-value">${formatCurrency(deductions)}</p>
+        </div>
+        <div class="pay-detail-item full">
+          <p class="pay-detail-label">Net Salary</p>
+          <p class="pay-detail-value pay-net-highlight">${formatCurrency(net)}</p>
+        </div>
+      `;
+
+      // Payment history
+      $("viewPaymentHistory").innerHTML = renderPaymentHistory(payroll);
+
+      // Driver history
+      $("viewDriverHistory").innerHTML = renderDriverHistory(payroll);
+
+      // Notes
+      $("viewNotes").textContent = payroll.notes || "No additional notes.";
+
+      // Conditional footer buttons
+      const editBtn = $("viewEditBtn");
+      const processBtn = $("viewProcessBtn");
+      const paymentBtn = $("viewPaymentBtn");
+
+      editBtn.classList.add("hidden");
+      processBtn.classList.add("hidden");
+      paymentBtn.classList.add("hidden");
+
+      if (payroll.payrollStatus === "Draft") {
+        editBtn.classList.remove("hidden");
+        processBtn.classList.remove("hidden");
+      } else if (payroll.payrollStatus === "Processing") {
+        processBtn.classList.remove("hidden");
+      } else if (payroll.payrollStatus === "Processed" && payroll.paymentStatus !== "Paid") {
+        paymentBtn.classList.remove("hidden");
+      }
+
+      openModal(viewModal);
+    }
+
+    // =========================================================
+    // PROCESS PAYROLL
+    // =========================================================
+
+    function openProcessConfirmation(id) {
+      const payroll = getPayrollById(id);
+      if (!payroll) return;
+
+      if (payroll.payrollStatus === "Processed") {
+        showToast("Payroll is already processed.", "error");
+        return;
+      }
+
+      processingPayrollId = id;
+
+      $("processPayrollSummary").innerHTML = `
+        <div><strong>Payroll:</strong> ${escapeHTML(payroll.id)}</div>
+        <div><strong>Driver:</strong> ${escapeHTML(payroll.driverName)}</div>
+        <div><strong>Period:</strong> ${escapeHTML(payroll.periodLabel)}</div>
+        <div><strong>Net Salary:</strong> ${escapeHTML(formatCurrency(calculateNetSalary(payroll)))}</div>
+      `;
+
+      openModal(processModal);
+    }
+
+    function processPayroll() {
+      if (!processingPayrollId) return;
+
+      const index = payrolls.findIndex(p => p.id === processingPayrollId);
+      if (index === -1) return;
+
+      payrolls[index] = {
+        ...payrolls[index],
+        payrollStatus: "Processed"
+      };
+
+      // If the payroll was cancelled while the modal was open
+      if (payrolls[index].paymentStatus === "Failed") {
+        payrolls[index].paymentStatus = "Pending";
+      }
+
+      processingPayrollId = null;
+      closeModal(processModal);
+      closeModal(viewModal);
+
+      renderPayrolls();
+      showToast("Payroll processed successfully.");
+    }
+
+    // =========================================================
+    // RECORD PAYMENT
+    // =========================================================
+
+    function openPaymentModal(id) {
+      const payroll = getPayrollById(id);
+      if (!payroll) return;
+
+      if (payroll.payrollStatus !== "Processed") {
+        showToast("Payroll must be processed before payment.", "error");
+        return;
+      }
+
+      if (payroll.paymentStatus === "Paid") {
+        showToast("Payment has already been recorded.", "error");
+        return;
+      }
+
+      payingPayrollId = id;
+      paymentForm.reset();
+      document.querySelectorAll("#paymentForm .pay-error").forEach(e => {
+        e.textContent = "";
+        e.classList.remove("show");
+      });
+
+      // Default payment date to today
+      const today = new Date().toISOString().split("T")[0];
+      $("formPaymentDate").value = today;
+
+      $("paymentSummary").innerHTML = `
+        <div><strong>Payroll:</strong> ${escapeHTML(payroll.id)}</div>
+        <div><strong>Driver:</strong> ${escapeHTML(payroll.driverName)}</div>
+        <div><strong>Period:</strong> ${escapeHTML(payroll.periodLabel)}</div>
+        <div><strong>Net Salary:</strong> ${escapeHTML(formatCurrency(calculateNetSalary(payroll)))}</div>
+        <div><strong>Current Payment Status:</strong> ${escapeHTML(payroll.paymentStatus)}</div>
+      `;
+
+      openModal(paymentModal);
+    }
+
+    function validatePaymentForm() {
+      let valid = true;
+
+      document.querySelectorAll("#paymentForm .pay-error").forEach(e => {
+        e.textContent = "";
+        e.classList.remove("show");
+      });
+
+      if (!$("formPaymentDate").value) {
+        $("errorPaymentDate").textContent = "Payment date is required.";
+        $("errorPaymentDate").classList.add("show");
+        valid = false;
+      }
+
+      if (!$("formPaymentMethod").value) {
+        $("errorPaymentMethod").textContent = "Payment method is required.";
+        $("errorPaymentMethod").classList.add("show");
+        valid = false;
+      }
+
+      if (!$("formPaymentStatus").value) {
+        $("errorPaymentStatus").textContent = "Payment status is required.";
+        $("errorPaymentStatus").classList.add("show");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function recordPayment(event) {
+      event.preventDefault();
+
+      if (!payingPayrollId) return;
+
+      if (!validatePaymentForm()) {
+        showToast("Please complete all required fields.", "error");
+        return;
+      }
+
+      const index = payrolls.findIndex(p => p.id === payingPayrollId);
+      if (index === -1) return;
+
+      const payroll = payrolls[index];
+      const net = calculateNetSalary(payroll);
+
+      const payment = {
+        date: $("formPaymentDate").value,
+        amount: net,
+        method: $("formPaymentMethod").value,
+        reference: $("formPaymentReference").value.trim(),
+        status: $("formPaymentStatus").value,
+        notes: $("formPaymentNotes").value.trim()
+      };
+
+      const updated = {
+        ...payroll,
+        paymentStatus: payment.status === "Paid" ? "Paid" : "Failed",
+        paymentHistory: [...(payroll.paymentHistory || []), payment]
+      };
+
+      payrolls[index] = updated;
+
+      payingPayrollId = null;
+      closeModal(paymentModal);
+      closeModal(viewModal);
+
+      renderPayrolls();
+
+      if (payment.status === "Paid") {
+        showToast("Payroll payment recorded successfully.");
+      } else {
+        showToast("Payment recorded as failed.", "error");
+      }
+    }
+
+    // =========================================================
+    // DELETE PAYROLL (DRAFT ONLY)
+    // =========================================================
+
+    function deletePayroll(id) {
+      const payroll = getPayrollById(id);
+      if (!payroll) return;
+
+      if (payroll.payrollStatus !== "Draft") {
+        showToast("Only draft payrolls can be deleted.", "error");
+        return;
+      }
+
+      const confirmed = window.confirm(
+        `Delete payroll ${payroll.id} for ${payroll.driverName}?\n\nThis action cannot be undone.`
+      );
+
+      if (!confirmed) return;
+
+      payrolls = payrolls.filter(p => p.id !== id);
+      renderPayrolls();
+      showToast("Payroll cancelled successfully.");
+    }
+
+    // =========================================================
+    // TABLE ACTION EVENTS
+    // =========================================================
+
+    $("payrollTableBody").addEventListener("click", event => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (action === "view") openViewPayrollModal(id);
+      if (action === "edit") openEditPayrollModal(id);
+      if (action === "process") openProcessConfirmation(id);
+      if (action === "payment") openPaymentModal(id);
+      if (action === "delete") deletePayroll(id);
+    });
+
+    // =========================================================
+    // FORM EVENT LISTENERS
+    // =========================================================
+
+    $("formDriver").addEventListener("change", updateDriverPreview);
+    $("formSalaryType").addEventListener("change", updateSalaryTypeFields);
+
+    [
+      "formBaseSalary",
+      "formTripRate",
+      "formTripsCompleted",
+      "formDailyRate",
+      "formWorkingDays"
+    ].forEach(id => {
+      $(id).addEventListener("input", updateLiveCalculation);
+    });
+
+    $("addEarningBtn").addEventListener("click", () => {
+      addLineItem("earningsList", "earning");
+      updateLiveCalculation();
+    });
+
+    $("addDeductionBtn").addEventListener("click", () => {
+      addLineItem("deductionsList", "deduction");
+      updateLiveCalculation();
+    });
+
+    // Delegate input events inside line item containers
+    ["earningsList", "deductionsList"].forEach(id => {
+      $(id).addEventListener("input", updateLiveCalculation);
+    });
+
+    payrollForm.addEventListener("submit", savePayroll);
+    paymentForm.addEventListener("submit", recordPayment);
+
+    // =========================================================
+    // EVENT LISTENERS — MAIN PAGE
+    // =========================================================
+
+    $("createPayrollBtn").addEventListener("click", openCreatePayrollModal);
+    $("emptyCreateBtn").addEventListener("click", openCreatePayrollModal);
+
+    $("confirmProcessBtn").addEventListener("click", processPayroll);
+
+    $("viewEditBtn").addEventListener("click", () => {
+      if (!viewingPayrollId) return;
+      const id = viewingPayrollId;
+      closeModal(viewModal);
+      openEditPayrollModal(id);
+    });
+
+    $("viewProcessBtn").addEventListener("click", () => {
+      if (!viewingPayrollId) return;
+      const id = viewingPayrollId;
+      closeModal(viewModal);
+      openProcessConfirmation(id);
+    });
+
+    $("viewPaymentBtn").addEventListener("click", () => {
+      if (!viewingPayrollId) return;
+      const id = viewingPayrollId;
+      closeModal(viewModal);
+      openPaymentModal(id);
+    });
+
+    $("payrollSearch").addEventListener("input", () => {
+      currentPage = 1;
+      renderPayrolls();
+    });
+
+    [
+      "filterPeriod",
+      "filterPayrollStatus",
+      "filterPaymentStatus",
+      "filterDriver",
+      "filterSalaryType",
+      "filterMonth"
+    ].forEach(id => {
+      $(id).addEventListener("change", () => {
+        currentPage = 1;
+        renderPayrolls();
+      });
+    });
+
+    $("clearFiltersBtn").addEventListener("click", clearFilters);
+
+    // =========================================================
+    // INITIALIZATION
+    // =========================================================
+
+    function initializePayrollModule() {
+      populateDriverDropdowns();
+      populatePeriodDropdowns();
+      renderPayrolls();
+    }
+
+    initializePayrollModule();
+  </script>
+
+  <!-- Existing shared navigation JavaScript -->
+  <script src="../../js/nav-sidebar.js"></script>
+
+</body>
+
+</html>

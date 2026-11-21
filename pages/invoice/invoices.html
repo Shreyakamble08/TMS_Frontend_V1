@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoices Management | TMS</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Existing shared navigation stylesheet -->
+  <link rel="stylesheet" href="../../css/nav-sidebar.css">
+
+  <style>
+    /* =========================================================
+       INVOICES MODULE THEME
+       Mirrors the existing Vehicles module design language.
+    ========================================================= */
+
+    #invoices-page {
+      --inv-primary: #601D49;
+      --inv-primary-dark: #4B1738;
+      --inv-primary-soft: #F7EFF4;
+      --inv-bg: #FAFAF9;
+      --inv-border: #E7E5E4;
+      --inv-text: #292524;
+      --inv-muted: #78716C;
+      width: 100%;
+      min-width: 0;
+      color: var(--inv-text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #invoices-page * {
+      box-sizing: border-box;
+    }
+
+    #invoices-page .inv-card {
+      background: #fff;
+      border: 1px solid var(--inv-border);
+      border-radius: 10px;
+    }
+
+    /* ---------- Buttons ---------- */
+
+    #invoices-page .inv-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid var(--inv-primary);
+      border-radius: 7px;
+      background: var(--inv-primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #invoices-page .inv-primary-btn:hover {
+      background: var(--inv-primary-dark);
+      border-color: var(--inv-primary-dark);
+    }
+
+    #invoices-page .inv-primary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    #invoices-page .inv-secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--inv-border);
+      border-radius: 7px;
+      background: #fff;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #invoices-page .inv-secondary-btn:hover {
+      background: #f5f5f4;
+    }
+
+    #invoices-page .inv-secondary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    /* ---------- Inputs ---------- */
+
+    #invoices-page .inv-input,
+    #invoices-page .inv-select,
+    #invoices-page .inv-textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      background: #fff;
+      padding: 9px 11px;
+      color: #292524;
+      font-size: 12px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    #invoices-page .inv-input,
+    #invoices-page .inv-select {
+      height: 38px;
+    }
+
+    #invoices-page .inv-textarea {
+      min-height: 75px;
+      resize: vertical;
+    }
+
+    #invoices-page .inv-input:focus,
+    #invoices-page .inv-select:focus,
+    #invoices-page .inv-textarea:focus {
+      border-color: var(--inv-primary);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, .08);
+    }
+
+    #invoices-page .inv-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #57534e;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    #invoices-page .inv-required {
+      color: #dc2626;
+    }
+
+    #invoices-page .inv-error {
+      display: none;
+      margin-top: 5px;
+      color: #dc2626;
+      font-size: 10px;
+    }
+
+    #invoices-page .inv-error.show {
+      display: block;
+    }
+
+    /* =========================================================
+       KPI CARDS — 5 IN ONE ROW
+    ========================================================= */
+
+    #invoices-page .inv-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    #invoices-page .inv-kpi-card {
+      min-width: 0;
+      min-height: 82px;
+      padding: 9px 12px;
+      background: linear-gradient(135deg,
+          #ffffff 0%,
+          #faf5f8 55%,
+          #f7eff4 100%);
+      border: 1px solid rgba(96, 29, 73, 0.16);
+      border-radius: 9px;
+      box-shadow: 0 2px 5px rgba(96, 29, 73, .04),
+        0 4px 10px rgba(96, 29, 73, .035);
+      transition: all .2s ease;
+    }
+
+    #invoices-page .inv-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 29, 73, .28);
+      box-shadow: 0 5px 12px rgba(96, 29, 73, .07);
+    }
+
+    #invoices-page .inv-kpi-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 29px;
+      height: 29px;
+      border-radius: 7px;
+      font-size: 12px;
+      background: rgba(96, 29, 73, .06);
+      color: var(--inv-primary);
+    }
+
+    #invoices-page .inv-kpi-value {
+      margin-top: 5px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #292524;
+    }
+
+    #invoices-page .inv-kpi-label {
+      margin-top: 3px;
+      color: #78716c;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+    #invoices-page .inv-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    #invoices-page .inv-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Payment status colours */
+    #invoices-page .status-paid {
+      color: #15803d;
+      background: #f0fdf4;
+    }
+
+    #invoices-page .status-pending {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    #invoices-page .status-partial {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+
+    #invoices-page .status-overdue {
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    #invoices-page .status-draft {
+      color: #57534e;
+      background: #e7e5e4;
+    }
+
+    #invoices-page .status-issued {
+      color: #7e22ce;
+      background: #f3e8ff;
+    }
+
+    #invoices-page .status-cancelled {
+      color: #57534e;
+      background: #e7e5e4;
+    }
+
+    /* =========================================================
+       COMPACT GRID TABLE — horizontal + vertical grid lines
+    ========================================================= */
+
+    #invoices-page .inv-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    #invoices-page .inv-table {
+      width: 100%;
+      min-width: 1050px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    #invoices-page .inv-table th {
+      padding: 8px 12px;
+      background: #fafaf9;
+      border: 1px solid var(--inv-border);
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    #invoices-page .inv-table td {
+      padding: 6px 12px;
+      border: 1px solid var(--inv-border);
+      color: #57534e;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    #invoices-page .inv-table tbody tr:hover {
+      background: #fdfbfd;
+    }
+
+    /* =========================================================
+       ACTION ICON BUTTONS
+    ========================================================= */
+
+    #invoices-page .inv-action-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    #invoices-page .inv-row-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    #invoices-page .inv-row-action:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 1px;
+    }
+
+    /* =========================================================
+       MODALS
+    ========================================================= */
+
+    #invoices-page .inv-modal-backdrop {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 10000 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(28, 25, 23, .55);
+      backdrop-filter: blur(3px);
+    }
+
+    #invoices-page .inv-modal-backdrop.hidden {
+      display: none !important;
+    }
+
+    #invoices-page .inv-modal-panel {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+    }
+
+    #invoices-page .inv-modal-panel.small {
+      max-width: 440px;
+    }
+
+    #invoices-page .inv-modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px 20px;
+      background: #fff;
+      border-bottom: 1px solid var(--inv-border);
+    }
+
+    #invoices-page .inv-modal-body {
+      padding: 20px;
+    }
+
+    #invoices-page .inv-modal-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      padding: 13px 20px;
+      background: #fff;
+      border-top: 1px solid var(--inv-border);
+    }
+
+    #invoices-page .inv-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 6px;
+      background: #f5f5f4;
+      color: #57534e;
+      cursor: pointer;
+    }
+
+    #invoices-page .inv-close-btn:hover {
+      background: #e7e5e4;
+    }
+
+    /* Form grid */
+
+    #invoices-page .inv-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    #invoices-page .inv-form-field {
+      min-width: 0;
+    }
+
+    #invoices-page .inv-form-field.full,
+    #invoices-page .inv-section-title {
+      grid-column: 1 / -1;
+    }
+
+    #invoices-page .inv-section-title {
+      padding-bottom: 8px;
+      margin-top: 5px;
+      border-bottom: 1px solid #f0eeec;
+      color: #44403c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Trip info preview block inside the form */
+
+    #invoices-page .inv-trip-preview {
+      grid-column: 1 / -1;
+      padding: 10px 12px;
+      border: 1px dashed rgba(96, 29, 73, .35);
+      border-radius: 8px;
+      background: #fdfbfd;
+      font-size: 11px;
+      color: #57534e;
+    }
+
+    #invoices-page .inv-trip-preview strong {
+      color: var(--inv-primary);
+    }
+
+    /* =========================================================
+       DETAILS MODAL — matches existing design language
+    ========================================================= */
+
+    #invoices-page #invoiceViewModal .inv-modal-panel {
+      max-width: 760px;
+      border: 1.5px solid #601d49;
+    }
+
+    #invoices-page .inv-detail-hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1.5px solid #601d49;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #601d49 0%, #8a2d6a 100%);
+      color: #fff;
+    }
+
+    #invoices-page .inv-detail-hero-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+
+    #invoices-page .inv-detail-hero-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      opacity: .85;
+    }
+
+    #invoices-page .inv-detail-section {
+      margin-bottom: 14px;
+      overflow: hidden;
+      border: 1px solid #601d4897;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(96, 29, 73, .08);
+    }
+
+    #invoices-page .inv-detail-section-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: rgba(96, 29, 72, .082);
+      border-bottom: 1.5px solid #601d49;
+      color: #601d49;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #invoices-page .inv-detail-section-body {
+      padding: 12px 14px;
+    }
+
+    #invoices-page .inv-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      #invoices-page .inv-detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    #invoices-page .inv-detail-item {
+      min-width: 0;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid #601d487d;
+      border-radius: 8px;
+      transition: box-shadow .15s, transform .15s;
+    }
+
+    #invoices-page .inv-detail-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(96, 29, 73, .15);
+    }
+
+    #invoices-page .inv-detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    #invoices-page .inv-detail-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3px;
+      color: #601d49;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    #invoices-page .inv-detail-value {
+      color: #292524;
+      font-size: 12px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    /* Amount emphasis inside the view modal */
+
+    #invoices-page .inv-amount-highlight {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--inv-primary);
+    }
+
+    /* =========================================================
+       PAGINATION
+    ========================================================= */
+
+    #invoices-page .inv-page-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid #e7e5e4;
+      border-radius: 6px;
+      background: #fff;
+      color: #57534e;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    #invoices-page .inv-page-btn.active {
+      border-color: var(--inv-primary);
+      background: var(--inv-primary);
+      color: #fff;
+    }
+
+    #invoices-page .inv-page-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    #invoices-page .inv-toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 11000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 32px);
+      padding: 12px 16px;
+      border: 1px solid #e7e5e4;
+      border-radius: 9px;
+      background: #fff;
+      color: #292524;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: .25s ease;
+    }
+
+    #invoices-page .inv-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    #invoices-page .inv-toast-icon {
+      color: var(--inv-primary);
+      font-size: 15px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+      #invoices-page .inv-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      #invoices-page .inv-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      #invoices-page .inv-modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      #invoices-page .inv-modal-panel {
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0;
+      }
+
+      #invoices-page .inv-modal-body {
+        padding: 15px;
+      }
+
+      #invoices-page .inv-modal-header,
+      #invoices-page .inv-modal-footer {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      #invoices-page .inv-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #invoices-page .inv-form-field.full,
+      #invoices-page .inv-section-title,
+      #invoices-page .inv-trip-preview {
+        grid-column: auto;
+      }
+
+      #invoices-page .inv-toast {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #invoices-page .inv-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #invoices-page .inv-kpi-card {
+        padding: 9px;
+      }
+
+      #invoices-page .inv-kpi-value {
+        font-size: 19px;
+      }
+    }
+
+    /* =========================================================
+       PRINT-FRIENDLY INVOICE VIEW (hidden on screen)
+    ========================================================= */
+
+    #invoicePrintArea {
+      display: none;
+    }
+
+    @media print {
+
+      /* Hide the whole app while printing */
+      body>* {
+        display: none !important;
+      }
+
+      /* Show only the printable invoice */
+      #invoicePrintArea {
+        display: block !important;
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        padding: 32px;
+        color: #111;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+      }
+
+      #invoicePrintArea .print-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #601d49;
+        margin-bottom: 4px;
+      }
+
+      #invoicePrintArea .print-sub {
+        color: #555;
+        font-size: 11px;
+        margin-bottom: 20px;
+      }
+
+      #invoicePrintArea table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+      }
+
+      #invoicePrintArea th,
+      #invoicePrintArea td {
+        border: 1px solid #d6d3d1;
+        padding: 7px 10px;
+        text-align: left;
+        font-size: 11px;
+      }
+
+      #invoicePrintArea th {
+        background: #f5f5f4;
+        font-weight: 700;
+      }
+
+      #invoicePrintArea .print-total {
+        margin-top: 12px;
+        text-align: right;
+        font-size: 16px;
+        font-weight: 700;
+        color: #601d49;
+      }
+
+      #invoicePrintArea .print-footer {
+        margin-top: 30px;
+        padding-top: 10px;
+        border-top: 1px solid #d6d3d1;
+        font-size: 10px;
+        color: #777;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-stone-50">
+
+  <!-- =======================================================
+       SHARED SIDEBAR AND NAVBAR
+  ======================================================== -->
+  <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+  <!-- =======================================================
+       MAIN CONTENT
+  ======================================================== -->
+  <main class="tms-main">
+    <div id="invoices-page" class="px-4 py-5 md:px-6 lg:px-4">
+
+      <!-- =====================================================
+           PAGE HEADER
+      ====================================================== -->
+      <section class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-stone-800">Invoices Management</h1>
+          <p class="text-xs text-stone-500 mt-1">
+            Create, manage, and track trip-related invoices and payment status.
+          </p>
+        </div>
+
+        <button type="button" id="createInvoiceBtn" class="inv-primary-btn">
+          <i class="fa-solid fa-plus"></i>
+          Create Invoice
+        </button>
+      </section>
+
+      <!-- =====================================================
+           KPI CARDS — dynamically calculated
+      ====================================================== -->
+      <section class="inv-kpi-grid mb-4">
+
+        <div class="inv-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Total Invoices</span>
+            <div class="inv-kpi-icon"><i class="fa-solid fa-file-invoice"></i></div>
+          </div>
+          <div class="inv-kpi-value" id="kpiTotal">0</div>
+          <div class="inv-kpi-label">All invoice records</div>
+        </div>
+
+        <div class="inv-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Paid</span>
+            <div class="inv-kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+          <div class="inv-kpi-value" id="kpiPaid">0</div>
+          <div class="inv-kpi-label">Fully settled</div>
+        </div>
+
+        <div class="inv-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Pending</span>
+            <div class="inv-kpi-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+          </div>
+          <div class="inv-kpi-value" id="kpiPending">0</div>
+          <div class="inv-kpi-label">Awaiting payment</div>
+        </div>
+
+        <div class="inv-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Overdue</span>
+            <div class="inv-kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          </div>
+          <div class="inv-kpi-value" id="kpiOverdue">0</div>
+          <div class="inv-kpi-label">Past due date</div>
+        </div>
+
+        <div class="inv-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Total Amount</span>
+            <div class="inv-kpi-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          </div>
+          <div class="inv-kpi-value" id="kpiAmount">₹0</div>
+          <div class="inv-kpi-label">Combined invoice value</div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           INVOICE TABLE CARD (search + filters + table)
+      ====================================================== -->
+      <section class="inv-card overflow-hidden">
+
+        <!-- TABLE HEADER + SEARCH + FILTERS -->
+        <div class="p-4 border-b border-stone-200">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-bold text-stone-800">All Invoices</h2>
+              <p class="text-xs text-stone-500 mt-1">
+                View and manage trip-related invoices.
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <!-- Search Input -->
+              <div class="relative flex-1 sm:flex-none sm:w-60">
+                <i
+                  class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[11px] pointer-events-none"></i>
+                <input type="search" id="invoiceSearch"
+                  class="inv-input !h-[34px] !py-0 !pl-9 !pr-3 !text-[11px] !rounded-md"
+                  placeholder="Search invoices..." aria-label="Search invoices" />
+              </div>
+
+              <!-- Clear Filters -->
+              <button type="button" id="clearFiltersBtn"
+                class="inv-secondary-btn !h-[34px] !min-h-[34px] !px-3 !gap-2 !text-[11px] !rounded-md whitespace-nowrap">
+                <i class="fa-solid fa-rotate-left text-[10px]"></i>
+                <span>Clear Filters</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- FILTERS -->
+          <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 mt-4">
+            <select id="filterInvoiceStatus" class="inv-select" aria-label="Filter by invoice status">
+              <option value="">All Statuses</option>
+              <option>Draft</option>
+              <option>Issued</option>
+              <option>Cancelled</option>
+            </select>
+
+            <select id="filterPaymentStatus" class="inv-select" aria-label="Filter by payment status">
+              <option value="">All Payments</option>
+              <option>Pending</option>
+              <option>Partially Paid</option>
+              <option>Paid</option>
+              <option>Overdue</option>
+            </select>
+
+            <select id="filterDate" class="inv-select" aria-label="Filter by date">
+              <option value="">All Dates</option>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+            </select>
+
+            <select id="filterCustomer" class="inv-select" aria-label="Filter by customer">
+              <option value="">All Customers</option>
+            </select>
+
+            <select id="filterTrip" class="inv-select" aria-label="Filter by trip">
+              <option value="">All Trips</option>
+            </select>
+          </div>
+
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+            <p id="filterResultText" class="text-[10px] text-stone-400"></p>
+            <span id="tableCount" class="rounded-full bg-stone-100 px-3 py-1 text-[10px] font-semibold text-stone-600">
+              0 Invoices
+            </span>
+          </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="inv-table-wrap">
+          <table class="inv-table">
+            <thead>
+              <tr>
+                <th>Invoice ID</th>
+                <th>Customer</th>
+                <th>Trip ID</th>
+                <th>Invoice Date</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+                <th>Payment Status</th>
+                <th class="text-center w-[130px]">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceTableBody"></tbody>
+          </table>
+
+          <!-- EMPTY STATE -->
+          <div id="invoiceEmptyState" class="hidden py-14 text-center">
+            <div
+              class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-file-invoice text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700" id="emptyTitle">No invoices found</h3>
+            <p class="text-xs text-stone-500 mt-1" id="emptyDescription">
+              Try changing your filters or create a new invoice.
+            </p>
+            <button type="button" id="emptyCreateBtn" class="inv-primary-btn mt-4">
+              <i class="fa-solid fa-plus"></i>
+              Create Invoice
+            </button>
+          </div>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-stone-200">
+          <p id="paginationInfo" class="text-xs text-stone-500">
+            Showing 0 invoices
+          </p>
+          <div id="paginationControls" class="flex items-center gap-1"></div>
+        </div>
+      </section>
+
+      <p class="mt-4 text-center text-[10px] text-stone-400">
+        TMS Invoice Management Module
+      </p>
+
+      <!-- =====================================================
+           CREATE / EDIT INVOICE MODAL
+      ====================================================== -->
+      <div id="invoiceFormModal" class="inv-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="invoiceFormTitle">
+
+        <div class="inv-modal-panel">
+          <div class="inv-modal-header">
+            <div>
+              <h2 id="invoiceFormTitle" class="text-base font-bold text-stone-800">
+                Create Invoice
+              </h2>
+              <p class="text-xs text-stone-500 mt-1">
+                Link the invoice to a trip and record the billing details.
+              </p>
+            </div>
+            <button type="button" class="inv-close-btn" data-close-modal="invoiceFormModal" aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <form id="invoiceForm" novalidate>
+            <div class="inv-modal-body">
+
+              <div class="inv-form-grid">
+                <h3 class="inv-section-title">Invoice Information</h3>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formInvoiceId">Invoice ID</label>
+                  <input id="formInvoiceId" class="inv-input bg-stone-50" readonly>
+                  <p class="mt-1 text-[9px] text-stone-400">Automatically generated.</p>
+                </div>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formInvoiceDate">
+                    Invoice Date <span class="inv-required">*</span>
+                  </label>
+                  <input id="formInvoiceDate" type="date" class="inv-input">
+                  <p class="inv-error" id="errorInvoiceDate"></p>
+                </div>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formDueDate">Due Date</label>
+                  <input id="formDueDate" type="date" class="inv-input">
+                </div>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formInvoiceStatus">Invoice Status</label>
+                  <select id="formInvoiceStatus" class="inv-select">
+                    <option>Issued</option>
+                    <option>Draft</option>
+                    <option>Cancelled</option>
+                  </select>
+                </div>
+
+                <h3 class="inv-section-title">Customer &amp; Trip</h3>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formCustomer">
+                    Customer <span class="inv-required">*</span>
+                  </label>
+                  <select id="formCustomer" class="inv-select">
+                    <option value="">Select customer</option>
+                  </select>
+                  <p class="inv-error" id="errorCustomer"></p>
+                </div>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formTrip">
+                    Trip ID <span class="inv-required">*</span>
+                  </label>
+                  <select id="formTrip" class="inv-select">
+                    <option value="">Select trip</option>
+                  </select>
+                  <p class="inv-error" id="errorTrip"></p>
+                </div>
+
+                <!-- Live trip information preview -->
+                <div id="tripPreview" class="inv-trip-preview hidden">
+                  <div class="flex flex-wrap gap-x-5 gap-y-1">
+                    <span>Trip: <strong id="previewTripId">—</strong></span>
+                    <span>Customer: <strong id="previewCustomer">—</strong></span>
+                    <span>Route: <strong id="previewRoute">—</strong></span>
+                    <span>Vehicle: <strong id="previewVehicle">—</strong></span>
+                    <span>Driver: <strong id="previewDriver">—</strong></span>
+                  </div>
+                </div>
+
+                <h3 class="inv-section-title">Amount &amp; Payment</h3>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formAmount">
+                    Amount (₹) <span class="inv-required">*</span>
+                  </label>
+                  <input id="formAmount" type="number" min="0" step="1" class="inv-input" placeholder="e.g. 18500">
+                  <p class="inv-error" id="errorAmount"></p>
+                </div>
+
+                <div class="inv-form-field">
+                  <label class="inv-label" for="formPaymentStatus">
+                    Payment Status <span class="inv-required">*</span>
+                  </label>
+                  <select id="formPaymentStatus" class="inv-select">
+                    <option value="">Select payment status</option>
+                    <option>Pending</option>
+                    <option>Partially Paid</option>
+                    <option>Paid</option>
+                    <option>Overdue</option>
+                  </select>
+                  <p class="inv-error" id="errorPaymentStatus"></p>
+                </div>
+
+                <div class="inv-form-field full">
+                  <label class="inv-label" for="formNotes">Notes</label>
+                  <textarea id="formNotes" rows="3" class="inv-textarea"
+                    placeholder="Any remarks about this invoice..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="inv-modal-footer">
+              <button type="button" class="inv-secondary-btn" data-close-modal="invoiceFormModal">Cancel</button>
+              <button type="submit" class="inv-primary-btn" id="saveInvoiceBtn">
+                <i class="fa-solid fa-check"></i>
+                Save Invoice
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           VIEW INVOICE MODAL
+      ====================================================== -->
+      <div id="invoiceViewModal" class="inv-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="invoiceViewTitle">
+
+        <div class="inv-modal-panel">
+          <div class="inv-modal-header">
+            <div>
+              <h2 id="invoiceViewTitle" class="text-base font-bold text-stone-800">
+                Invoice Details
+              </h2>
+              <p id="viewSubtitle" class="text-xs text-stone-500 mt-1"></p>
+            </div>
+            <button type="button" class="inv-close-btn" data-close-modal="invoiceViewModal" aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="inv-modal-body">
+            <!-- HERO -->
+            <div class="inv-detail-hero">
+              <div>
+                <div class="inv-detail-hero-title" id="viewHeroTitle">Invoice</div>
+                <div class="inv-detail-hero-sub" id="viewHeroSub">—</div>
+              </div>
+              <div id="viewHeroStatus"></div>
+            </div>
+
+            <!-- INVOICE INFORMATION -->
+            <div class="inv-detail-section">
+              <div class="inv-detail-section-head">
+                <i class="fa-solid fa-file-invoice"></i> Invoice Information
+              </div>
+              <div class="inv-detail-section-body">
+                <div id="viewInvoiceInfo" class="inv-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- CUSTOMER -->
+            <div class="inv-detail-section">
+              <div class="inv-detail-section-head">
+                <i class="fa-solid fa-user"></i> Customer
+              </div>
+              <div class="inv-detail-section-body">
+                <div id="viewCustomerInfo" class="inv-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- TRIP -->
+            <div class="inv-detail-section">
+              <div class="inv-detail-section-head">
+                <i class="fa-solid fa-route"></i> Trip
+              </div>
+              <div class="inv-detail-section-body">
+                <div id="viewTripInfo" class="inv-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- FINANCIAL INFORMATION -->
+            <div class="inv-detail-section">
+              <div class="inv-detail-section-head">
+                <i class="fa-solid fa-indian-rupee-sign"></i> Financial Information
+              </div>
+              <div class="inv-detail-section-body">
+                <div id="viewFinancialInfo" class="inv-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- NOTES -->
+            <div class="inv-detail-section">
+              <div class="inv-detail-section-head">
+                <i class="fa-regular fa-note-sticky"></i> Notes
+              </div>
+              <div class="inv-detail-section-body">
+                <div id="viewNotes" class="text-xs text-stone-600"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="inv-modal-footer">
+            <button type="button" class="inv-secondary-btn" data-close-modal="invoiceViewModal">Close</button>
+            <button type="button" id="viewPrintBtn" class="inv-secondary-btn">
+              <i class="fa-solid fa-print"></i>
+              Print / Save PDF
+            </button>
+            <button type="button" id="viewEditBtn" class="inv-primary-btn">
+              <i class="fa-regular fa-pen-to-square"></i>
+              Edit Invoice
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           CANCEL / DELETE CONFIRMATION MODAL
+      ====================================================== -->
+      <div id="invoiceCancelModal" class="inv-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="cancelInvoiceTitle">
+
+        <div class="inv-modal-panel small">
+          <div class="inv-modal-body text-center py-7">
+            <div class="mx-auto mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-red-50 text-red-600">
+              <i class="fa-solid fa-ban text-lg"></i>
+            </div>
+
+            <h2 id="cancelInvoiceTitle" class="text-base font-bold text-stone-800">
+              Cancel Invoice?
+            </h2>
+
+            <p class="text-xs text-stone-500 mt-2 leading-5">
+              Are you sure you want to cancel this invoice? The record will remain visible in history with a Cancelled
+              status.
+            </p>
+
+            <div id="cancelInvoiceSummary"
+              class="mt-3 rounded-md bg-stone-50 p-3 text-left text-[11px] text-stone-700 leading-5">
+            </div>
+
+            <div class="flex justify-center gap-2 mt-6">
+              <button type="button" class="inv-secondary-btn" data-close-modal="invoiceCancelModal">
+                Keep Invoice
+              </button>
+              <button type="button" id="confirmCancelBtn"
+                class="inv-primary-btn !bg-red-600 !border-red-600 hover:!bg-red-700">
+                <i class="fa-solid fa-ban"></i>
+                Cancel Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOAST -->
+      <div id="invoiceToast" class="inv-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check inv-toast-icon"></i>
+        <span id="invoiceToastMessage"></span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================================
+       PRINT AREA — populated by JavaScript before window.print()
+       Hidden on screen, shown only in print media.
+  ========================================================== -->
+  <div id="invoicePrintArea">
+    <div class="print-title">Invoice</div>
+    <div class="print-sub" id="printSubtitle"></div>
+    <div id="printContent"></div>
+    <div class="print-footer">
+      This is a system-generated invoice record from the TMS Invoice Management module.
+    </div>
+  </div>
+
+  <!-- =========================================================
+       INVOICE MANAGEMENT JAVASCRIPT
+  ========================================================== -->
+  <script>
+    "use strict";
+
+    // =========================================================
+    // INVOICE DATA
+    // =========================================================
+
+    /**
+     * Trip catalogue (dummy data).
+     * Each trip is linked to a customer, route, vehicle, and driver.
+     * The invoice form pulls from this list.
+     */
+    const trips = [
+      {
+        tripId: "TRP-1021",
+        customerId: "CUS-1001",
+        customerName: "ABC Logistics",
+        tripDate: "2026-11-18",
+        route: "Pune → Mumbai",
+        vehicle: "MH-12-AB-1234",
+        driver: "Rahul Patil"
+      },
+      {
+        tripId: "TRP-1022",
+        customerId: "CUS-1002",
+        customerName: "Shree Transport Services",
+        tripDate: "2026-11-17",
+        route: "Nashik → Pune",
+        vehicle: "MH-14-CD-4589",
+        driver: "Amit Patil"
+      },
+      {
+        tripId: "TRP-1023",
+        customerId: "CUS-1003",
+        customerName: "Metro Distributors",
+        tripDate: "2026-11-16",
+        route: "Mumbai → Nagpur",
+        vehicle: "MH-12-EF-7890",
+        driver: "Suresh Jadhav"
+      },
+      {
+        tripId: "TRP-1024",
+        customerId: "CUS-1004",
+        customerName: "Sunrise Traders",
+        tripDate: "2026-11-15",
+        route: "Pune → Satara",
+        vehicle: "MH-15-GH-2468",
+        driver: "Vikas Sharma"
+      },
+      {
+        tripId: "TRP-1025",
+        customerId: "CUS-1005",
+        customerName: "GreenRoute Logistics",
+        tripDate: "2026-11-14",
+        route: "Kolhapur → Pune",
+        vehicle: "MH-12-JK-1357",
+        driver: "Prakash More"
+      },
+      {
+        tripId: "TRP-1026",
+        customerId: "CUS-1006",
+        customerName: "CityLine Enterprises",
+        tripDate: "2026-11-13",
+        route: "Mumbai → Nashik",
+        vehicle: "MH-13-LM-8642",
+        driver: "Rohit Shinde"
+      },
+      {
+        tripId: "TRP-1027",
+        customerId: "CUS-1001",
+        customerName: "ABC Logistics",
+        tripDate: "2026-11-12",
+        route: "Pune → Nagpur",
+        vehicle: "MH-12-NP-9753",
+        driver: "Rohit Shinde"
+      },
+      {
+        tripId: "TRP-1028",
+        customerId: "CUS-1003",
+        customerName: "Metro Distributors",
+        tripDate: "2026-11-11",
+        route: "Nashik → Mumbai",
+        vehicle: "MH-15-UV-5319",
+        driver: "Nilesh Gaikwad"
+      },
+      {
+        tripId: "TRP-1029",
+        customerId: "CUS-1002",
+        customerName: "Shree Transport Services",
+        tripDate: "2026-11-10",
+        route: "Pune → Kolhapur",
+        vehicle: "MH-14-YZ-3197",
+        driver: "Mahesh Chavan"
+      },
+      {
+        tripId: "TRP-1030",
+        customerId: "CUS-1004",
+        customerName: "Sunrise Traders",
+        tripDate: "2026-11-09",
+        route: "Mumbai → Pune",
+        vehicle: "MH-12-CD-5821",
+        driver: "Sunil Deshmukh"
+      },
+      {
+        tripId: "TRP-1031",
+        customerId: "CUS-1005",
+        customerName: "GreenRoute Logistics",
+        tripDate: "2026-11-08",
+        route: "Pune → Aurangabad",
+        vehicle: "MH-15-EF-7293",
+        driver: "Vikas Sharma"
+      },
+      {
+        tripId: "TRP-1032",
+        customerId: "CUS-1006",
+        customerName: "CityLine Enterprises",
+        tripDate: "2026-11-07",
+        route: "Nagpur → Pune",
+        vehicle: "MH-12-GH-1938",
+        driver: "Rajesh Kumar"
+      }
+    ];
+
+    /**
+     * Customer catalogue derived from trips, with contact details.
+     * Used to populate the customer dropdown and view modal.
+     */
+    const customers = [
+      { customerId: "CUS-1001", name: "ABC Logistics", contact: "+91 98765 43210" },
+      { customerId: "CUS-1002", name: "Shree Transport Services", contact: "+91 98220 11223" },
+      { customerId: "CUS-1003", name: "Metro Distributors", contact: "+91 99887 66554" },
+      { customerId: "CUS-1004", name: "Sunrise Traders", contact: "+91 97654 32109" },
+      { customerId: "CUS-1005", name: "GreenRoute Logistics", contact: "+91 91234 56789" },
+      { customerId: "CUS-1006", name: "CityLine Enterprises", contact: "+91 90000 12345" }
+    ];
+
+    /**
+     * Master invoice dataset.
+     * All invoices are frontend-only dummy records.
+     */
+    let invoices = [
+      {
+        id: "INV-1001",
+        customerId: "CUS-1001",
+        customerName: "ABC Logistics",
+        tripId: "TRP-1021",
+        invoiceDate: "2026-11-18",
+        dueDate: "2026-11-25",
+        amount: 18500,
+        paymentStatus: "Paid",
+        status: "Issued",
+        notes: "Trip transportation invoice"
+      },
+      {
+        id: "INV-1002",
+        customerId: "CUS-1002",
+        customerName: "Shree Transport Services",
+        tripId: "TRP-1022",
+        invoiceDate: "2026-11-17",
+        dueDate: "2026-11-24",
+        amount: 24200,
+        paymentStatus: "Pending",
+        status: "Issued",
+        notes: "Nashik to Pune freight"
+      },
+      {
+        id: "INV-1003",
+        customerId: "CUS-1003",
+        customerName: "Metro Distributors",
+        tripId: "TRP-1023",
+        invoiceDate: "2026-11-16",
+        dueDate: "2026-11-23",
+        amount: 31500,
+        paymentStatus: "Overdue",
+        status: "Issued",
+        notes: "Mumbai to Nagpur delivery"
+      },
+      {
+        id: "INV-1004",
+        customerId: "CUS-1004",
+        customerName: "Sunrise Traders",
+        tripId: "TRP-1024",
+        invoiceDate: "2026-11-15",
+        dueDate: "2026-11-22",
+        amount: 12800,
+        paymentStatus: "Paid",
+        status: "Issued",
+        notes: "Pune to Satara shipment"
+      },
+      {
+        id: "INV-1005",
+        customerId: "CUS-1005",
+        customerName: "GreenRoute Logistics",
+        tripId: "TRP-1025",
+        invoiceDate: "2026-11-14",
+        dueDate: "2026-11-21",
+        amount: 9700,
+        paymentStatus: "Partially Paid",
+        status: "Issued",
+        notes: "Kolhapur to Pune part payment"
+      },
+      {
+        id: "INV-1006",
+        customerId: "CUS-1006",
+        customerName: "CityLine Enterprises",
+        tripId: "TRP-1026",
+        invoiceDate: "2026-11-13",
+        dueDate: "2026-11-20",
+        amount: 22000,
+        paymentStatus: "Pending",
+        status: "Issued",
+        notes: "Mumbai to Nashik goods"
+      },
+      {
+        id: "INV-1007",
+        customerId: "CUS-1001",
+        customerName: "ABC Logistics",
+        tripId: "TRP-1027",
+        invoiceDate: "2026-11-12",
+        dueDate: "2026-11-19",
+        amount: 36500,
+        paymentStatus: "Paid",
+        status: "Issued",
+        notes: "Pune to Nagpur full load"
+      },
+      {
+        id: "INV-1008",
+        customerId: "CUS-1003",
+        customerName: "Metro Distributors",
+        tripId: "TRP-1028",
+        invoiceDate: "2026-11-11",
+        dueDate: "2026-11-18",
+        amount: 27800,
+        paymentStatus: "Overdue",
+        status: "Issued",
+        notes: "Nashik to Mumbai pending clearance"
+      },
+      {
+        id: "INV-1009",
+        customerId: "CUS-1002",
+        customerName: "Shree Transport Services",
+        tripId: "TRP-1029",
+        invoiceDate: "2026-11-10",
+        dueDate: "2026-11-17",
+        amount: 19500,
+        paymentStatus: "Pending",
+        status: "Issued",
+        notes: "Pune to Kolhapur freight"
+      },
+      {
+        id: "INV-1010",
+        customerId: "CUS-1004",
+        customerName: "Sunrise Traders",
+        tripId: "TRP-1030",
+        invoiceDate: "2026-11-09",
+        dueDate: "2026-11-16",
+        amount: 15200,
+        paymentStatus: "Paid",
+        status: "Issued",
+        notes: "Mumbai to Pune return trip"
+      },
+      {
+        id: "INV-1011",
+        customerId: "CUS-1005",
+        customerName: "GreenRoute Logistics",
+        tripId: "TRP-1031",
+        invoiceDate: "2026-11-08",
+        dueDate: "2026-11-15",
+        amount: 17300,
+        paymentStatus: "Partially Paid",
+        status: "Issued",
+        notes: "Pune to Aurangabad partial payment"
+      },
+      {
+        id: "INV-1012",
+        customerId: "CUS-1006",
+        customerName: "CityLine Enterprises",
+        tripId: "TRP-1032",
+        invoiceDate: "2026-11-07",
+        dueDate: "2026-11-14",
+        amount: 28900,
+        paymentStatus: "Overdue",
+        status: "Issued",
+        notes: "Nagpur to Pune overdue"
+      },
+      {
+        id: "INV-1013",
+        customerId: "CUS-1001",
+        customerName: "ABC Logistics",
+        tripId: "TRP-1021",
+        invoiceDate: "2026-11-18",
+        dueDate: "2026-11-25",
+        amount: 18500,
+        paymentStatus: "Partially Paid",
+        status: "Issued",
+        notes: "Partial settlement for INV-1001"
+      },
+      {
+        id: "INV-1014",
+        customerId: "CUS-1002",
+        customerName: "Shree Transport Services",
+        tripId: "TRP-1022",
+        invoiceDate: "2026-11-17",
+        dueDate: "2026-11-24",
+        amount: 24200,
+        paymentStatus: "Draft",
+        status: "Draft",
+        notes: "Draft invoice awaiting confirmation"
+      },
+      {
+        id: "INV-1015",
+        customerId: "CUS-1003",
+        customerName: "Metro Distributors",
+        tripId: "TRP-1023",
+        invoiceDate: "2026-11-16",
+        dueDate: "2026-11-23",
+        amount: 31500,
+        paymentStatus: "Pending",
+        status: "Issued",
+        notes: "Resent after correction"
+      },
+      {
+        id: "INV-1016",
+        customerId: "CUS-1004",
+        customerName: "Sunrise Traders",
+        tripId: "TRP-1024",
+        invoiceDate: "2026-11-15",
+        dueDate: "2026-11-22",
+        amount: 12800,
+        paymentStatus: "Pending",
+        status: "Issued",
+        notes: "Awaiting NEFT clearance"
+      },
+      {
+        id: "INV-1017",
+        customerId: "CUS-1005",
+        customerName: "GreenRoute Logistics",
+        tripId: "TRP-1025",
+        invoiceDate: "2026-11-14",
+        dueDate: "2026-11-21",
+        amount: 9700,
+        paymentStatus: "Pending",
+        status: "Issued",
+        notes: "Pending approval from client"
+      },
+      {
+        id: "INV-1018",
+        customerId: "CUS-1006",
+        customerName: "CityLine Enterprises",
+        tripId: "TRP-1026",
+        invoiceDate: "2026-11-13",
+        dueDate: "2026-11-20",
+        amount: 22000,
+        paymentStatus: "Cancelled",
+        status: "Cancelled",
+        notes: "Client cancelled the shipment"
+      },
+      {
+        id: "INV-1019",
+        customerId: "CUS-1001",
+        customerName: "ABC Logistics",
+        tripId: "TRP-1027",
+        invoiceDate: "2026-11-12",
+        dueDate: "2026-11-19",
+        amount: 36500,
+        paymentStatus: "Paid",
+        status: "Issued",
+        notes: "Payment received via RTGS"
+      },
+      {
+        id: "INV-1020",
+        customerId: "CUS-1003",
+        customerName: "Metro Distributors",
+        tripId: "TRP-1028",
+        invoiceDate: "2026-11-11",
+        dueDate: "2026-11-18",
+        amount: 27800,
+        paymentStatus: "Pending",
+        status: "Issued",
+        notes: "Follow-up required"
+      }
+    ];
+
+    // =========================================================
+    // DOM REFERENCES
+    // =========================================================
+
+    const $ = (id) => document.getElementById(id);
+
+    const pageSize = 10;
+    let currentPage = 1;
+    let editingInvoiceId = null;
+    let viewingInvoiceId = null;
+    let cancellingInvoiceId = null;
+    let toastTimer = null;
+
+    const formModal = $("invoiceFormModal");
+    const viewModal = $("invoiceViewModal");
+    const cancelModal = $("invoiceCancelModal");
+    const invoiceForm = $("invoiceForm");
+
+    // =========================================================
+    // HELPER FUNCTIONS
+    // =========================================================
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function formatDate(date) {
+      if (!date) return "—";
+
+      const parsed = new Date(date + "T00:00:00");
+      if (Number.isNaN(parsed.getTime())) return "—";
+
+      return parsed.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function formatCurrency(amount) {
+      if (amount === null || amount === undefined || amount === "") return "—";
+      return "₹" + Number(amount).toLocaleString("en-IN");
+    }
+
+    function getPaymentStatusClass(status) {
+      const classes = {
+        "Paid": "status-paid",
+        "Pending": "status-pending",
+        "Partially Paid": "status-partial",
+        "Overdue": "status-overdue"
+      };
+      return classes[status] || "status-draft";
+    }
+
+    function paymentStatusBadge(status) {
+      return `<span class="inv-status ${getPaymentStatusClass(status)}">${escapeHTML(status)}</span>`;
+    }
+
+    function invoiceStatusBadge(status) {
+      const map = {
+        "Draft": "status-draft",
+        "Issued": "status-issued",
+        "Cancelled": "status-cancelled"
+      };
+      return `<span class="inv-status ${map[status] || "status-draft"}">${escapeHTML(status)}</span>`;
+    }
+
+    function getInvoiceById(id) {
+      return invoices.find(invoice => invoice.id === id);
+    }
+
+    function getTripById(tripId) {
+      return trips.find(trip => trip.tripId === tripId);
+    }
+
+    function getCustomerById(customerId) {
+      return customers.find(customer => customer.customerId === customerId);
+    }
+
+    /**
+     * Generate the next invoice ID by finding the highest numeric suffix.
+     */
+    function generateInvoiceId() {
+      const maxNumber = invoices.reduce((max, invoice) => {
+        const number = Number(invoice.id.replace("INV-", "")) || 0;
+        return Math.max(max, number);
+      }, 0);
+      return `INV-${String(maxNumber + 1).padStart(4, "0")}`;
+    }
+
+    function showToast(message, type = "success") {
+      const toast = $("invoiceToast");
+      const icon = toast.querySelector("i");
+
+      $("invoiceToastMessage").textContent = message;
+
+      icon.className = type === "error"
+        ? "fa-solid fa-circle-exclamation inv-toast-icon"
+        : "fa-solid fa-circle-check inv-toast-icon";
+
+      icon.style.color = type === "error" ? "#dc2626" : "#601D49";
+
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    // =========================================================
+    // MODAL HANDLING
+    // =========================================================
+
+    function openModal(modal) {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+
+      const focusable = modal.querySelector(
+        "input:not([readonly]), select, textarea, button"
+      );
+
+      if (focusable) {
+        setTimeout(() => focusable.focus(), 50);
+      }
+    }
+
+    function closeModal(modal) {
+      modal.classList.add("hidden");
+
+      const anyOpen = [formModal, viewModal, cancelModal]
+        .some(item => !item.classList.contains("hidden"));
+
+      if (!anyOpen) {
+        document.body.style.overflow = "";
+      }
+    }
+
+    document.querySelectorAll("[data-close-modal]").forEach(button => {
+      button.addEventListener("click", () => {
+        const modal = $(button.dataset.closeModal);
+        if (modal) closeModal(modal);
+      });
+    });
+
+    [formModal, viewModal, cancelModal].forEach(modal => {
+      modal.addEventListener("click", event => {
+        if (event.target === modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        [formModal, viewModal, cancelModal].forEach(modal => {
+          if (!modal.classList.contains("hidden")) {
+            closeModal(modal);
+          }
+        });
+      }
+    });
+
+    // =========================================================
+    // CUSTOMER / TRIP DROPDOWN POPULATION
+    // =========================================================
+
+    function populateCustomerDropdown() {
+      const select = $("formCustomer");
+      select.innerHTML = `<option value="">Select customer</option>` +
+        customers.map(customer =>
+          `<option value="${escapeHTML(customer.customerId)}">${escapeHTML(customer.name)}</option>`
+        ).join("");
+    }
+
+    function populateTripDropdown() {
+      const select = $("formTrip");
+      select.innerHTML = `<option value="">Select trip</option>` +
+        trips.map(trip =>
+          `<option value="${escapeHTML(trip.tripId)}">${escapeHTML(trip.tripId)} — ${escapeHTML(trip.customerName)}</option>`
+        ).join("");
+    }
+
+    function populateFilterCustomerDropdown() {
+      const select = $("filterCustomer");
+      select.innerHTML = `<option value="">All Customers</option>` +
+        customers.map(customer =>
+          `<option value="${escapeHTML(customer.customerId)}">${escapeHTML(customer.name)}</option>`
+        ).join("");
+    }
+
+    function populateFilterTripDropdown() {
+      const select = $("filterTrip");
+      select.innerHTML = `<option value="">All Trips</option>` +
+        trips.map(trip =>
+          `<option value="${escapeHTML(trip.tripId)}">${escapeHTML(trip.tripId)}</option>`
+        ).join("");
+    }
+
+    // =========================================================
+    // TRIP PREVIEW IN FORM
+    // =========================================================
+
+    function updateTripPreview() {
+      const tripId = $("formTrip").value;
+      const preview = $("tripPreview");
+
+      if (!tripId) {
+        preview.classList.add("hidden");
+        return;
+      }
+
+      const trip = getTripById(tripId);
+      if (!trip) {
+        preview.classList.add("hidden");
+        return;
+      }
+
+      preview.classList.remove("hidden");
+      $("previewTripId").textContent = trip.tripId;
+      $("previewCustomer").textContent = trip.customerName;
+      $("previewRoute").textContent = trip.route;
+      $("previewVehicle").textContent = trip.vehicle;
+      $("previewDriver").textContent = trip.driver;
+
+      // Auto-select the matching customer when a trip is chosen.
+      const customerSelect = $("formCustomer");
+      if (!customerSelect.value || customerSelect.value !== trip.customerId) {
+        customerSelect.value = trip.customerId;
+      }
+    }
+
+    // =========================================================
+    // KPI CALCULATIONS
+    // =========================================================
+
+    function calculateKPIs() {
+      const activeInvoices = invoices.filter(inv => inv.status !== "Cancelled");
+
+      $("kpiTotal").textContent = activeInvoices.length;
+
+      $("kpiPaid").textContent =
+        activeInvoices.filter(inv => inv.paymentStatus === "Paid").length;
+
+      $("kpiPending").textContent =
+        activeInvoices.filter(inv => inv.paymentStatus === "Pending").length;
+
+      $("kpiOverdue").textContent =
+        activeInvoices.filter(inv => inv.paymentStatus === "Overdue").length;
+
+      const totalAmount = activeInvoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+      $("kpiAmount").textContent = formatCurrency(totalAmount);
+    }
+
+    // =========================================================
+    // SEARCH & FILTER
+    // =========================================================
+
+    function getDateFilterBounds(filter) {
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      if (filter === "today") {
+        return { start: startOfToday, end: startOfToday };
+      }
+
+      if (filter === "week") {
+        // Week starting Monday.
+        const day = startOfToday.getDay();
+        const diffToMonday = (day + 6) % 7;
+        const start = new Date(startOfToday);
+        start.setDate(start.getDate() - diffToMonday);
+        const end = new Date(start);
+        end.setDate(end.getDate() + 6);
+        return { start, end };
+      }
+
+      if (filter === "month") {
+        const start = new Date(now.getFullYear(), now.getMonth(), 1);
+        const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        return { start, end };
+      }
+
+      return null;
+    }
+
+    function filterInvoices() {
+      const search = $("invoiceSearch").value.trim().toLowerCase();
+      const invoiceStatus = $("filterInvoiceStatus").value;
+      const paymentStatus = $("filterPaymentStatus").value;
+      const dateFilter = $("filterDate").value;
+      const customerFilter = $("filterCustomer").value;
+      const tripFilter = $("filterTrip").value;
+
+      const dateBounds = getDateFilterBounds(dateFilter);
+
+      return invoices.filter(invoice => {
+        const trip = getTripById(invoice.tripId);
+
+        const searchable = [
+          invoice.id,
+          invoice.customerName,
+          invoice.tripId,
+          trip ? trip.vehicle : ""
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = !search || searchable.includes(search);
+        const matchesInvoiceStatus = !invoiceStatus || invoice.status === invoiceStatus;
+        const matchesPaymentStatus = !paymentStatus || invoice.paymentStatus === paymentStatus;
+        const matchesCustomer = !customerFilter || invoice.customerId === customerFilter;
+        const matchesTrip = !tripFilter || invoice.tripId === tripFilter;
+
+        let matchesDate = true;
+        if (dateBounds && invoice.invoiceDate) {
+          const invoiceDate = new Date(invoice.invoiceDate + "T00:00:00");
+          matchesDate = invoiceDate >= dateBounds.start && invoiceDate <= dateBounds.end;
+        }
+
+        return matchesSearch &&
+          matchesInvoiceStatus &&
+          matchesPaymentStatus &&
+          matchesCustomer &&
+          matchesTrip &&
+          matchesDate;
+      });
+    }
+
+    function clearFilters() {
+      $("invoiceSearch").value = "";
+      $("filterInvoiceStatus").value = "";
+      $("filterPaymentStatus").value = "";
+      $("filterDate").value = "";
+      $("filterCustomer").value = "";
+      $("filterTrip").value = "";
+
+      currentPage = 1;
+      renderInvoices();
+    }
+
+    // =========================================================
+    // INVOICE TABLE RENDERING
+    // =========================================================
+
+    function renderInvoices() {
+      calculateKPIs();
+
+      const filtered = filterInvoices();
+      const total = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const pageInvoices = filtered.slice(startIndex, startIndex + pageSize);
+
+      $("tableCount").textContent = `${total} Invoice${total !== 1 ? "s" : ""}`;
+      $("filterResultText").textContent =
+        `${total} matching record${total !== 1 ? "s" : ""}`;
+
+      const tbody = $("invoiceTableBody");
+      const emptyState = $("invoiceEmptyState");
+
+      if (pageInvoices.length === 0) {
+        tbody.innerHTML = "";
+        emptyState.classList.remove("hidden");
+
+        const hasFilters = Boolean(
+          $("invoiceSearch").value ||
+          $("filterInvoiceStatus").value ||
+          $("filterPaymentStatus").value ||
+          $("filterDate").value ||
+          $("filterCustomer").value ||
+          $("filterTrip").value
+        );
+
+        $("emptyTitle").textContent = hasFilters
+          ? "No invoices found"
+          : "No invoices available";
+
+        $("emptyDescription").textContent = hasFilters
+          ? "Try changing your filters or create a new invoice."
+          : "Create your first invoice to start tracking payments.";
+
+        $("emptyCreateBtn").classList.toggle("hidden", hasFilters);
+      } else {
+        emptyState.classList.add("hidden");
+
+        tbody.innerHTML = pageInvoices.map(invoice => {
+          const trip = getTripById(invoice.tripId);
+          const vehicle = trip ? trip.vehicle : "—";
+
+          // Cancelled invoices do not show edit / cancel actions.
+          const canModify = invoice.status !== "Cancelled";
+
+          return `
+            <tr>
+              <td>
+                <div class="text-xs font-bold text-[#601D49]">${escapeHTML(invoice.id)}</div>
+                <div class="text-[10px] text-stone-400">${escapeHTML(invoice.status)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-semibold text-stone-700">${escapeHTML(invoice.customerName)}</div>
+                <div class="text-[10px] text-stone-400">${escapeHTML(invoice.customerId)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-semibold text-[#601D49]">${escapeHTML(invoice.tripId)}</div>
+                <div class="text-[10px] text-stone-400">${escapeHTML(vehicle)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-medium text-stone-700">${formatDate(invoice.invoiceDate)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-medium text-stone-700">${formatDate(invoice.dueDate)}</div>
+              </td>
+
+              <td>
+                <div class="text-xs font-bold text-stone-800">${formatCurrency(invoice.amount)}</div>
+              </td>
+
+              <td>${paymentStatusBadge(invoice.paymentStatus)}</td>
+
+              <td>
+                <div class="inv-action-group">
+                  <button type="button" class="inv-row-action text-stone-500 hover:text-blue-600 hover:bg-blue-50"
+                    data-action="view" data-id="${escapeHTML(invoice.id)}"
+                    title="View Invoice" aria-label="View Invoice ${escapeHTML(invoice.id)}">
+                    <i class="fa-solid fa-eye text-[11px]"></i>
+                  </button>
+
+                  ${canModify ? `
+                  <button type="button" class="inv-row-action text-[#601D49] hover:bg-[#601D49]/10"
+                    data-action="edit" data-id="${escapeHTML(invoice.id)}"
+                    title="Edit Invoice" aria-label="Edit Invoice ${escapeHTML(invoice.id)}">
+                    <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                  </button>
+                  ` : ""}
+
+                  <button type="button" class="inv-row-action text-stone-500 hover:text-green-600 hover:bg-green-50"
+                    data-action="download" data-id="${escapeHTML(invoice.id)}"
+                    title="Download Invoice" aria-label="Download Invoice ${escapeHTML(invoice.id)}">
+                    <i class="fa-solid fa-download text-[11px]"></i>
+                  </button>
+
+                  ${canModify ? `
+                  <button type="button" class="inv-row-action text-stone-500 hover:text-red-600 hover:bg-red-50"
+                    data-action="cancel" data-id="${escapeHTML(invoice.id)}"
+                    title="Cancel Invoice" aria-label="Cancel Invoice ${escapeHTML(invoice.id)}">
+                    <i class="fa-solid fa-ban text-[11px]"></i>
+                  </button>
+                  ` : ""}
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      renderPagination(total, totalPages, startIndex, pageInvoices.length);
+    }
+
+    // =========================================================
+    // PAGINATION
+    // =========================================================
+
+    function renderPagination(total, totalPages, startIndex, visibleCount) {
+      const info = total === 0
+        ? "Showing 0 invoices"
+        : `Showing ${startIndex + 1}–${startIndex + visibleCount} of ${total} invoices`;
+
+      $("paginationInfo").textContent = info;
+
+      const controls = $("paginationControls");
+
+      if (totalPages <= 1) {
+        controls.innerHTML = "";
+        return;
+      }
+
+      let html = `
+        <button type="button" data-page="${currentPage - 1}"
+          ${currentPage === 1 ? "disabled" : ""}
+          class="inv-page-btn" aria-label="Previous page">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      for (let page = 1; page <= totalPages; page++) {
+        html += `
+          <button type="button" data-page="${page}"
+            class="inv-page-btn ${page === currentPage ? "active" : ""}"
+            aria-label="Page ${page}">
+            ${page}
+          </button>
+        `;
+      }
+
+      html += `
+        <button type="button" data-page="${currentPage + 1}"
+          ${currentPage === totalPages ? "disabled" : ""}
+          class="inv-page-btn" aria-label="Next page">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      controls.innerHTML = html;
+    }
+
+    $("paginationControls").addEventListener("click", event => {
+      const button = event.target.closest("[data-page]");
+      if (!button || button.disabled) return;
+
+      currentPage = Number(button.dataset.page);
+      renderInvoices();
+    });
+
+    // =========================================================
+    // CREATE INVOICE
+    // =========================================================
+
+    function clearFormErrors() {
+      document.querySelectorAll("#invoices-page .inv-error").forEach(error => {
+        error.textContent = "";
+        error.classList.remove("show");
+      });
+    }
+
+    function showFieldError(field, message) {
+      const error = $("error" + field);
+      if (!error) return;
+      error.textContent = message;
+      error.classList.add("show");
+    }
+
+    function openCreateInvoiceModal() {
+      editingInvoiceId = null;
+      invoiceForm.reset();
+      clearFormErrors();
+      populateCustomerDropdown();
+      populateTripDropdown();
+
+      $("invoiceFormTitle").textContent = "Create Invoice";
+      $("saveInvoiceBtn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Save Invoice';
+
+      $("formInvoiceId").value = generateInvoiceId();
+
+      // Default invoice date to today.
+      const today = new Date().toISOString().split("T")[0];
+      $("formInvoiceDate").value = today;
+
+      // Default due date to 7 days from today.
+      const due = new Date();
+      due.setDate(due.getDate() + 7);
+      $("formDueDate").value = due.toISOString().split("T")[0];
+
+      $("formInvoiceStatus").value = "Issued";
+      $("tripPreview").classList.add("hidden");
+
+      openModal(formModal);
+    }
+
+    // =========================================================
+    // EDIT INVOICE
+    // =========================================================
+
+    function openEditInvoiceModal(id) {
+      const invoice = getInvoiceById(id);
+      if (!invoice) return;
+
+      if (invoice.status === "Cancelled") {
+        showToast("Cancelled invoices cannot be edited.", "error");
+        return;
+      }
+
+      editingInvoiceId = id;
+      invoiceForm.reset();
+      clearFormErrors();
+      populateCustomerDropdown();
+      populateTripDropdown();
+
+      $("invoiceFormTitle").textContent = "Edit Invoice";
+      $("saveInvoiceBtn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Update Invoice';
+
+      $("formInvoiceId").value = invoice.id;
+      $("formInvoiceDate").value = invoice.invoiceDate || "";
+      $("formDueDate").value = invoice.dueDate || "";
+      $("formInvoiceStatus").value = invoice.status || "Issued";
+      $("formCustomer").value = invoice.customerId || "";
+      $("formTrip").value = invoice.tripId || "";
+      $("formAmount").value = invoice.amount;
+      $("formPaymentStatus").value = invoice.paymentStatus || "";
+      $("formNotes").value = invoice.notes || "";
+
+      updateTripPreview();
+
+      openModal(formModal);
+    }
+
+    // =========================================================
+    // FORM VALIDATION & SAVE
+    // =========================================================
+
+    function validateInvoiceForm() {
+      clearFormErrors();
+
+      let valid = true;
+
+      const customer = $("formCustomer").value;
+      const trip = $("formTrip").value;
+      const invoiceDate = $("formInvoiceDate").value;
+      const amount = Number($("formAmount").value);
+      const paymentStatus = $("formPaymentStatus").value;
+
+      if (!customer) {
+        showFieldError("Customer", "Please select a customer.");
+        valid = false;
+      }
+
+      if (!trip) {
+        showFieldError("Trip", "Please select a trip.");
+        valid = false;
+      }
+
+      if (!invoiceDate) {
+        showFieldError("InvoiceDate", "Invoice date is required.");
+        valid = false;
+      }
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        showFieldError("Amount", "Enter a valid amount greater than zero.");
+        valid = false;
+      }
+
+      if (!paymentStatus) {
+        showFieldError("PaymentStatus", "Please select a payment status.");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function getInvoiceFormData() {
+      const tripId = $("formTrip").value;
+      const trip = getTripById(tripId);
+
+      return {
+        customerId: $("formCustomer").value,
+        customerName: trip ? trip.customerName : "",
+        tripId: tripId,
+        invoiceDate: $("formInvoiceDate").value,
+        dueDate: $("formDueDate").value,
+        amount: Number($("formAmount").value),
+        paymentStatus: $("formPaymentStatus").value,
+        status: $("formInvoiceStatus").value,
+        notes: $("formNotes").value.trim()
+      };
+    }
+
+    function saveInvoice(event) {
+      event.preventDefault();
+
+      if (!validateInvoiceForm()) {
+        showToast("Please complete all required fields.", "error");
+        return;
+      }
+
+      const formData = getInvoiceFormData();
+
+      if (editingInvoiceId) {
+        const index = invoices.findIndex(inv => inv.id === editingInvoiceId);
+        if (index === -1) return;
+
+        invoices[index] = {
+          ...invoices[index],
+          ...formData
+        };
+
+        closeModal(formModal);
+        renderInvoices();
+        showToast("Invoice updated successfully.");
+      } else {
+        const newInvoice = {
+          id: generateInvoiceId(),
+          ...formData
+        };
+
+        invoices.unshift(newInvoice);
+
+        closeModal(formModal);
+        currentPage = 1;
+        renderInvoices();
+        showToast("Invoice created successfully.");
+      }
+    }
+
+    // =========================================================
+    // VIEW INVOICE
+    // =========================================================
+
+    function detailItem(label, value, full = false) {
+      return `
+        <div class="inv-detail-item ${full ? "full" : ""}">
+          <p class="inv-detail-label">${escapeHTML(label)}</p>
+          <p class="inv-detail-value">${escapeHTML(value || "—")}</p>
+        </div>
+      `;
+    }
+
+    function openViewInvoiceModal(id) {
+      const invoice = getInvoiceById(id);
+      if (!invoice) return;
+
+      viewingInvoiceId = id;
+
+      const trip = getTripById(invoice.tripId);
+      const customer = getCustomerById(invoice.customerId);
+
+      $("viewSubtitle").textContent = `${invoice.id} · ${invoice.customerName}`;
+      $("viewHeroTitle").textContent = `${invoice.id} • ${invoice.customerName}`;
+      $("viewHeroSub").textContent = `Trip ${invoice.tripId} • ${formatCurrency(invoice.amount)}`;
+      $("viewHeroStatus").innerHTML = paymentStatusBadge(invoice.paymentStatus);
+
+      // Invoice information
+      $("viewInvoiceInfo").innerHTML = [
+        detailItem("Invoice ID", invoice.id),
+        detailItem("Invoice Date", formatDate(invoice.invoiceDate)),
+        detailItem("Due Date", formatDate(invoice.dueDate)),
+        detailItem("Invoice Status", invoice.status),
+        detailItem("Payment Status", invoice.paymentStatus)
+      ].join("");
+
+      // Customer
+      $("viewCustomerInfo").innerHTML = [
+        detailItem("Customer Name", invoice.customerName),
+        detailItem("Customer ID", invoice.customerId),
+        detailItem("Contact", customer ? customer.contact : "—")
+      ].join("");
+
+      // Trip
+      $("viewTripInfo").innerHTML = [
+        detailItem("Trip ID", invoice.tripId),
+        detailItem("Trip Date", trip ? formatDate(trip.tripDate) : "—"),
+        detailItem("Route", trip ? trip.route : "—"),
+        detailItem("Vehicle", trip ? trip.vehicle : "—"),
+        detailItem("Driver", trip ? trip.driver : "—")
+      ].join("");
+
+      // Financial information
+      $("viewFinancialInfo").innerHTML = `
+        <div class="inv-detail-item">
+          <p class="inv-detail-label">Invoice Amount</p>
+          <p class="inv-detail-value inv-amount-highlight">${formatCurrency(invoice.amount)}</p>
+        </div>
+        <div class="inv-detail-item">
+          <p class="inv-detail-label">Payment Status</p>
+          <p class="inv-detail-value">${paymentStatusBadge(invoice.paymentStatus)}</p>
+        </div>
+        <div class="inv-detail-item">
+          <p class="inv-detail-label">Invoice Status</p>
+          <p class="inv-detail-value">${invoiceStatusBadge(invoice.status)}</p>
+        </div>
+      `;
+
+      // Notes
+      $("viewNotes").textContent = invoice.notes || "No additional notes.";
+
+      openModal(viewModal);
+    }
+
+    // =========================================================
+    // DOWNLOAD / PRINT INVOICE
+    // =========================================================
+
+    /**
+     * Build the print-friendly invoice markup and trigger
+     * the browser's print dialog (Save as PDF supported).
+     */
+    function printInvoice(id) {
+      const invoice = getInvoiceById(id);
+      if (!invoice) return;
+
+      const trip = getTripById(invoice.tripId);
+      const customer = getCustomerById(invoice.customerId);
+
+      $("printSubtitle").textContent =
+        `${invoice.id} · Generated on ${new Date().toLocaleDateString("en-IN")}`;
+
+      $("printContent").innerHTML = `
+        <table>
+          <tr><th style="width:170px">Invoice ID</th><td>${escapeHTML(invoice.id)}</td></tr>
+          <tr><th>Invoice Date</th><td>${escapeHTML(formatDate(invoice.invoiceDate))}</td></tr>
+          <tr><th>Due Date</th><td>${escapeHTML(formatDate(invoice.dueDate))}</td></tr>
+          <tr><th>Invoice Status</th><td>${escapeHTML(invoice.status)}</td></tr>
+          <tr><th>Payment Status</th><td>${escapeHTML(invoice.paymentStatus)}</td></tr>
+          <tr><th>Customer</th><td>${escapeHTML(invoice.customerName)} (${escapeHTML(invoice.customerId)})</td></tr>
+          <tr><th>Contact</th><td>${escapeHTML(customer ? customer.contact : "—")}</td></tr>
+          <tr><th>Trip ID</th><td>${escapeHTML(invoice.tripId)}</td></tr>
+          <tr><th>Trip Date</th><td>${escapeHTML(trip ? formatDate(trip.tripDate) : "—")}</td></tr>
+          <tr><th>Route</th><td>${escapeHTML(trip ? trip.route : "—")}</td></tr>
+          <tr><th>Vehicle</th><td>${escapeHTML(trip ? trip.vehicle : "—")}</td></tr>
+          <tr><th>Driver</th><td>${escapeHTML(trip ? trip.driver : "—")}</td></tr>
+          <tr><th>Notes</th><td>${escapeHTML(invoice.notes || "—")}</td></tr>
+        </table>
+        <div class="print-total">Amount: ${escapeHTML(formatCurrency(invoice.amount))}</div>
+      `;
+
+      showToast("Invoice ready for download.");
+
+      // Give the toast a moment, then open print dialog.
+      setTimeout(() => {
+        window.print();
+      }, 350);
+    }
+
+    // =========================================================
+    // CANCEL INVOICE
+    // =========================================================
+
+    function openCancelConfirmation(id) {
+      const invoice = getInvoiceById(id);
+      if (!invoice) return;
+
+      if (invoice.status === "Cancelled") {
+        showToast("This invoice is already cancelled.", "error");
+        return;
+      }
+
+      cancellingInvoiceId = id;
+
+      $("cancelInvoiceSummary").innerHTML = `
+        <div><strong>Invoice:</strong> ${escapeHTML(invoice.id)}</div>
+        <div><strong>Customer:</strong> ${escapeHTML(invoice.customerName)}</div>
+        <div><strong>Amount:</strong> ${escapeHTML(formatCurrency(invoice.amount))}</div>
+      `;
+
+      openModal(cancelModal);
+    }
+
+    function cancelInvoice() {
+      if (!cancellingInvoiceId) return;
+
+      const index = invoices.findIndex(inv => inv.id === cancellingInvoiceId);
+      if (index === -1) return;
+
+      invoices[index] = {
+        ...invoices[index],
+        status: "Cancelled"
+      };
+
+      cancellingInvoiceId = null;
+      closeModal(cancelModal);
+
+      renderInvoices();
+      showToast("Invoice cancelled successfully.");
+    }
+
+    // =========================================================
+    // TABLE ACTION EVENTS
+    // =========================================================
+
+    $("invoiceTableBody").addEventListener("click", event => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (action === "view") {
+        openViewInvoiceModal(id);
+      }
+
+      if (action === "edit") {
+        openEditInvoiceModal(id);
+      }
+
+      if (action === "download") {
+        printInvoice(id);
+      }
+
+      if (action === "cancel") {
+        openCancelConfirmation(id);
+      }
+    });
+
+    // =========================================================
+    // EVENT LISTENERS
+    // =========================================================
+
+    $("createInvoiceBtn").addEventListener("click", openCreateInvoiceModal);
+    $("emptyCreateBtn").addEventListener("click", openCreateInvoiceModal);
+
+    invoiceForm.addEventListener("submit", saveInvoice);
+
+    $("formTrip").addEventListener("change", updateTripPreview);
+
+    $("confirmCancelBtn").addEventListener("click", cancelInvoice);
+
+    $("viewEditBtn").addEventListener("click", () => {
+      if (!viewingInvoiceId) return;
+
+      const id = viewingInvoiceId;
+      closeModal(viewModal);
+      openEditInvoiceModal(id);
+    });
+
+    $("viewPrintBtn").addEventListener("click", () => {
+      if (!viewingInvoiceId) return;
+      printInvoice(viewingInvoiceId);
+    });
+
+    $("invoiceSearch").addEventListener("input", () => {
+      currentPage = 1;
+      renderInvoices();
+    });
+
+    [
+      "filterInvoiceStatus",
+      "filterPaymentStatus",
+      "filterDate",
+      "filterCustomer",
+      "filterTrip"
+    ].forEach(id => {
+      $(id).addEventListener("change", () => {
+        currentPage = 1;
+        renderInvoices();
+      });
+    });
+
+    $("clearFiltersBtn").addEventListener("click", clearFilters);
+
+    // =========================================================
+    // INITIALIZATION
+    // =========================================================
+
+    function initializeInvoiceModule() {
+      populateCustomerDropdown();
+      populateTripDropdown();
+      populateFilterCustomerDropdown();
+      populateFilterTripDropdown();
+      calculateKPIs();
+      renderInvoices();
+    }
+
+    initializeInvoiceModule();
+  </script>
+
+  <!-- Existing shared navigation JavaScript -->
+  <script src="../../js/nav-sidebar.js"></script>
+
+</body>
+
+</html>
