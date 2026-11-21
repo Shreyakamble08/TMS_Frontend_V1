@@ -27,7 +27,7 @@
     'invoices.html': 'Invoice Management',
     'payroll.html': 'Payroll Management',
     'reports.html': 'Reports',
-    'settings.html': 'Settings',
+    'setting.html': 'Settings',
   };
 
   // The template page and site root are treated as the Dashboard

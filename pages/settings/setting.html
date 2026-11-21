@@ -1,0 +1,2624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings | TMS</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Existing shared navigation stylesheet -->
+  <link rel="stylesheet" href="../../css/nav-sidebar.css">
+
+  <style>
+    /* =========================================================
+       SETTINGS MODULE THEME
+       Follows the existing TMS module design language.
+    ========================================================= */
+
+    #settings-page {
+      --set-primary: #601D49;
+      --set-primary-dark: #4B1738;
+      --set-primary-soft: #F7EFF4;
+      --set-bg: #FAFAF9;
+      --set-border: #E7E5E4;
+      --set-text: #292524;
+      --set-muted: #78716C;
+      width: 100%;
+      min-width: 0;
+      color: var(--set-text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #settings-page * {
+      box-sizing: border-box;
+    }
+
+    #settings-page .set-card {
+      background: #fff;
+      border: 1px solid var(--set-border);
+      border-radius: 10px;
+    }
+
+    /* ---------- Buttons ---------- */
+
+    #settings-page .set-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid var(--set-primary);
+      border-radius: 7px;
+      background: var(--set-primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #settings-page .set-primary-btn:hover {
+      background: var(--set-primary-dark);
+      border-color: var(--set-primary-dark);
+    }
+
+    #settings-page .set-primary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    #settings-page .set-secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--set-border);
+      border-radius: 7px;
+      background: #fff;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #settings-page .set-secondary-btn:hover {
+      background: #f5f5f4;
+    }
+
+    #settings-page .set-secondary-btn:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    /* ---------- Inputs ---------- */
+
+    #settings-page .set-input,
+    #settings-page .set-select,
+    #settings-page .set-textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      background: #fff;
+      padding: 9px 11px;
+      color: #292524;
+      font-size: 12px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    #settings-page .set-input,
+    #settings-page .set-select {
+      height: 38px;
+    }
+
+    #settings-page .set-textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    #settings-page .set-input:focus,
+    #settings-page .set-select:focus,
+    #settings-page .set-textarea:focus {
+      border-color: var(--set-primary);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, .08);
+    }
+
+    #settings-page .set-input:disabled,
+    #settings-page .set-select:disabled {
+      background: #f5f5f4;
+      color: #a8a29e;
+    }
+
+    #settings-page .set-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #57534e;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    #settings-page .set-required {
+      color: #dc2626;
+    }
+
+    #settings-page .set-error {
+      display: none;
+      margin-top: 5px;
+      color: #dc2626;
+      font-size: 10px;
+    }
+
+    #settings-page .set-error.show {
+      display: block;
+    }
+
+    /* =========================================================
+       SETTINGS NAVIGATION TABS
+    ========================================================= */
+
+    #settings-page .set-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px;
+      background: #fff;
+      border: 1px solid var(--set-border);
+      border-radius: 10px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    #settings-page .set-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .15s ease;
+      white-space: nowrap;
+    }
+
+    #settings-page .set-tab:hover {
+      background: #f5f5f4;
+    }
+
+    #settings-page .set-tab.active {
+      background: var(--set-primary);
+      color: #fff;
+    }
+
+    #settings-page .set-tab:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 1px;
+    }
+
+    /* =========================================================
+       KPI CARDS
+    ========================================================= */
+
+    #settings-page .set-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    #settings-page .set-kpi-card {
+      min-width: 0;
+      min-height: 82px;
+      padding: 9px 12px;
+      background: linear-gradient(135deg,
+          #ffffff 0%,
+          #faf5f8 55%,
+          #f7eff4 100%);
+      border: 1px solid rgba(96, 29, 73, 0.16);
+      border-radius: 9px;
+      box-shadow: 0 2px 5px rgba(96, 29, 73, .04),
+        0 4px 10px rgba(96, 29, 73, .035);
+      transition: all .2s ease;
+    }
+
+    #settings-page .set-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 29, 73, .28);
+      box-shadow: 0 5px 12px rgba(96, 29, 73, .07);
+    }
+
+    #settings-page .set-kpi-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 29px;
+      height: 29px;
+      border-radius: 7px;
+      font-size: 12px;
+      background: rgba(96, 29, 73, .06);
+      color: var(--set-primary);
+    }
+
+    #settings-page .set-kpi-value {
+      margin-top: 5px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #292524;
+    }
+
+    #settings-page .set-kpi-label {
+      margin-top: 3px;
+      color: #78716c;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+    #settings-page .set-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    #settings-page .set-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    #settings-page .status-active {
+      color: #15803d;
+      background: #f0fdf4;
+    }
+
+    #settings-page .status-inactive {
+      color: #57534e;
+      background: #e7e5e4;
+    }
+
+    #settings-page .status-suspended {
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    /* =========================================================
+       COMPACT GRID TABLE
+    ========================================================= */
+
+    #settings-page .set-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    #settings-page .set-table {
+      width: 100%;
+      min-width: 1000px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    #settings-page .set-table th {
+      padding: 8px 12px;
+      background: #fafaf9;
+      border: 1px solid var(--set-border);
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    #settings-page .set-table td {
+      padding: 6px 12px;
+      border: 1px solid var(--set-border);
+      color: #57534e;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    #settings-page .set-table tbody tr:hover {
+      background: #fdfbfd;
+    }
+
+    /* =========================================================
+       ACTION ICON BUTTONS
+    ========================================================= */
+
+    #settings-page .set-action-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    #settings-page .set-row-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    #settings-page .set-row-action:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 1px;
+    }
+
+    /* =========================================================
+       MODALS
+    ========================================================= */
+
+    #settings-page .set-modal-backdrop {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 10000 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(28, 25, 23, .55);
+      backdrop-filter: blur(3px);
+    }
+
+    #settings-page .set-modal-backdrop.hidden {
+      display: none !important;
+    }
+
+    #settings-page .set-modal-panel {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+    }
+
+    #settings-page .set-modal-panel.small {
+      max-width: 460px;
+    }
+
+    #settings-page .set-modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px 20px;
+      background: #fff;
+      border-bottom: 1px solid var(--set-border);
+    }
+
+    #settings-page .set-modal-body {
+      padding: 20px;
+    }
+
+    #settings-page .set-modal-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      padding: 13px 20px;
+      background: #fff;
+      border-top: 1px solid var(--set-border);
+    }
+
+    #settings-page .set-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 6px;
+      background: #f5f5f4;
+      color: #57534e;
+      cursor: pointer;
+    }
+
+    #settings-page .set-close-btn:hover {
+      background: #e7e5e4;
+    }
+
+    /* Form grid */
+
+    #settings-page .set-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    #settings-page .set-form-field {
+      min-width: 0;
+    }
+
+    #settings-page .set-form-field.full,
+    #settings-page .set-section-title {
+      grid-column: 1 / -1;
+    }
+
+    #settings-page .set-section-title {
+      padding-bottom: 8px;
+      margin-top: 5px;
+      border-bottom: 1px solid #f0eeec;
+      color: #44403c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       DETAILS MODAL
+    ========================================================= */
+
+    #settings-page #adminViewModal .set-modal-panel {
+      max-width: 720px;
+      border: 1.5px solid #601d49;
+    }
+
+    #settings-page .set-detail-hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1.5px solid #601d49;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #601d49 0%, #8a2d6a 100%);
+      color: #fff;
+    }
+
+    #settings-page .set-detail-hero-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+
+    #settings-page .set-detail-hero-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      opacity: .85;
+    }
+
+    #settings-page .set-detail-section {
+      margin-bottom: 14px;
+      overflow: hidden;
+      border: 1px solid #601d4897;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(96, 29, 73, .08);
+    }
+
+    #settings-page .set-detail-section-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: rgba(96, 29, 72, .082);
+      border-bottom: 1.5px solid #601d49;
+      color: #601d49;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #settings-page .set-detail-section-body {
+      padding: 12px 14px;
+    }
+
+    #settings-page .set-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      #settings-page .set-detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    #settings-page .set-detail-item {
+      min-width: 0;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid #601d487d;
+      border-radius: 8px;
+      transition: box-shadow .15s, transform .15s;
+    }
+
+    #settings-page .set-detail-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(96, 29, 73, .15);
+    }
+
+    #settings-page .set-detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    #settings-page .set-detail-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3px;
+      color: #601d49;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    #settings-page .set-detail-value {
+      color: #292524;
+      font-size: 12px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    /* =========================================================
+       PERMISSION MATRIX
+    ========================================================= */
+
+    #settings-page .perm-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #settings-page .perm-table th,
+    #settings-page .perm-table td {
+      border: 1px solid #e7e5e4;
+      padding: 6px 8px;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    #settings-page .perm-table th {
+      background: #fafaf9;
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    #settings-page .perm-table td:first-child,
+    #settings-page .perm-table th:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: #44403c;
+    }
+
+    #settings-page .perm-table tbody tr:hover {
+      background: #fdfbfd;
+    }
+
+    #settings-page .perm-check {
+      width: 15px;
+      height: 15px;
+      accent-color: #601d49;
+      cursor: pointer;
+    }
+
+    /* =========================================================
+       TOGGLE SWITCH
+    ========================================================= */
+
+    #settings-page .set-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    #settings-page .set-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    #settings-page .set-toggle-track {
+      width: 36px;
+      height: 20px;
+      border-radius: 20px;
+      background: #d6d3d1;
+      transition: .2s ease;
+      position: relative;
+    }
+
+    #settings-page .set-toggle-track::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+      transition: .2s ease;
+    }
+
+    #settings-page .set-toggle input:checked+.set-toggle-track {
+      background: #601d49;
+    }
+
+    #settings-page .set-toggle input:checked+.set-toggle-track::after {
+      transform: translateX(16px);
+    }
+
+    #settings-page .set-toggle input:focus-visible+.set-toggle-track {
+      outline: 2px solid #601d49;
+      outline-offset: 2px;
+    }
+
+    /* =========================================================
+       SETTINGS FORM LAYOUT
+    ========================================================= */
+
+    #settings-page .set-settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    @media (max-width: 640px) {
+      #settings-page .set-settings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #settings-page .set-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f5f5f4;
+    }
+
+    #settings-page .set-toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    #settings-page .set-toggle-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #57534e;
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    #settings-page .set-toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 11000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 32px);
+      padding: 12px 16px;
+      border: 1px solid #e7e5e4;
+      border-radius: 9px;
+      background: #fff;
+      color: #292524;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: .25s ease;
+    }
+
+    #settings-page .set-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    #settings-page .set-toast-icon {
+      color: var(--set-primary);
+      font-size: 15px;
+    }
+
+    /* =========================================================
+       EMPTY STATE
+    ========================================================= */
+
+    #settings-page .set-empty {
+      padding: 48px 20px;
+      text-align: center;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1024px) {
+      #settings-page .set-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      #settings-page .set-modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      #settings-page .set-modal-panel {
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0;
+      }
+
+      #settings-page .set-modal-body {
+        padding: 15px;
+      }
+
+      #settings-page .set-modal-header,
+      #settings-page .set-modal-footer {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      #settings-page .set-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #settings-page .set-form-field.full,
+      #settings-page .set-section-title {
+        grid-column: auto;
+      }
+
+      #settings-page .set-toast {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #settings-page .set-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      #settings-page .set-kpi-value {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-stone-50">
+
+  <!-- =======================================================
+       SHARED SIDEBAR AND NAVBAR
+  ======================================================== -->
+  <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+  <!-- =======================================================
+       MAIN CONTENT
+  ======================================================== -->
+  <main class="tms-main">
+    <div id="settings-page" class="px-4 py-5 md:px-6 lg:px-4">
+
+      <!-- =====================================================
+           PAGE HEADER
+      ====================================================== -->
+      <section class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-stone-800">
+            <i class="fa-solid fa-gear text-[#601D49] mr-2 text-lg"></i>Settings
+          </h1>
+          <p class="text-xs text-stone-500 mt-1">
+            Manage administrators, roles, permissions, and basic system configuration.
+          </p>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SETTINGS NAVIGATION TABS
+      ====================================================== -->
+      <section class="mb-4">
+        <div class="set-tabs" role="tablist" aria-label="Settings sections">
+          <button type="button" class="set-tab active" data-section="admin-users" role="tab" aria-selected="true">
+            <i class="fa-solid fa-users-gear"></i> Admin Users
+          </button>
+          <button type="button" class="set-tab" data-section="roles" role="tab" aria-selected="false">
+            <i class="fa-solid fa-shield-halved"></i> Roles &amp; Permissions
+          </button>
+          <button type="button" class="set-tab" data-section="system" role="tab" aria-selected="false">
+            <i class="fa-solid fa-sliders"></i> System Settings
+          </button>
+          <button type="button" class="set-tab" data-section="operational" role="tab" aria-selected="false">
+            <i class="fa-solid fa-truck-fast"></i> Operational Settings
+          </button>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           ADMIN USERS SECTION
+      ====================================================== -->
+      <section id="section-admin-users" class="set-section">
+
+        <!-- KPI CARDS -->
+        <div class="set-kpi-grid">
+          <div class="set-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold">Total Admin Users</span>
+              <div class="set-kpi-icon"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <div class="set-kpi-value" id="kpiTotalAdmins">0</div>
+            <div class="set-kpi-label">All admin accounts</div>
+          </div>
+
+          <div class="set-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold">Active Users</span>
+              <div class="set-kpi-icon"><i class="fa-solid fa-user-check"></i></div>
+            </div>
+            <div class="set-kpi-value" id="kpiActiveAdmins">0</div>
+            <div class="set-kpi-label">Currently active</div>
+          </div>
+
+          <div class="set-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold">Inactive Users</span>
+              <div class="set-kpi-icon"><i class="fa-solid fa-user-clock"></i></div>
+            </div>
+            <div class="set-kpi-value" id="kpiInactiveAdmins">0</div>
+            <div class="set-kpi-label">Deactivated accounts</div>
+          </div>
+
+          <div class="set-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold">Suspended Users</span>
+              <div class="set-kpi-icon"><i class="fa-solid fa-user-slash"></i></div>
+            </div>
+            <div class="set-kpi-value" id="kpiSuspendedAdmins">0</div>
+            <div class="set-kpi-label">Suspended accounts</div>
+          </div>
+        </div>
+
+        <!-- ADMIN USERS TABLE CARD -->
+        <div class="set-card overflow-hidden">
+
+          <!-- HEADER + SEARCH + FILTERS -->
+          <div class="p-4 border-b border-stone-200">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+              <div>
+                <h2 class="text-sm font-bold text-stone-800">Admin Users</h2>
+                <p class="text-xs text-stone-500 mt-1">
+                  Manage administrators who have access to the TMS admin panel.
+                </p>
+              </div>
+
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <div class="relative flex-1 sm:flex-none sm:w-56">
+                  <i
+                    class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[11px] pointer-events-none"></i>
+                  <input type="search" id="adminSearch"
+                    class="set-input !h-[34px] !py-0 !pl-9 !pr-3 !text-[11px] !rounded-md"
+                    placeholder="Search admins..." aria-label="Search admin users" />
+                </div>
+
+                <button type="button" id="addAdminBtn" class="set-primary-btn !min-h-[34px] !py-0">
+                  <i class="fa-solid fa-plus text-[11px]"></i>
+                  <span class="text-[11px]">Add Admin</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
+              <select id="filterRole" class="set-select" aria-label="Filter by role">
+                <option value="">All Roles</option>
+              </select>
+
+              <select id="filterStatus" class="set-select" aria-label="Filter by status">
+                <option value="">All Statuses</option>
+                <option>Active</option>
+                <option>Inactive</option>
+                <option>Suspended</option>
+              </select>
+
+              <button type="button" id="clearAdminFiltersBtn"
+                class="set-secondary-btn !min-h-[38px] justify-center">
+                <i class="fa-solid fa-rotate-left text-[10px]"></i>
+                Clear Filters
+              </button>
+
+              <span id="adminCount"
+                class="flex items-center justify-center rounded-full bg-stone-100 px-3 py-1 text-[10px] font-semibold text-stone-600">
+                0 Admins
+              </span>
+            </div>
+          </div>
+
+          <!-- TABLE -->
+          <div class="set-table-wrap">
+            <table class="set-table">
+              <thead>
+                <tr>
+                  <th>Admin ID</th>
+                  <th>Admin Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Last Login</th>
+                  <th class="text-center w-[110px]">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody"></tbody>
+            </table>
+
+            <!-- EMPTY STATE -->
+            <div id="adminEmptyState" class="set-empty hidden">
+              <div
+                class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+                <i class="fa-solid fa-users-gear text-lg"></i>
+              </div>
+              <h3 class="text-sm font-semibold text-stone-700">No admin users found</h3>
+              <p class="text-xs text-stone-500 mt-1">Try changing your search or filters.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           ROLES & PERMISSIONS SECTION
+      ====================================================== -->
+      <section id="section-roles" class="set-section hidden">
+        <div class="set-card overflow-hidden">
+          <div class="p-4 border-b border-stone-200">
+            <h2 class="text-sm font-bold text-stone-800">Roles &amp; Permissions</h2>
+            <p class="text-xs text-stone-500 mt-1">
+              Manage role-based access to TMS modules. Click the permission icon to view or edit a role.
+            </p>
+          </div>
+
+          <div class="set-table-wrap">
+            <table class="set-table">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Description</th>
+                  <th class="text-center">Users</th>
+                  <th class="text-center">Permissions</th>
+                  <th class="text-center w-[90px]">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rolesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SYSTEM SETTINGS SECTION
+      ====================================================== -->
+      <section id="section-system" class="set-section hidden">
+        <div class="set-card overflow-hidden">
+          <div class="p-4 border-b border-stone-200">
+            <h2 class="text-sm font-bold text-stone-800">System Settings</h2>
+            <p class="text-xs text-stone-500 mt-1">
+              Configure company information, regional preferences, and general system defaults.
+            </p>
+          </div>
+
+          <div class="p-4">
+            <!-- Company Information -->
+            <h3 class="set-section-title !mt-0">Company Information</h3>
+            <div class="set-settings-grid mt-3 mb-6">
+              <div class="set-form-field">
+                <label class="set-label" for="sysCompanyName">Company Name</label>
+                <input type="text" id="sysCompanyName" class="set-input">
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysCompanyEmail">Company Email</label>
+                <input type="email" id="sysCompanyEmail" class="set-input">
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysCompanyPhone">Company Phone</label>
+                <input type="text" id="sysCompanyPhone" class="set-input">
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysCompanyAddress">Company Address</label>
+                <input type="text" id="sysCompanyAddress" class="set-input">
+              </div>
+            </div>
+
+            <!-- Regional Settings -->
+            <h3 class="set-section-title">Regional Settings</h3>
+            <div class="set-settings-grid mt-3 mb-6">
+              <div class="set-form-field">
+                <label class="set-label" for="sysTimezone">Time Zone</label>
+                <select id="sysTimezone" class="set-select">
+                  <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+                  <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                  <option value="Asia/Singapore">Asia/Singapore (SGT)</option>
+                  <option value="UTC">UTC</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysCurrency">Currency</label>
+                <select id="sysCurrency" class="set-select">
+                  <option value="INR">INR (₹)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="AED">AED (د.إ)</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysDateFormat">Date Format</label>
+                <select id="sysDateFormat" class="set-select">
+                  <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                  <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                  <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  <option value="DD MMM YYYY">DD MMM YYYY</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysSystemName">System Name</label>
+                <input type="text" id="sysSystemName" class="set-input">
+              </div>
+            </div>
+
+            <!-- General Settings -->
+            <h3 class="set-section-title">General Defaults</h3>
+            <div class="set-settings-grid mt-3">
+              <div class="set-form-field">
+                <label class="set-label" for="sysDefaultTripStatus">Default Trip Status</label>
+                <select id="sysDefaultTripStatus" class="set-select">
+                  <option>Pending</option>
+                  <option>In Progress</option>
+                  <option>Completed</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysDefaultInvoiceStatus">Default Invoice Status</label>
+                <select id="sysDefaultInvoiceStatus" class="set-select">
+                  <option>Draft</option>
+                  <option>Issued</option>
+                  <option>Cancelled</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="sysDefaultPayrollStatus">Default Payroll Status</label>
+                <select id="sysDefaultPayrollStatus" class="set-select">
+                  <option>Draft</option>
+                  <option>Processing</option>
+                  <option>Processed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+              <button type="button" id="saveSystemBtn" class="set-primary-btn">
+                <i class="fa-solid fa-check"></i>
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           OPERATIONAL SETTINGS SECTION
+      ====================================================== -->
+      <section id="section-operational" class="set-section hidden">
+        <div class="set-card overflow-hidden">
+          <div class="p-4 border-b border-stone-200">
+            <h2 class="text-sm font-bold text-stone-800">Operational Settings</h2>
+            <p class="text-xs text-stone-500 mt-1">
+              Configure operational defaults for trips, invoices, payroll, and notifications.
+            </p>
+          </div>
+
+          <div class="p-4">
+            <!-- Trip Settings -->
+            <h3 class="set-section-title !mt-0">Trip Settings</h3>
+            <div class="set-settings-grid mt-3 mb-6">
+              <div class="set-form-field">
+                <label class="set-label" for="opDefaultTripStatus">Default Trip Status</label>
+                <select id="opDefaultTripStatus" class="set-select">
+                  <option>Pending</option>
+                  <option>In Progress</option>
+                  <option>Completed</option>
+                  <option>Cancelled</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label">Trip Options</label>
+                <div class="set-toggle-row">
+                  <span class="set-toggle-label">Allow Trip Editing</span>
+                  <label class="set-toggle">
+                    <input type="checkbox" id="opAllowTripEditing">
+                    <span class="set-toggle-track"></span>
+                  </label>
+                </div>
+                <div class="set-toggle-row">
+                  <span class="set-toggle-label">Require Driver Assignment</span>
+                  <label class="set-toggle">
+                    <input type="checkbox" id="opRequireDriver">
+                    <span class="set-toggle-track"></span>
+                  </label>
+                </div>
+                <div class="set-toggle-row">
+                  <span class="set-toggle-label">Require Vehicle Assignment</span>
+                  <label class="set-toggle">
+                    <input type="checkbox" id="opRequireVehicle">
+                    <span class="set-toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Invoice Settings -->
+            <h3 class="set-section-title">Invoice Settings</h3>
+            <div class="set-settings-grid mt-3 mb-6">
+              <div class="set-form-field">
+                <label class="set-label" for="opDefaultPaymentStatus">Default Payment Status</label>
+                <select id="opDefaultPaymentStatus" class="set-select">
+                  <option>Pending</option>
+                  <option>Partially Paid</option>
+                  <option>Paid</option>
+                  <option>Overdue</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="opInvoiceDuePeriod">Invoice Due Period (Days)</label>
+                <input type="number" id="opInvoiceDuePeriod" class="set-input" min="0" max="180">
+              </div>
+            </div>
+
+            <!-- Payroll Settings -->
+            <h3 class="set-section-title">Payroll Settings</h3>
+            <div class="set-settings-grid mt-3 mb-6">
+              <div class="set-form-field">
+                <label class="set-label" for="opDefaultPayrollStatus">Default Payroll Status</label>
+                <select id="opDefaultPayrollStatus" class="set-select">
+                  <option>Draft</option>
+                  <option>Processing</option>
+                  <option>Processed</option>
+                </select>
+              </div>
+              <div class="set-form-field">
+                <label class="set-label" for="opDefaultSalaryType">Default Salary Calculation Type</label>
+                <select id="opDefaultSalaryType" class="set-select">
+                  <option>Monthly</option>
+                  <option>Per Trip</option>
+                  <option>Daily</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Notification Preferences -->
+            <h3 class="set-section-title">Notification Preferences</h3>
+            <div class="set-settings-grid mt-3">
+              <div class="set-form-field">
+                <div class="set-toggle-row">
+                  <span class="set-toggle-label">Trip Status Notifications</span>
+                  <label class="set-toggle">
+                    <input type="checkbox" id="opNotifyTrip">
+                    <span class="set-toggle-track"></span>
+                  </label>
+                </div>
+                <div class="set-toggle-row">
+                  <span class="set-toggle-label">Invoice Reminders</span>
+                  <label class="set-toggle">
+                    <input type="checkbox" id="opNotifyInvoice">
+                    <span class="set-toggle-track"></span>
+                  </label>
+                </div>
+                <div class="set-toggle-row">
+                  <span class="set-toggle-label">Payroll Reminders</span>
+                  <label class="set-toggle">
+                    <input type="checkbox" id="opNotifyPayroll">
+                    <span class="set-toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+              <button type="button" id="saveOperationalBtn" class="set-primary-btn">
+                <i class="fa-solid fa-check"></i>
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p class="mt-4 text-center text-[10px] text-stone-400">
+        TMS Settings Module
+      </p>
+
+      <!-- =====================================================
+           ADD / EDIT ADMIN MODAL
+      ====================================================== -->
+      <div id="adminFormModal" class="set-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="adminFormTitle">
+        <div class="set-modal-panel">
+          <div class="set-modal-header">
+            <div>
+              <h2 id="adminFormTitle" class="text-base font-bold text-stone-800">Add Admin User</h2>
+              <p class="text-xs text-stone-500 mt-1">Create a new administrator account.</p>
+            </div>
+            <button type="button" class="set-close-btn" data-close-modal="adminFormModal" aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <form id="adminForm" novalidate>
+            <div class="set-modal-body">
+              <div class="set-form-grid">
+
+                <h3 class="set-section-title">Basic Information</h3>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formAdminId">Admin ID</label>
+                  <input id="formAdminId" class="set-input bg-stone-50" readonly>
+                  <p class="mt-1 text-[9px] text-stone-400">Automatically generated.</p>
+                </div>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formFullName">
+                    Full Name <span class="set-required">*</span>
+                  </label>
+                  <input id="formFullName" class="set-input" placeholder="e.g. Aarav Sharma">
+                  <p class="set-error" id="errorFullName"></p>
+                </div>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formEmail">
+                    Email <span class="set-required">*</span>
+                  </label>
+                  <input id="formEmail" type="email" class="set-input" placeholder="e.g. aarav@tms.com">
+                  <p class="set-error" id="errorEmail"></p>
+                </div>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formPhone">
+                    Phone <span class="set-required">*</span>
+                  </label>
+                  <input id="formPhone" class="set-input" placeholder="e.g. +91 98765 43210">
+                  <p class="set-error" id="errorPhone"></p>
+                </div>
+
+                <h3 class="set-section-title">Login Information</h3>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formUsername">Username / Email</label>
+                  <input id="formUsername" class="set-input" placeholder="Login username">
+                </div>
+
+                <div class="set-form-field"></div>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formPassword">
+                    Password <span class="set-required">*</span>
+                  </label>
+                  <input id="formPassword" type="password" class="set-input" placeholder="Minimum 6 characters">
+                  <p class="set-error" id="errorPassword"></p>
+                </div>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formConfirmPassword">
+                    Confirm Password <span class="set-required">*</span>
+                  </label>
+                  <input id="formConfirmPassword" type="password" class="set-input" placeholder="Re-enter password">
+                  <p class="set-error" id="errorConfirmPassword"></p>
+                </div>
+
+                <h3 class="set-section-title">Access &amp; Status</h3>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formRole">
+                    Role <span class="set-required">*</span>
+                  </label>
+                  <select id="formRole" class="set-select">
+                    <option value="">Select role</option>
+                  </select>
+                  <p class="set-error" id="errorRole"></p>
+                </div>
+
+                <div class="set-form-field">
+                  <label class="set-label" for="formStatus">
+                    Account Status <span class="set-required">*</span>
+                  </label>
+                  <select id="formStatus" class="set-select">
+                    <option value="">Select status</option>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                    <option>Suspended</option>
+                  </select>
+                  <p class="set-error" id="errorStatus"></p>
+                </div>
+
+                <div class="set-form-field full">
+                  <label class="set-label" for="formNotes">Notes</label>
+                  <textarea id="formNotes" rows="2" class="set-textarea"
+                    placeholder="Optional notes about this admin user..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-modal-footer">
+              <button type="button" class="set-secondary-btn" data-close-modal="adminFormModal">Cancel</button>
+              <button type="submit" id="saveAdminBtn" class="set-primary-btn">
+                <i class="fa-solid fa-check"></i>
+                Save Admin
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           VIEW ADMIN MODAL
+      ====================================================== -->
+      <div id="adminViewModal" class="set-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="adminViewTitle">
+        <div class="set-modal-panel">
+          <div class="set-modal-header">
+            <div>
+              <h2 id="adminViewTitle" class="text-base font-bold text-stone-800">Admin Details</h2>
+              <p id="adminViewSubtitle" class="text-xs text-stone-500 mt-1"></p>
+            </div>
+            <button type="button" class="set-close-btn" data-close-modal="adminViewModal" aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="set-modal-body">
+            <div class="set-detail-hero">
+              <div>
+                <div class="set-detail-hero-title" id="viewHeroTitle">Admin</div>
+                <div class="set-detail-hero-sub" id="viewHeroSub">—</div>
+              </div>
+              <div id="viewHeroStatus"></div>
+            </div>
+
+            <div class="set-detail-section">
+              <div class="set-detail-section-head">
+                <i class="fa-solid fa-user"></i> Profile
+              </div>
+              <div class="set-detail-section-body">
+                <div id="viewProfile" class="set-detail-grid"></div>
+              </div>
+            </div>
+
+            <div class="set-detail-section">
+              <div class="set-detail-section-head">
+                <i class="fa-solid fa-shield-halved"></i> Access
+              </div>
+              <div class="set-detail-section-body">
+                <div id="viewAccess" class="set-detail-grid"></div>
+              </div>
+            </div>
+
+            <div class="set-detail-section">
+              <div class="set-detail-section-head">
+                <i class="fa-regular fa-note-sticky"></i> Additional Information
+              </div>
+              <div class="set-detail-section-body">
+                <div id="viewAdditional" class="set-detail-grid"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="set-modal-footer">
+            <button type="button" class="set-secondary-btn" data-close-modal="adminViewModal">Close</button>
+            <button type="button" id="viewEditAdminBtn" class="set-primary-btn">
+              <i class="fa-regular fa-pen-to-square"></i>
+              Edit Admin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           CHANGE STATUS MODAL
+      ====================================================== -->
+      <div id="statusChangeModal" class="set-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="statusChangeTitle">
+        <div class="set-modal-panel small">
+          <div class="set-modal-body text-center py-7">
+            <div id="statusChangeIconWrap"
+              class="mx-auto mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-amber-50 text-amber-600">
+              <i id="statusChangeIcon" class="fa-solid fa-user-slash text-lg"></i>
+            </div>
+
+            <h2 id="statusChangeTitle" class="text-base font-bold text-stone-800">
+              Change Admin Status?
+            </h2>
+
+            <p class="text-xs text-stone-500 mt-2 leading-5" id="statusChangeMessage">
+              Are you sure you want to change the status of this admin user?
+            </p>
+
+            <div id="statusChangeSummary"
+              class="mt-3 rounded-md bg-stone-50 p-3 text-left text-[11px] text-stone-700 leading-5">
+            </div>
+
+            <div class="flex justify-center gap-2 mt-6">
+              <button type="button" class="set-secondary-btn" data-close-modal="statusChangeModal">Cancel</button>
+              <button type="button" id="confirmStatusBtn" class="set-primary-btn">
+                <i class="fa-solid fa-check"></i>
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           ROLE PERMISSIONS MODAL
+      ====================================================== -->
+      <div id="rolePermissionModal" class="set-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="rolePermissionTitle">
+        <div class="set-modal-panel">
+          <div class="set-modal-header">
+            <div>
+              <h2 id="rolePermissionTitle" class="text-base font-bold text-stone-800">Role Permissions</h2>
+              <p id="rolePermissionSubtitle" class="text-xs text-stone-500 mt-1"></p>
+            </div>
+            <button type="button" class="set-close-btn" data-close-modal="rolePermissionModal"
+              aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="set-modal-body">
+            <div class="overflow-x-auto">
+              <table class="perm-table">
+                <thead>
+                  <tr>
+                    <th style="min-width:120px;">Module</th>
+                    <th>View</th>
+                    <th>Create</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody id="permissionMatrixBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="set-modal-footer">
+            <button type="button" class="set-secondary-btn" data-close-modal="rolePermissionModal">Cancel</button>
+            <button type="button" id="savePermissionsBtn" class="set-primary-btn">
+              <i class="fa-solid fa-check"></i>
+              Save Permissions
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOAST -->
+      <div id="settingsToast" class="set-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check set-toast-icon"></i>
+        <span id="settingsToastMessage"></span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================================
+       SETTINGS JAVASCRIPT
+  ========================================================== -->
+  <script>
+    "use strict";
+
+    // =========================================================
+    // SETTINGS DATA
+    // =========================================================
+
+    const ROLES = [
+      "Super Admin",
+      "Operations Manager",
+      "Accounts Manager",
+      "HR / Payroll Manager",
+      "Dispatcher",
+      "Viewer"
+    ];
+
+    const MODULES = [
+      "Dashboard", "Trips", "Customers", "Drivers",
+      "Vehicles", "Invoices", "Payroll", "Reports", "Settings"
+    ];
+
+    const PERMISSION_TYPES = ["view", "create", "edit", "delete"];
+
+    // Role definitions with descriptions
+    let roleDefinitions = [
+      {
+        name: "Super Admin",
+        description: "Full system access to all modules and settings.",
+        permissions: buildFullPermissions()
+      },
+      {
+        name: "Operations Manager",
+        description: "Manages trips, customers, drivers, vehicles, and reports.",
+        permissions: buildPermissions({
+          "Dashboard": ["view"],
+          "Trips": ["view", "create", "edit", "delete"],
+          "Customers": ["view", "create", "edit", "delete"],
+          "Drivers": ["view", "create", "edit", "delete"],
+          "Vehicles": ["view", "create", "edit", "delete"],
+          "Reports": ["view"]
+        })
+      },
+      {
+        name: "Accounts Manager",
+        description: "Manages invoices, payroll, and reports.",
+        permissions: buildPermissions({
+          "Dashboard": ["view"],
+          "Invoices": ["view", "create", "edit"],
+          "Payroll": ["view", "create", "edit"],
+          "Reports": ["view"]
+        })
+      },
+      {
+        name: "HR / Payroll Manager",
+        description: "Manages drivers, payroll, and reports.",
+        permissions: buildPermissions({
+          "Dashboard": ["view"],
+          "Drivers": ["view", "create", "edit"],
+          "Payroll": ["view", "create", "edit"],
+          "Reports": ["view"]
+        })
+      },
+      {
+        name: "Dispatcher",
+        description: "Manages trips, customers, drivers, and vehicles.",
+        permissions: buildPermissions({
+          "Dashboard": ["view"],
+          "Trips": ["view", "create", "edit"],
+          "Customers": ["view", "create", "edit"],
+          "Drivers": ["view"],
+          "Vehicles": ["view"]
+        })
+      },
+      {
+        name: "Viewer",
+        description: "Read-only access to dashboard and reports.",
+        permissions: buildPermissions({
+          "Dashboard": ["view"],
+          "Reports": ["view"]
+        })
+      }
+    ];
+
+    function buildFullPermissions() {
+      const perms = {};
+      MODULES.forEach(mod => {
+        perms[mod] = [...PERMISSION_TYPES];
+      });
+      return perms;
+    }
+
+    function buildPermissions(config) {
+      const perms = {};
+      MODULES.forEach(mod => {
+        perms[mod] = config[mod] ? [...config[mod]] : [];
+      });
+      return perms;
+    }
+
+    /**
+     * Admin users dataset.
+     * Passwords are frontend-only demonstration values.
+     */
+    let adminUsers = [
+      {
+        id: "ADM-1001",
+        name: "Aarav Sharma",
+        email: "aarav.sharma@tms.com",
+        phone: "+91 98765 43210",
+        username: "aarav.sharma",
+        password: "demo123",
+        role: "Super Admin",
+        status: "Active",
+        lastLogin: "2026-11-20 09:42 AM",
+        createdDate: "2025-01-10",
+        notes: "Primary system administrator."
+      },
+      {
+        id: "ADM-1002",
+        name: "Priya Kulkarni",
+        email: "priya.kulkarni@tms.com",
+        phone: "+91 98220 11223",
+        username: "priya.k",
+        password: "demo123",
+        role: "Operations Manager",
+        status: "Active",
+        lastLogin: "2026-11-20 08:15 AM",
+        createdDate: "2025-02-14",
+        notes: "Oversees daily trip operations."
+      },
+      {
+        id: "ADM-1003",
+        name: "Rohan Patil",
+        email: "rohan.patil@tms.com",
+        phone: "+91 99887 66554",
+        username: "rohan.patil",
+        password: "demo123",
+        role: "Accounts Manager",
+        status: "Active",
+        lastLogin: "2026-11-19 06:30 PM",
+        createdDate: "2025-03-05",
+        notes: "Handles invoices and payroll."
+      },
+      {
+        id: "ADM-1004",
+        name: "Neha Joshi",
+        email: "neha.joshi@tms.com",
+        phone: "+91 97654 32109",
+        username: "neha.joshi",
+        password: "demo123",
+        role: "HR / Payroll Manager",
+        status: "Inactive",
+        lastLogin: "2026-10-28 11:00 AM",
+        createdDate: "2025-04-12",
+        notes: "Currently on leave."
+      },
+      {
+        id: "ADM-1005",
+        name: "Amit Deshmukh",
+        email: "amit.deshmukh@tms.com",
+        phone: "+91 91234 56789",
+        username: "amit.d",
+        password: "demo123",
+        role: "Dispatcher",
+        status: "Active",
+        lastLogin: "2026-11-20 07:50 AM",
+        createdDate: "2025-05-20",
+        notes: "Manages dispatch scheduling."
+      },
+      {
+        id: "ADM-1006",
+        name: "Sneha More",
+        email: "sneha.more@tms.com",
+        phone: "+91 90000 12345",
+        username: "sneha.more",
+        password: "demo123",
+        role: "Viewer",
+        status: "Active",
+        lastLogin: "2026-11-18 04:20 PM",
+        createdDate: "2025-06-15",
+        notes: "Read-only dashboard access."
+      },
+      {
+        id: "ADM-1007",
+        name: "Kunal Bhosale",
+        email: "kunal.bhosale@tms.com",
+        phone: "+91 98111 22334",
+        username: "kunal.b",
+        password: "demo123",
+        role: "Dispatcher",
+        status: "Suspended",
+        lastLogin: "2026-11-05 02:10 PM",
+        createdDate: "2025-07-01",
+        notes: "Account suspended pending review."
+      },
+      {
+        id: "ADM-1008",
+        name: "Anjali Wagh",
+        email: "anjali.wagh@tms.com",
+        phone: "+91 99333 44556",
+        username: "anjali.w",
+        password: "demo123",
+        role: "Accounts Manager",
+        status: "Active",
+        lastLogin: "2026-11-20 10:05 AM",
+        createdDate: "2025-08-22",
+        notes: "Supports invoicing and payroll."
+      },
+      {
+        id: "ADM-1009",
+        name: "Sagar Pawar",
+        email: "sagar.pawar@tms.com",
+        phone: "+91 98444 55667",
+        username: "sagar.p",
+        password: "demo123",
+        role: "Operations Manager",
+        status: "Inactive",
+        lastLogin: "2026-10-15 05:45 PM",
+        createdDate: "2025-09-10",
+        notes: "Inactive due to role change."
+      },
+      {
+        id: "ADM-1010",
+        name: "Meera Jadhav",
+        email: "meera.jadhav@tms.com",
+        phone: "+91 97777 88990",
+        username: "meera.j",
+        password: "demo123",
+        role: "Viewer",
+        status: "Active",
+        lastLogin: "2026-11-19 01:30 PM",
+        createdDate: "2025-10-05",
+        notes: "Access to reports only."
+      }
+    ];
+
+    // System settings
+    let systemSettings = {
+      companyName: "Maharashtra Transport Solutions",
+      companyEmail: "info@mts-tms.com",
+      companyPhone: "+91 20 2345 6789",
+      companyAddress: "Pune, Maharashtra, India",
+      timezone: "Asia/Kolkata",
+      currency: "INR",
+      dateFormat: "DD/MM/YYYY",
+      systemName: "TMS Admin",
+      defaultTripStatus: "Pending",
+      defaultInvoiceStatus: "Draft",
+      defaultPayrollStatus: "Draft"
+    };
+
+    // Operational settings
+    let operationalSettings = {
+      defaultTripStatus: "Pending",
+      allowTripEditing: true,
+      requireDriverAssignment: true,
+      requireVehicleAssignment: true,
+      defaultPaymentStatus: "Pending",
+      invoiceDuePeriod: 7,
+      defaultPayrollStatus: "Draft",
+      defaultSalaryType: "Monthly",
+      notifyTrip: true,
+      notifyInvoice: true,
+      notifyPayroll: false
+    };
+
+    // =========================================================
+    // DOM REFERENCES
+    // =========================================================
+
+    const $ = (id) => document.getElementById(id);
+
+    let editingAdminId = null;
+    let viewingAdminId = null;
+    let statusChangingAdminId = null;
+    let pendingStatusValue = null;
+    let editingRoleName = null;
+    let toastTimer = null;
+
+    const adminFormModal = $("adminFormModal");
+    const adminViewModal = $("adminViewModal");
+    const statusChangeModal = $("statusChangeModal");
+    const rolePermissionModal = $("rolePermissionModal");
+    const adminForm = $("adminForm");
+
+    // =========================================================
+    // HELPERS
+    // =========================================================
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#039;"
+      })[char]);
+    }
+
+    function formatDate(date) {
+      if (!date) return "—";
+      const parsed = new Date(date + "T00:00:00");
+      if (Number.isNaN(parsed.getTime())) return "—";
+      return parsed.toLocaleDateString("en-IN", {
+        day: "2-digit", month: "short", year: "numeric"
+      });
+    }
+
+    function adminStatusBadge(status) {
+      const map = {
+        "Active": "status-active",
+        "Inactive": "status-inactive",
+        "Suspended": "status-suspended"
+      };
+      return `<span class="set-status ${map[status] || "status-inactive"}">${escapeHTML(status)}</span>`;
+    }
+
+    function showToast(message, type = "success") {
+      const toast = $("settingsToast");
+      const icon = toast.querySelector("i");
+      $("settingsToastMessage").textContent = message;
+      icon.className = type === "error"
+        ? "fa-solid fa-circle-exclamation set-toast-icon"
+        : "fa-solid fa-circle-check set-toast-icon";
+      icon.style.color = type === "error" ? "#dc2626" : "#601D49";
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    function generateAdminId() {
+      const maxNumber = adminUsers.reduce((max, admin) => {
+        const n = Number(admin.id.replace("ADM-", "")) || 0;
+        return Math.max(max, n);
+      }, 0);
+      return `ADM-${maxNumber + 1}`;
+    }
+
+    function getRoleByName(name) {
+      return roleDefinitions.find(r => r.name === name);
+    }
+
+    function countRoleUsers(roleName) {
+      return adminUsers.filter(a => a.role === roleName).length;
+    }
+
+    // =========================================================
+    // UI / TAB MANAGEMENT
+    // =========================================================
+
+    function switchSection(sectionName) {
+      document.querySelectorAll(".set-tab").forEach(tab => {
+        const active = tab.dataset.section === sectionName;
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", active ? "true" : "false");
+      });
+
+      document.querySelectorAll(".set-section").forEach(sec => {
+        sec.classList.toggle("hidden", sec.id !== `section-${sectionName}`);
+      });
+
+      // Refresh section-specific content
+      if (sectionName === "admin-users") renderAdminUsers();
+      if (sectionName === "roles") renderRoles();
+      if (sectionName === "system") loadSystemSettings();
+      if (sectionName === "operational") loadOperationalSettings();
+    }
+
+    // =========================================================
+    // MODALS
+    // =========================================================
+
+    function openModal(modal) {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+      const focusable = modal.querySelector(
+        "input:not([readonly]):not([disabled]), select:not([disabled]), textarea, button"
+      );
+      if (focusable) setTimeout(() => focusable.focus(), 50);
+    }
+
+    function closeModal(modal) {
+      modal.classList.add("hidden");
+      const anyOpen = [adminFormModal, adminViewModal, statusChangeModal, rolePermissionModal]
+        .some(m => !m.classList.contains("hidden"));
+      if (!anyOpen) document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll("[data-close-modal]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const modal = $(btn.dataset.closeModal);
+        if (modal) closeModal(modal);
+      });
+    });
+
+    [adminFormModal, adminViewModal, statusChangeModal, rolePermissionModal].forEach(modal => {
+      modal.addEventListener("click", e => {
+        if (e.target === modal) closeModal(modal);
+      });
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        [adminFormModal, adminViewModal, statusChangeModal, rolePermissionModal].forEach(modal => {
+          if (!modal.classList.contains("hidden")) closeModal(modal);
+        });
+      }
+    });
+
+    // =========================================================
+    // ADMIN USER MANAGEMENT
+    // =========================================================
+
+    function calculateAdminKPIs() {
+      $("kpiTotalAdmins").textContent = adminUsers.length;
+      $("kpiActiveAdmins").textContent = adminUsers.filter(a => a.status === "Active").length;
+      $("kpiInactiveAdmins").textContent = adminUsers.filter(a => a.status === "Inactive").length;
+      $("kpiSuspendedAdmins").textContent = adminUsers.filter(a => a.status === "Suspended").length;
+    }
+
+    function populateAdminFilterRole() {
+      const select = $("filterRole");
+      select.innerHTML = `<option value="">All Roles</option>` +
+        ROLES.map(r => `<option>${escapeHTML(r)}</option>`).join("");
+    }
+
+    function populateAdminFormRole() {
+      const select = $("formRole");
+      select.innerHTML = `<option value="">Select role</option>` +
+        ROLES.map(r => `<option>${escapeHTML(r)}</option>`).join("");
+    }
+
+    function filterAdminUsers() {
+      const search = $("adminSearch").value.trim().toLowerCase();
+      const role = $("filterRole").value;
+      const status = $("filterStatus").value;
+
+      return adminUsers.filter(admin => {
+        const searchable = [admin.id, admin.name, admin.email, admin.phone]
+          .join(" ").toLowerCase();
+        const matchesSearch = !search || searchable.includes(search);
+        const matchesRole = !role || admin.role === role;
+        const matchesStatus = !status || admin.status === status;
+        return matchesSearch && matchesRole && matchesStatus;
+      });
+    }
+
+    function renderAdminUsers() {
+      calculateAdminKPIs();
+      const filtered = filterAdminUsers();
+
+      $("adminCount").textContent = `${filtered.length} Admin${filtered.length !== 1 ? "s" : ""}`;
+
+      const tbody = $("adminTableBody");
+      const emptyState = $("adminEmptyState");
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = "";
+        emptyState.classList.remove("hidden");
+      } else {
+        emptyState.classList.add("hidden");
+        tbody.innerHTML = filtered.map(admin => {
+          const isActive = admin.status === "Active";
+          const statusActionIcon = isActive ? "fa-user-slash" : "fa-user-check";
+          const statusActionColor = isActive
+            ? "text-amber-600 hover:bg-amber-50"
+            : "text-green-600 hover:bg-green-50";
+          const statusActionTitle = isActive ? "Suspend Admin" : "Activate Admin";
+
+          return `
+            <tr>
+              <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(admin.id)}</span></td>
+              <td><span class="text-xs font-semibold text-stone-700">${escapeHTML(admin.name)}</span></td>
+              <td><span class="text-xs text-stone-600">${escapeHTML(admin.email)}</span></td>
+              <td><span class="text-xs text-stone-600">${escapeHTML(admin.phone)}</span></td>
+              <td><span class="text-xs font-medium text-stone-700">${escapeHTML(admin.role)}</span></td>
+              <td>${adminStatusBadge(admin.status)}</td>
+              <td><span class="text-xs text-stone-500">${escapeHTML(admin.lastLogin)}</span></td>
+              <td>
+                <div class="set-action-group">
+                  <button type="button" class="set-row-action text-stone-500 hover:text-blue-600 hover:bg-blue-50"
+                    data-action="view" data-id="${escapeHTML(admin.id)}"
+                    title="View Admin" aria-label="View Admin ${escapeHTML(admin.id)}">
+                    <i class="fa-solid fa-eye text-[11px]"></i>
+                  </button>
+                  <button type="button" class="set-row-action text-[#601D49] hover:bg-[#601D49]/10"
+                    data-action="edit" data-id="${escapeHTML(admin.id)}"
+                    title="Edit Admin" aria-label="Edit Admin ${escapeHTML(admin.id)}">
+                    <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                  </button>
+                  <button type="button" class="set-row-action ${statusActionColor}"
+                    data-action="status" data-id="${escapeHTML(admin.id)}"
+                    title="${statusActionTitle}" aria-label="${statusActionTitle} ${escapeHTML(admin.id)}">
+                    <i class="fa-solid ${statusActionIcon} text-[11px]"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+    }
+
+    // Form open/create
+    function openCreateAdminModal() {
+      editingAdminId = null;
+      adminForm.reset();
+      clearFormErrors();
+      populateAdminFormRole();
+
+      $("adminFormTitle").textContent = "Add Admin User";
+      $("saveAdminBtn").innerHTML = '<i class="fa-solid fa-check"></i> Save Admin';
+      $("formAdminId").value = generateAdminId();
+      $("formStatus").value = "Active";
+
+      openModal(adminFormModal);
+    }
+
+    // Form open/edit
+    function openEditAdminModal(id) {
+      const admin = adminUsers.find(a => a.id === id);
+      if (!admin) return;
+
+      editingAdminId = id;
+      adminForm.reset();
+      clearFormErrors();
+      populateAdminFormRole();
+
+      $("adminFormTitle").textContent = "Edit Admin User";
+      $("saveAdminBtn").innerHTML = '<i class="fa-solid fa-check"></i> Update Admin';
+
+      $("formAdminId").value = admin.id;
+      $("formFullName").value = admin.name;
+      $("formEmail").value = admin.email;
+      $("formPhone").value = admin.phone;
+      $("formUsername").value = admin.username || "";
+      $("formPassword").value = admin.password || "";
+      $("formConfirmPassword").value = admin.password || "";
+      $("formRole").value = admin.role;
+      $("formStatus").value = admin.status;
+      $("formNotes").value = admin.notes || "";
+
+      openModal(adminFormModal);
+    }
+
+    // =========================================================
+    // VALIDATION
+    // =========================================================
+
+    function clearFormErrors() {
+      document.querySelectorAll("#settings-page .set-error").forEach(e => {
+        e.textContent = "";
+        e.classList.remove("show");
+      });
+    }
+
+    function showFieldError(field, message) {
+      const error = $("error" + field);
+      if (!error) return;
+      error.textContent = message;
+      error.classList.add("show");
+    }
+
+    function validateAdminForm() {
+      clearFormErrors();
+      let valid = true;
+
+      const name = $("formFullName").value.trim();
+      const email = $("formEmail").value.trim();
+      const phone = $("formPhone").value.trim();
+      const password = $("formPassword").value;
+      const confirmPassword = $("formConfirmPassword").value;
+      const role = $("formRole").value;
+      const status = $("formStatus").value;
+
+      if (!name) {
+        showFieldError("FullName", "Full name is required.");
+        valid = false;
+      }
+
+      if (!email) {
+        showFieldError("Email", "Email is required.");
+        valid = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldError("Email", "Please enter a valid email address.");
+        valid = false;
+      } else {
+        const duplicate = adminUsers.some(a =>
+          a.email.toLowerCase() === email.toLowerCase() && a.id !== editingAdminId
+        );
+        if (duplicate) {
+          showFieldError("Email", "This email is already in use.");
+          valid = false;
+        }
+      }
+
+      if (!phone) {
+        showFieldError("Phone", "Phone number is required.");
+        valid = false;
+      } else if (!/^[\+\d\s\-()]{7,20}$/.test(phone)) {
+        showFieldError("Phone", "Please enter a valid phone number.");
+        valid = false;
+      }
+
+      if (!password) {
+        showFieldError("Password", "Password is required.");
+        valid = false;
+      } else if (password.length < 6) {
+        showFieldError("Password", "Password must be at least 6 characters.");
+        valid = false;
+      }
+
+      if (!confirmPassword) {
+        showFieldError("ConfirmPassword", "Please confirm your password.");
+        valid = false;
+      } else if (password !== confirmPassword) {
+        showFieldError("ConfirmPassword", "Passwords do not match.");
+        valid = false;
+      }
+
+      if (!role) {
+        showFieldError("Role", "Please select a role.");
+        valid = false;
+      }
+
+      if (!status) {
+        showFieldError("Status", "Please select an account status.");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function saveAdmin(e) {
+      e.preventDefault();
+
+      if (!validateAdminForm()) {
+        showToast("Please correct the highlighted fields.", "error");
+        return;
+      }
+
+      const now = new Date();
+      const lastLoginString = now.toLocaleDateString("en-IN", {
+        year: "numeric", month: "2-digit", day: "2-digit"
+      }) + " " + now.toLocaleTimeString("en-IN", {
+        hour: "2-digit", minute: "2-digit", hour12: true
+      });
+
+      if (editingAdminId) {
+        const index = adminUsers.findIndex(a => a.id === editingAdminId);
+        if (index === -1) return;
+
+        adminUsers[index] = {
+          ...adminUsers[index],
+          name: $("formFullName").value.trim(),
+          email: $("formEmail").value.trim(),
+          phone: $("formPhone").value.trim(),
+          username: $("formUsername").value.trim(),
+          password: $("formPassword").value,
+          role: $("formRole").value,
+          status: $("formStatus").value,
+          notes: $("formNotes").value.trim()
+        };
+
+        closeModal(adminFormModal);
+        renderAdminUsers();
+        showToast("Admin user updated successfully.");
+      } else {
+        const newAdmin = {
+          id: generateAdminId(),
+          name: $("formFullName").value.trim(),
+          email: $("formEmail").value.trim(),
+          phone: $("formPhone").value.trim(),
+          username: $("formUsername").value.trim(),
+          password: $("formPassword").value,
+          role: $("formRole").value,
+          status: $("formStatus").value,
+          lastLogin: lastLoginString,
+          createdDate: new Date().toISOString().split("T")[0],
+          notes: $("formNotes").value.trim()
+        };
+
+        adminUsers.unshift(newAdmin);
+        closeModal(adminFormModal);
+        renderAdminUsers();
+        showToast("Admin user created successfully.");
+      }
+    }
+
+    // =========================================================
+    // VIEW ADMIN
+    // =========================================================
+
+    function detailItem(label, value, full = false) {
+      return `
+        <div class="set-detail-item ${full ? "full" : ""}">
+          <p class="set-detail-label">${escapeHTML(label)}</p>
+          <p class="set-detail-value">${escapeHTML(value || "—")}</p>
+        </div>
+      `;
+    }
+
+    function openViewAdminModal(id) {
+      const admin = adminUsers.find(a => a.id === id);
+      if (!admin) return;
+
+      viewingAdminId = id;
+
+      $("adminViewSubtitle").textContent = `${admin.id} · ${admin.name}`;
+      $("viewHeroTitle").textContent = admin.name;
+      $("viewHeroSub").textContent = admin.email;
+      $("viewHeroStatus").innerHTML = adminStatusBadge(admin.status);
+
+      $("viewProfile").innerHTML = [
+        detailItem("Admin ID", admin.id),
+        detailItem("Full Name", admin.name),
+        detailItem("Email", admin.email),
+        detailItem("Phone", admin.phone)
+      ].join("");
+
+      $("viewAccess").innerHTML = [
+        detailItem("Assigned Role", admin.role),
+        detailItem("Account Status", admin.status),
+        detailItem("Last Login", admin.lastLogin)
+      ].join("");
+
+      $("viewAdditional").innerHTML = [
+        detailItem("Created Date", formatDate(admin.createdDate)),
+        detailItem("Notes", admin.notes || "No notes.", true)
+      ].join("");
+
+      openModal(adminViewModal);
+    }
+
+    // =========================================================
+    // STATUS MANAGEMENT
+    // =========================================================
+
+    function openStatusChangeModal(id) {
+      const admin = adminUsers.find(a => a.id === id);
+      if (!admin) return;
+
+      statusChangingAdminId = id;
+
+      const isActive = admin.status === "Active";
+      pendingStatusValue = isActive ? "Suspended" : "Active";
+
+      const title = $("statusChangeTitle");
+      const message = $("statusChangeMessage");
+      const icon = $("statusChangeIcon");
+      const iconWrap = $("statusChangeIconWrap");
+      const confirmBtn = $("confirmStatusBtn");
+
+      if (pendingStatusValue === "Suspended") {
+        title.textContent = "Suspend Admin User?";
+        message.textContent = "Are you sure you want to suspend this admin user? They will lose access to the system until reactivated.";
+        icon.className = "fa-solid fa-user-slash text-lg";
+        iconWrap.className = "mx-auto mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-amber-50 text-amber-600";
+        confirmBtn.innerHTML = '<i class="fa-solid fa-user-slash"></i> Suspend Admin';
+        confirmBtn.className = "set-primary-btn !bg-amber-600 !border-amber-600 hover:!bg-amber-700";
+      } else {
+        title.textContent = "Activate Admin User?";
+        message.textContent = "Are you sure you want to activate this admin user? They will regain access to the system.";
+        icon.className = "fa-solid fa-user-check text-lg";
+        iconWrap.className = "mx-auto mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-green-50 text-green-600";
+        confirmBtn.innerHTML = '<i class="fa-solid fa-user-check"></i> Activate Admin';
+        confirmBtn.className = "set-primary-btn !bg-green-600 !border-green-600 hover:!bg-green-700";
+      }
+
+      $("statusChangeSummary").innerHTML = `
+        <div><strong>Admin:</strong> ${escapeHTML(admin.name)}</div>
+        <div><strong>ID:</strong> ${escapeHTML(admin.id)}</div>
+        <div><strong>Current Status:</strong> ${escapeHTML(admin.status)}</div>
+        <div><strong>New Status:</strong> ${escapeHTML(pendingStatusValue)}</div>
+      `;
+
+      openModal(statusChangeModal);
+    }
+
+    function confirmStatusChange() {
+      if (!statusChangingAdminId || !pendingStatusValue) return;
+
+      const index = adminUsers.findIndex(a => a.id === statusChangingAdminId);
+      if (index === -1) return;
+
+      adminUsers[index].status = pendingStatusValue;
+
+      statusChangingAdminId = null;
+      pendingStatusValue = null;
+
+      closeModal(statusChangeModal);
+      renderAdminUsers();
+      showToast("User status updated successfully.");
+    }
+
+    // =========================================================
+    // ROLES & PERMISSIONS
+    // =========================================================
+
+    function permissionSummaryText(permissions) {
+      const modulesWithAccess = MODULES.filter(m => (permissions[m] || []).length > 0);
+      return `${modulesWithAccess.length} module${modulesWithAccess.length !== 1 ? "s" : ""}`;
+    }
+
+    function renderRoles() {
+      const tbody = $("rolesTableBody");
+
+      tbody.innerHTML = roleDefinitions.map(role => `
+        <tr>
+          <td><span class="text-xs font-bold text-[#601D49]">${escapeHTML(role.name)}</span></td>
+          <td><span class="text-xs text-stone-600">${escapeHTML(role.description)}</span></td>
+          <td class="text-center"><span class="text-xs font-semibold text-stone-700">${countRoleUsers(role.name)}</span></td>
+          <td class="text-center">
+            <span class="inline-flex items-center gap-1 rounded-full bg-[#601D49]/10 px-2 py-1 text-[10px] font-semibold text-[#601D49]">
+              <i class="fa-solid fa-key text-[8px]"></i>
+              ${permissionSummaryText(role.permissions)}
+            </span>
+          </td>
+          <td>
+            <div class="set-action-group">
+              <button type="button" class="set-row-action text-stone-500 hover:text-blue-600 hover:bg-blue-50"
+                data-role-action="view" data-role="${escapeHTML(role.name)}"
+                title="View Permissions" aria-label="View Permissions for ${escapeHTML(role.name)}">
+                <i class="fa-solid fa-eye text-[11px]"></i>
+              </button>
+              <button type="button" class="set-row-action text-[#601D49] hover:bg-[#601D49]/10"
+                data-role-action="edit" data-role="${escapeHTML(role.name)}"
+                title="Edit Permissions" aria-label="Edit Permissions for ${escapeHTML(role.name)}">
+                <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function openRolePermissionModal(roleName, editable) {
+      const role = getRoleByName(roleName);
+      if (!role) return;
+
+      editingRoleName = roleName;
+
+      $("rolePermissionSubtitle").textContent = `${role.name} — ${role.description}`;
+
+      const tbody = $("permissionMatrixBody");
+      tbody.innerHTML = MODULES.map(mod => {
+        const perms = role.permissions[mod] || [];
+        return `
+          <tr>
+            <td>${escapeHTML(mod)}</td>
+            ${PERMISSION_TYPES.map(p => `
+              <td>
+                <input type="checkbox" class="perm-check" data-module="${escapeHTML(mod)}" data-perm="${p}"
+                  ${perms.includes(p) ? "checked" : ""} ${editable ? "" : "disabled"}
+                  aria-label="${escapeHTML(mod)} ${p} permission">
+              </td>
+            `).join("")}
+          </tr>
+        `;
+      }).join("");
+
+      $("savePermissionsBtn").classList.toggle("hidden", !editable);
+
+      openModal(rolePermissionModal);
+    }
+
+    function saveRolePermissions() {
+      if (!editingRoleName) return;
+
+      const role = getRoleByName(editingRoleName);
+      if (!role) return;
+
+      const newPerms = {};
+      MODULES.forEach(mod => { newPerms[mod] = []; });
+
+      document.querySelectorAll("#permissionMatrixBody .perm-check").forEach(checkbox => {
+        if (checkbox.checked) {
+          const mod = checkbox.dataset.module;
+          const perm = checkbox.dataset.perm;
+          if (newPerms[mod]) newPerms[mod].push(perm);
+        }
+      });
+
+      role.permissions = newPerms;
+
+      closeModal(rolePermissionModal);
+      renderRoles();
+      showToast("Role permissions updated successfully.");
+    }
+
+    // =========================================================
+    // SYSTEM SETTINGS
+    // =========================================================
+
+    function loadSystemSettings() {
+      $("sysCompanyName").value = systemSettings.companyName;
+      $("sysCompanyEmail").value = systemSettings.companyEmail;
+      $("sysCompanyPhone").value = systemSettings.companyPhone;
+      $("sysCompanyAddress").value = systemSettings.companyAddress;
+      $("sysTimezone").value = systemSettings.timezone;
+      $("sysCurrency").value = systemSettings.currency;
+      $("sysDateFormat").value = systemSettings.dateFormat;
+      $("sysSystemName").value = systemSettings.systemName;
+      $("sysDefaultTripStatus").value = systemSettings.defaultTripStatus;
+      $("sysDefaultInvoiceStatus").value = systemSettings.defaultInvoiceStatus;
+      $("sysDefaultPayrollStatus").value = systemSettings.defaultPayrollStatus;
+    }
+
+    function saveSystemSettings() {
+      systemSettings = {
+        companyName: $("sysCompanyName").value.trim(),
+        companyEmail: $("sysCompanyEmail").value.trim(),
+        companyPhone: $("sysCompanyPhone").value.trim(),
+        companyAddress: $("sysCompanyAddress").value.trim(),
+        timezone: $("sysTimezone").value,
+        currency: $("sysCurrency").value,
+        dateFormat: $("sysDateFormat").value,
+        systemName: $("sysSystemName").value.trim(),
+        defaultTripStatus: $("sysDefaultTripStatus").value,
+        defaultInvoiceStatus: $("sysDefaultInvoiceStatus").value,
+        defaultPayrollStatus: $("sysDefaultPayrollStatus").value
+      };
+
+      try {
+        localStorage.setItem("tms_system_settings", JSON.stringify(systemSettings));
+      } catch (e) { /* localStorage unavailable */ }
+
+      showToast("Settings saved successfully.");
+    }
+
+    // =========================================================
+    // OPERATIONAL SETTINGS
+    // =========================================================
+
+    function loadOperationalSettings() {
+      $("opDefaultTripStatus").value = operationalSettings.defaultTripStatus;
+      $("opAllowTripEditing").checked = operationalSettings.allowTripEditing;
+      $("opRequireDriver").checked = operationalSettings.requireDriverAssignment;
+      $("opRequireVehicle").checked = operationalSettings.requireVehicleAssignment;
+      $("opDefaultPaymentStatus").value = operationalSettings.defaultPaymentStatus;
+      $("opInvoiceDuePeriod").value = operationalSettings.invoiceDuePeriod;
+      $("opDefaultPayrollStatus").value = operationalSettings.defaultPayrollStatus;
+      $("opDefaultSalaryType").value = operationalSettings.defaultSalaryType;
+      $("opNotifyTrip").checked = operationalSettings.notifyTrip;
+      $("opNotifyInvoice").checked = operationalSettings.notifyInvoice;
+      $("opNotifyPayroll").checked = operationalSettings.notifyPayroll;
+    }
+
+    function saveOperationalSettings() {
+      operationalSettings = {
+        defaultTripStatus: $("opDefaultTripStatus").value,
+        allowTripEditing: $("opAllowTripEditing").checked,
+        requireDriverAssignment: $("opRequireDriver").checked,
+        requireVehicleAssignment: $("opRequireVehicle").checked,
+        defaultPaymentStatus: $("opDefaultPaymentStatus").value,
+        invoiceDuePeriod: Number($("opInvoiceDuePeriod").value) || 0,
+        defaultPayrollStatus: $("opDefaultPayrollStatus").value,
+        defaultSalaryType: $("opDefaultSalaryType").value,
+        notifyTrip: $("opNotifyTrip").checked,
+        notifyInvoice: $("opNotifyInvoice").checked,
+        notifyPayroll: $("opNotifyPayroll").checked
+      };
+
+      try {
+        localStorage.setItem("tms_operational_settings", JSON.stringify(operationalSettings));
+      } catch (e) { /* localStorage unavailable */ }
+
+      showToast("Settings saved successfully.");
+    }
+
+    // =========================================================
+    // EVENT LISTENERS
+    // =========================================================
+
+    // Tabs
+    document.querySelectorAll(".set-tab").forEach(tab => {
+      tab.addEventListener("click", () => switchSection(tab.dataset.section));
+    });
+
+    // Admin search & filters
+    $("adminSearch").addEventListener("input", renderAdminUsers);
+    $("filterRole").addEventListener("change", renderAdminUsers);
+    $("filterStatus").addEventListener("change", renderAdminUsers);
+
+    $("clearAdminFiltersBtn").addEventListener("click", () => {
+      $("adminSearch").value = "";
+      $("filterRole").value = "";
+      $("filterStatus").value = "";
+      renderAdminUsers();
+    });
+
+    // Add admin
+    $("addAdminBtn").addEventListener("click", openCreateAdminModal);
+
+    // Admin form submit
+    adminForm.addEventListener("submit", saveAdmin);
+
+    // Admin table actions
+    $("adminTableBody").addEventListener("click", e => {
+      const btn = e.target.closest("[data-action]");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === "view") openViewAdminModal(id);
+      if (action === "edit") openEditAdminModal(id);
+      if (action === "status") openStatusChangeModal(id);
+    });
+
+    // View modal edit button
+    $("viewEditAdminBtn").addEventListener("click", () => {
+      if (!viewingAdminId) return;
+      const id = viewingAdminId;
+      closeModal(adminViewModal);
+      openEditAdminModal(id);
+    });
+
+    // Status change confirm
+    $("confirmStatusBtn").addEventListener("click", confirmStatusChange);
+
+    // Roles table actions
+    $("rolesTableBody").addEventListener("click", e => {
+      const btn = e.target.closest("[data-role-action]");
+      if (!btn) return;
+      const roleName = btn.dataset.role;
+      const action = btn.dataset.roleAction;
+      if (action === "view") openRolePermissionModal(roleName, false);
+      if (action === "edit") openRolePermissionModal(roleName, true);
+    });
+
+    // Save permissions
+    $("savePermissionsBtn").addEventListener("click", saveRolePermissions);
+
+    // Save system settings
+    $("saveSystemBtn").addEventListener("click", saveSystemSettings);
+
+    // Save operational settings
+    $("saveOperationalBtn").addEventListener("click", saveOperationalSettings);
+
+    // =========================================================
+    // INITIALIZATION
+    // =========================================================
+
+    function initializeSettingsModule() {
+      // Try to restore from localStorage
+      try {
+        const savedSystem = localStorage.getItem("tms_system_settings");
+        if (savedSystem) systemSettings = { ...systemSettings, ...JSON.parse(savedSystem) };
+
+        const savedOps = localStorage.getItem("tms_operational_settings");
+        if (savedOps) operationalSettings = { ...operationalSettings, ...JSON.parse(savedOps) };
+      } catch (e) { /* ignore */ }
+
+      populateAdminFilterRole();
+      populateAdminFormRole();
+      renderAdminUsers();
+      renderRoles();
+      loadSystemSettings();
+      loadOperationalSettings();
+    }
+
+    initializeSettingsModule();
+  </script>
+
+  <!-- Existing shared navigation JavaScript -->
+  <script src="../../js/nav-sidebar.js"></script>
+
+</body>
+
+</html>
