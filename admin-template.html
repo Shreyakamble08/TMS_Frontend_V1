@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TMS Admin Template</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Common navigation styles -->
+  <link rel="stylesheet" href="css/nav-sidebar.css" />
+</head>
+<body class="font-sans antialiased">
+
+  <!-- ==========================================
+       Common Navigation Mount Point
+       js/nav-sidebar.js fetches partials/nav-sidebar.html into this element.
+       Requires a local dev server (fetch does not work on file://).
+       ========================================== -->
+  <div id="tms-nav-root" data-partial="partials/nav-sidebar.html"></div>
+
+  <!-- ==========================================
+       Main Content Area
+       .tms-main offsets the content for the fixed sidebar and navbar
+       and adjusts automatically when the sidebar collapses.
+       ========================================== -->
+  <main class="tms-main">
+    <div class="p-6 lg:p-8">
+      <h2 class="text-2xl font-semibold text-neutral-900">Welcome to TMS Admin</h2>
+      <p class="mt-2 max-w-2xl text-neutral-600">
+        This is the common TMS admin template. Future TMS modules will use this layout.
+      </p>
+
+      <!-- Neutral placeholder section for layout verification -->
+      <section class="mt-6 rounded-xl border border-dashed border-neutral-300 bg-white p-10 text-center text-sm text-neutral-500">
+        Module content will appear here.
+      </section>
+    </div>
+  </main>
+
+  <!-- Common navigation behaviour -->
+  <script src="js/nav-sidebar.js"></script>
+</body>
+</html>

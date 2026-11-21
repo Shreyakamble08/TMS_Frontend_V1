@@ -1,0 +1,388 @@
+<!-- ==========================================
+     TMS Common Navigation Component
+     ========================================== -->
+
+<!-- ==========================================
+     TMS Common Sidebar
+     ========================================== -->
+<aside id="tms-sidebar" class="tms-sidebar" aria-label="Main navigation">
+
+    <!-- Sidebar header / branding -->
+    <div class="tms-sidebar-header">
+        <a href="/pages/dashboard.html" class="tms-brand" aria-label="TMS home">
+            <span class="tms-brand-mark" aria-hidden="true">
+                <svg class="tms-icon" viewBox="0 0 24 24">
+                    <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                    <path d="M15 18H9" />
+                    <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                    <circle cx="17" cy="18" r="2" />
+                    <circle cx="7" cy="18" r="2" />
+                </svg>
+            </span>
+            <span class="tms-brand-text tms-label">
+                <span class="block text-[15px] font-semibold leading-tight text-neutral-900">TMS</span>
+                <span class="block text-[11px] leading-tight text-neutral-500">Transport Management</span>
+            </span>
+        </a>
+
+        <!-- 17/11 START: Added desktop toggle arrow beside heading -->
+        <button type="button" id="tms-sidebar-toggle-desktop" class="tms-icon-btn tms-desktop-toggle"
+            aria-label="Toggle sidebar">
+            <svg class="tms-icon tms-toggle-icon" viewBox="0 0 24 24">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+        </button>
+        <!-- 17/11 END -->
+
+        <!-- 17/11 START: Mobile close button -->
+        <button type="button" id="tms-sidebar-close" class="tms-icon-btn tms-mobile-only"
+            aria-label="Close navigation menu">
+            <svg class="tms-icon" viewBox="0 0 24 24">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+            </svg>
+        </button>
+        <!-- 17/11 END -->
+    </div>
+
+    <!-- Sidebar navigation -->
+    <nav class="tms-nav" aria-label="TMS modules">
+
+        <!-- MAIN -->
+        <div class="tms-section">
+            <p class="tms-section-title"><span class="tms-label">Main</span></p>
+            <ul class="tms-list">
+                <li>
+                    <a href="/pages/dashboard/dashboard.html" class="tms-link" data-page="dashboard.html" data-tooltip="Dashboard">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <rect width="7" height="9" x="3" y="3" rx="1" />
+                            <rect width="7" height="5" x="14" y="3" rx="1" />
+                            <rect width="7" height="9" x="14" y="12" rx="1" />
+                            <rect width="7" height="5" x="3" y="16" rx="1" />
+                        </svg>
+                        <span class="tms-label">Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- OPERATIONS -->
+        <div class="tms-section">
+            <p class="tms-section-title"><span class="tms-label">Operations</span></p>
+            <ul class="tms-list">
+                <li>
+                    <a href="/pages/trip/trips.html" class="tms-link" data-page="trips.html" data-tooltip="Trips">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <circle cx="6" cy="19" r="3" />
+                            <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+                            <circle cx="18" cy="5" r="3" />
+                        </svg>
+                        <span class="tms-label">Trip Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/pages/vehicle/vehicles.html" class="tms-link" data-page="vehicles.html" data-tooltip="Vehicles">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                            <path d="M15 18H9" />
+                            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                            <circle cx="17" cy="18" r="2" />
+                            <circle cx="7" cy="18" r="2" />
+                        </svg>
+                        <span class="tms-label">Vehicle Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/pages/driver/drivers.html" class="tms-link" data-page="drivers.html" data-tooltip="Drivers">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="5" />
+                            <path d="M20 21a8 8 0 0 0-16 0" />
+                        </svg>
+                        <span class="tms-label">Driver Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/pages/customer/customers.html" class="tms-link" data-page="customers.html" data-tooltip="Customers">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        <span class="tms-label">Customer Management</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- FINANCE -->
+        <div class="tms-section">
+            <p class="tms-section-title"><span class="tms-label">Finance </span></p>
+            <ul class="tms-list">
+                <li>
+                    <a href="invoices.html" class="tms-link" data-page="invoices.html" data-tooltip="Invoices">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
+                            <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+                            <path d="M12 17.5v-11" />
+                        </svg>
+                        <span class="tms-label">Invoice Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="payroll.html" class="tms-link" data-page="payroll.html" data-tooltip="Payroll">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2" />
+                            <path
+                                d="M3 11h3c.8 0 1.6.3 2.1.9l1.1.9c1.6 1.6 4.1 1.6 5.7 0l1.1-.9c.5-.6 1.3-.9 2.1-.9H21" />
+                        </svg>
+                        <span class="tms-label">Payroll Management</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- INSIGHTS -->
+        <div class="tms-section">
+            <p class="tms-section-title"><span class="tms-label">Insights</span></p>
+            <ul class="tms-list">
+                <li>
+                    <a href="reports.html" class="tms-link" data-page="reports.html" data-tooltip="Reports">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <path d="M3 3v18h18" />
+                            <path d="M18 17V9" />
+                            <path d="M13 17V5" />
+                            <path d="M8 17v-3" />
+                        </svg>
+                        <span class="tms-label">Reports</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- SYSTEM -->
+        <div class="tms-section">
+            <p class="tms-section-title"><span class="tms-label">System</span></p>
+            <ul class="tms-list">
+                <li>
+                    <a href="settings.html" class="tms-link" data-page="settings.html" data-tooltip="Settings">
+                        <svg class="tms-icon" viewBox="0 0 24 24">
+                            <path
+                                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <span class="tms-label">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</aside>
+
+<!-- ==========================================
+     Mobile Backdrop (shown behind the mobile drawer)
+     ========================================== -->
+<div id="tms-backdrop" class="tms-backdrop" aria-hidden="true"></div>
+
+<!-- ==========================================
+     TMS Common Navbar
+     ========================================== -->
+<header id="tms-navbar" class="tms-navbar">
+
+    <!-- Left: sidebar toggle + current module title -->
+    <div class="flex items-center gap-3 min-w-0">
+        <!-- 17/11 START: Hidden on desktop as toggle is now in sidebar header -->
+        <button type="button" id="tms-sidebar-toggle" class="tms-icon-btn tms-mobile-only" aria-label="Toggle sidebar"
+            aria-controls="tms-sidebar" aria-expanded="true">
+            <svg class="tms-icon" viewBox="0 0 24 24">
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M9 3v18" />
+            </svg>
+        </button>
+        <!-- 17/11 END -->
+        <h1 id="tms-page-title" class="truncate text-lg font-bold tracking-tight text-[#601d49]"
+            style="font-family: 'Fira Sans', sans-serif;">
+            Dashboard
+        </h1>
+    </div>
+
+    <!-- Right: notification + admin profile -->
+    <div class="flex items-center gap-2">
+
+
+        <!-- ==========================================
+     Notifications Dropdown
+     ========================================== -->
+        <div class="relative" id="tms-notifications">
+
+            <!-- Notification trigger -->
+            <button type="button" id="tms-notification-btn" class="tms-icon-btn tms-bell" aria-label="Notifications"
+                aria-expanded="false" aria-controls="tms-notification-panel">
+                <svg class="tms-icon" viewBox="0 0 24 24">
+                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                </svg>
+
+                <span class="tms-badge" id="tms-notification-count" aria-label="3 unread notifications">3</span>
+            </button>
+
+            <!-- Notification panel -->
+            <div class="tms-notification-panel" id="tms-notification-panel" role="region"
+                aria-label="Recent notifications" hidden>
+                <!-- Panel header -->
+                <div class="tms-notification-header">
+                    <div>
+                        <h3>Notifications</h3>
+                        <p id="tms-notification-subtitle">You have 3 unread notifications</p>
+                    </div>
+
+                    <button type="button" class="tms-mark-read" id="tms-mark-all-read">
+                        Mark all as read
+                    </button>
+                </div>
+
+                <!-- Notification list -->
+                <div class="tms-notification-list" id="tms-notification-list">
+
+                    <div class="tms-notification-item is-unread" data-notification>
+                        <span class="tms-notification-icon trip">
+                            <svg class="tms-icon" viewBox="0 0 24 24">
+                                <path d="M3 12h18" />
+                                <path d="m13 6 6 6-6 6" />
+                                <circle cx="5" cy="12" r="2" />
+                            </svg>
+                        </span>
+
+                        <div class="tms-notification-content">
+                            <p class="tms-notification-title">New trip created</p>
+                            <p class="tms-notification-desc">
+                                A new trip has been added to the system.
+                            </p>
+                            <span class="tms-notification-time">5 minutes ago</span>
+                        </div>
+
+                        <span class="tms-unread-dot"></span>
+                    </div>
+
+                    <div class="tms-notification-item is-unread" data-notification>
+                        <span class="tms-notification-icon driver">
+                            <svg class="tms-icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="8" r="5" />
+                                <path d="M20 21a8 8 0 0 0-16 0" />
+                            </svg>
+                        </span>
+
+                        <div class="tms-notification-content">
+                            <p class="tms-notification-title">New driver registered</p>
+                            <p class="tms-notification-desc">
+                                A new driver profile has been added.
+                            </p>
+                            <span class="tms-notification-time">30 minutes ago</span>
+                        </div>
+
+                        <span class="tms-unread-dot"></span>
+                    </div>
+
+                    <div class="tms-notification-item is-unread" data-notification>
+                        <span class="tms-notification-icon invoice">
+                            <svg class="tms-icon" viewBox="0 0 24 24">
+                                <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
+                                <path d="M8 9h8M8 13h8M8 17h4" />
+                            </svg>
+                        </span>
+
+                        <div class="tms-notification-content">
+                            <p class="tms-notification-title">Invoice payment pending</p>
+                            <p class="tms-notification-desc">
+                                An invoice is awaiting payment confirmation.
+                            </p>
+                            <span class="tms-notification-time">2 hours ago</span>
+                        </div>
+
+                        <span class="tms-unread-dot"></span>
+                    </div>
+
+                    <div class="tms-notification-item" data-notification>
+                        <span class="tms-notification-icon vehicle">
+                            <svg class="tms-icon" viewBox="0 0 24 24">
+                                <path d="M3 11h18l-2-6H5l-2 6Z" />
+                                <path d="M5 11v8h14v-8" />
+                                <circle cx="7.5" cy="16" r="1" />
+                                <circle cx="16.5" cy="16" r="1" />
+                            </svg>
+                        </span>
+
+                        <div class="tms-notification-content">
+                            <p class="tms-notification-title">Vehicle status updated</p>
+                            <p class="tms-notification-desc">
+                                Vehicle availability information was updated.
+                            </p>
+                            <span class="tms-notification-time">Yesterday</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Panel footer -->
+                <div class="tms-notification-footer">
+                    <span>Showing recent notifications</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+         Admin Profile Dropdown
+         ========================================== -->
+        <div class="relative" id="tms-profile">
+            <button type="button" id="tms-profile-btn" class="tms-profile-btn" aria-haspopup="menu"
+                aria-expanded="false" aria-controls="tms-profile-menu">
+                <span class="tms-avatar" aria-hidden="true">A</span>
+                <span class="hidden text-sm font-medium text-neutral-800 sm:inline">Admin</span>
+                <svg class="tms-icon tms-chevron" viewBox="0 0 24 24">
+                    <path d="m6 9 6 6 6-6" />
+                </svg>
+            </button>
+
+            <div id="tms-profile-menu" class="tms-dropdown" role="menu" aria-labelledby="tms-profile-btn" hidden>
+                <button type="button" id="tms-my-profile" class="tms-menu-item" role="menuitem">
+                    <svg class="tms-icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="5" />
+                        <path d="M20 21a8 8 0 0 0-16 0" />
+                    </svg>
+                    My Profile
+                </button>
+                <div class="tms-divider" role="separator"></div>
+                <button type="button" id="tms-logout-btn" class="tms-menu-item" role="menuitem">
+                    <svg class="tms-icon" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <path d="m16 17 5-5-5-5" />
+                        <path d="M21 12H9" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ==========================================
+     Logout Confirmation Overlay
+     ========================================== -->
+<div id="tms-logout-modal" class="tms-modal" hidden>
+    <div class="tms-modal-overlay" data-close-modal></div>
+    <div class="tms-modal-card" role="dialog" aria-modal="true" aria-labelledby="tms-logout-title"
+        aria-describedby="tms-logout-desc">
+        <h2 id="tms-logout-title" class="text-lg font-semibold text-neutral-900">Logout</h2>
+        <p id="tms-logout-desc" class="mt-2 text-sm font-medium text-neutral-800">Are you sure you want to logout?</p>
+        <p class="mt-1 text-sm text-neutral-500">You will be redirected to the admin login page.</p>
+        <div class="mt-6 flex justify-end gap-3">
+            <button type="button" id="tms-logout-cancel" class="tms-btn tms-btn-secondary">Cancel</button>
+            <button type="button" id="tms-logout-confirm" class="tms-btn tms-btn-primary">Logout</button>
+        </div>
+    </div>
+</div>
+
+<!-- TMS-NAV-END -->
+</body>

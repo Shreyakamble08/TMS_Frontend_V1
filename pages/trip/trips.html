@@ -1,0 +1,2713 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trips Management | TMS Admin</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <!-- Shared Navigation CSS -->
+    <link rel="stylesheet" href="../../css/nav-sidebar.css" />
+
+    <style>
+      /* =========================================================
+       TRIPS MODULE THEME
+    ========================================================= */
+
+      #trips-page {
+        --trip-primary: #601d49;
+        --trip-primary-dark: #4b1738;
+        --trip-primary-soft: #f7eff4;
+        --trip-bg: #fafaf9;
+        --trip-border: #e7e5e4;
+        --trip-text: #292524;
+        --trip-muted: #78716c;
+        color: var(--trip-text);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      #trips-page * {
+        box-sizing: border-box;
+      }
+
+      #trips-page .trip-card {
+        background: #fff;
+        border: 1px solid var(--trip-border);
+        border-radius: 10px;
+      }
+
+      #trips-page .trip-primary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 38px;
+        padding: 0 15px;
+        border: 1px solid var(--trip-primary);
+        border-radius: 7px;
+        background: var(--trip-primary);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      #trips-page .trip-primary-btn:hover {
+        background: var(--trip-primary-dark);
+      }
+
+      #trips-page .trip-secondary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 36px;
+        padding: 0 12px;
+        border: 1px solid var(--trip-border);
+        border-radius: 7px;
+        background: #fff;
+        color: #57534e;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      #trips-page .trip-secondary-btn:hover {
+        background: #f5f5f4;
+      }
+
+      #trips-page .trip-input,
+      #trips-page .trip-select,
+      #trips-page .trip-textarea {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid #e7e5e4;
+        border-radius: 7px;
+        background: #fff;
+        padding: 9px 11px;
+        color: #292524;
+        font-size: 12px;
+        outline: none;
+        transition: 0.2s ease;
+      }
+
+      #trips-page .trip-input,
+      #trips-page .trip-select {
+        height: 38px;
+      }
+
+      #trips-page .trip-textarea {
+        min-height: 75px;
+        resize: vertical;
+      }
+
+      #trips-page .trip-input:focus,
+      #trips-page .trip-select:focus,
+      #trips-page .trip-textarea:focus {
+        border-color: var(--trip-primary);
+        box-shadow: 0 0 0 3px rgba(96, 29, 73, 0.08);
+      }
+
+      #trips-page .trip-field-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #57534e;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      #trips-page .trip-required {
+        color: #dc2626;
+      }
+
+      /* =========================================================
+       KPI CARDS
+    ========================================================= */
+
+      #trips-page .trip-kpi-card {
+        min-width: 0;
+        min-height: 82px;
+        padding: 9px 14px;
+
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          #faf5f8 55%,
+          #f7eff4 100%
+        );
+
+        border: 1px solid rgba(96, 29, 73, 0.16);
+        border-radius: 9px;
+
+        box-shadow:
+          0 2px 5px rgba(96, 29, 73, 0.04),
+          0 4px 10px rgba(96, 29, 73, 0.035);
+
+        transition: all 0.2s ease;
+      }
+
+      #trips-page .trip-kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(96, 29, 73, 0.28);
+        box-shadow: 0 5px 12px rgba(96, 29, 73, 0.07);
+      }
+
+      /* KPI Icon */
+      #trips-page .trip-kpi-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 30px;
+        height: 30px;
+
+        border-radius: 7px;
+        font-size: 13px;
+
+        background: rgba(96, 29, 73, 0.06);
+        color: var(--trip-primary);
+      }
+
+      /* KPI Value */
+      #trips-page .trip-kpi-value {
+        margin-top: 5px;
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 1.1;
+        color: #292524;
+      }
+
+      /* KPI Label */
+      #trips-page .trip-kpi-label {
+        margin-top: 2px;
+        color: #78716c;
+        font-size: 10px;
+        line-height: 1.15;
+      }
+
+      /* Compact KPI Card */
+      #trips-page .trip-kpi-card {
+        min-height: 76px;
+        padding: 8px 12px;
+        border-radius: 9px;
+      }
+
+      /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+      #trips-page .trip-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      #trips-page .trip-status::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      #trips-page .status-scheduled {
+        color: #2563eb;
+        background: #eff6ff;
+      }
+
+      #trips-page .status-in-progress {
+        color: #b45309;
+        background: #fffbeb;
+      }
+
+      #trips-page .status-completed {
+        color: #15803d;
+        background: #f0fdf4;
+      }
+
+      #trips-page .status-delayed {
+        color: #c2410c;
+        background: #fff7ed;
+      }
+
+      #trips-page .status-cancelled {
+        color: #b91c1c;
+        background: #fef2f2;
+      }
+
+      /* =========================================================
+       TABLE
+    ========================================================= */
+      /* =========================================================
+   COMPACT GRID TABLE
+========================================================= */
+      #trips-page .trip-table {
+        width: 100%;
+        min-width: 1050px;
+        border-collapse: collapse; /* Required for grid lines to touch */
+      }
+
+      #trips-page .trip-table th {
+        padding: 8px 12px; /* Very compact header */
+        background: #fafaf9;
+        border: 1px solid var(--trip-border);
+        color: #78716c;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+      }
+
+      #trips-page .trip-table td {
+        padding: 6px 12px; /* Very compact row height */
+        border: 1px solid var(--trip-border);
+        color: #57534e;
+        font-size: 11px;
+        vertical-align: middle;
+      }
+
+      #trips-page .trip-table tbody tr:hover {
+        background: #fdfbfd;
+      }
+
+      /* =========================================================
+   ACTION ICON BUTTONS
+========================================================= */
+      #trips-page .action-icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      #trips-page .action-icon-btn:focus-visible {
+        outline: 2px solid #601d49;
+        outline-offset: 1px;
+      }
+      /* =========================================================
+       MODALS - IMPORTANT DISPLAY FIX
+    ========================================================= */
+
+      #trips-page .trip-modal-backdrop {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 10000 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(28, 25, 23, 0.55);
+        backdrop-filter: blur(3px);
+      }
+
+      /* Tailwind hidden class must always hide the overlay */
+      #trips-page .trip-modal-backdrop.hidden {
+        display: none !important;
+      }
+
+      #trips-page .trip-modal-panel {
+        position: relative;
+        width: 100%;
+        max-width: 660px;
+        max-height: 90vh;
+        overflow-y: auto;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      }
+
+      #trips-page .trip-modal-panel.trip-modal-small {
+        max-width: 430px;
+      }
+
+      #trips-page .trip-modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 17px 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--trip-border);
+      }
+
+      #trips-page .trip-modal-body {
+        padding: 20px;
+      }
+
+      #trips-page .trip-modal-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+        padding: 13px 20px;
+        background: #fff;
+        border-top: 1px solid var(--trip-border);
+      }
+
+      #trips-page .trip-close-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 6px;
+        background: #f5f5f4;
+        color: #57534e;
+        cursor: pointer;
+      }
+
+      #trips-page .trip-close-btn:hover {
+        background: #e7e5e4;
+      }
+
+      /* =========================================================
+       DETAILS AND HISTORY (CARD STYLE)
+    ========================================================= */
+
+      #trips-page #trip-details-modal .trip-modal-panel {
+        max-width: 720px;
+        border: 1.5px solid #601d49;
+      }
+
+      #trips-page .td-hero {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        border: 1.5px solid #601d49;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #601d49 0%, #8a2d6a 100%);
+        color: #fff;
+      }
+
+      #trips-page .td-hero-title {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+
+      #trips-page .td-hero-sub {
+        margin-top: 2px;
+        font-size: 11px;
+        opacity: 0.85;
+      }
+
+      #trips-page .td-section {
+        margin-bottom: 14px;
+        overflow: hidden;
+        border: 1px solid #601d4897;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(96, 29, 73, 0.08);
+      }
+
+      #trips-page .td-section-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        background: rgba(96, 29, 72, 0.082);
+        border-bottom: 1.5px solid #601d49;
+        color: #601d49;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      #trips-page .td-section-body {
+        padding: 12px 14px;
+      }
+
+      #trips-page .td-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      @media (min-width: 640px) {
+        #trips-page .td-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      #trips-page .trip-detail-box {
+        padding: 8px 10px;
+        background: #fff;
+        border: 1px solid #601d487d;
+        border-radius: 8px;
+        transition:
+          box-shadow 0.15s,
+          transform 0.15s;
+      }
+
+      #trips-page .trip-detail-box:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(96, 29, 73, 0.15);
+      }
+
+      #trips-page .trip-detail-box.td-wide {
+        grid-column: 1 / -1;
+      }
+
+      #trips-page .trip-detail-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 3px;
+        color: #601d49;
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+
+      #trips-page .trip-detail-value {
+        color: #292524;
+        font-size: 12px;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+      }
+
+      /* Route strip */
+      #trips-page .td-route {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #trips-page .td-route-point {
+        flex: 1;
+        min-width: 120px;
+        padding: 8px 10px;
+        border: 1px solid #601d4891;
+        border-radius: 8px;
+      }
+
+      #trips-page .td-route-point small {
+        display: block;
+        color: #601d49;
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+
+      #trips-page .td-route-point span {
+        color: #292524;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      #trips-page .td-route-arrow {
+        color: #601d49;
+        font-size: 14px;
+      }
+
+      /* History timeline */
+      #trips-page .trip-history-item {
+        position: relative;
+        padding: 0 0 12px 18px;
+        margin-left: 5px;
+        border-left: 2px solid #601d49;
+      }
+
+      #trips-page .trip-history-item:last-child {
+        padding-bottom: 0;
+        border-left-color: transparent;
+      }
+
+      #trips-page .trip-history-dot {
+        position: absolute;
+        left: -6px;
+        top: 2px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #601d49;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1.5px #601d49;
+      }
+
+      /* =========================================================
+       TOAST
+    ========================================================= */
+
+      #trips-page .trip-toast {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 11000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border: 1px solid #e7e5e4;
+        border-radius: 9px;
+        background: #fff;
+        color: #292524;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        font-size: 12px;
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: 0.25s ease;
+      }
+
+      #trips-page .trip-toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* =========================================================
+       PAGINATION
+    ========================================================= */
+
+      #trips-page .trip-page-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        height: 30px;
+        padding: 0 8px;
+        border: 1px solid #e7e5e4;
+        border-radius: 6px;
+        background: #fff;
+        color: #57534e;
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      #trips-page .trip-page-btn.active {
+        border-color: var(--trip-primary);
+        background: var(--trip-primary);
+        color: #fff;
+      }
+
+      #trips-page .trip-page-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 900px) {
+        #trips-page .trip-kpi-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        #trips-page .trip-kpi-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        #trips-page .trip-modal-backdrop {
+          align-items: flex-end;
+          padding: 0;
+        }
+
+        #trips-page .trip-modal-panel {
+          max-height: 92vh;
+          border-radius: 16px 16px 0 0;
+        }
+
+        #trips-page .trip-modal-body {
+          padding: 15px;
+        }
+
+        #trips-page .trip-modal-header,
+        #trips-page .trip-modal-footer {
+          padding-left: 15px;
+          padding-right: 15px;
+        }
+
+        #trips-page .trip-toast {
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+        }
+      }
+
+      @media (max-width: 380px) {
+        #trips-page .trip-kpi-card {
+          padding: 11px;
+        }
+
+        #trips-page .trip-kpi-value {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-stone-50">
+    <!-- =========================================================
+       SHARED SIDEBAR AND NAVBAR
+       Loaded from your existing common navigation files.
+  ========================================================= -->
+
+    <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+    <!-- =========================================================
+       MAIN CONTENT
+  ========================================================= -->
+
+    <main class="tms-main">
+      <div id="trips-page" class="px-4 py-5 md:px-6 lg:px-4">
+        <!-- PAGE HEADER -->
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+        >
+          <div>
+            <h1 class="text-xl font-bold text-stone-800">Trips Management</h1>
+
+            <p class="text-xs text-stone-500 mt-1">
+              Create, assign, monitor and manage all transport trips.
+            </p>
+          </div>
+
+          <button type="button" class="trip-primary-btn" id="add-trip-btn">
+            <i class="fa-solid fa-plus"></i>
+            Create New Trip
+          </button>
+        </div>
+
+        <!-- =====================================================
+     KPI CARDS
+====================================================== -->
+
+        <div
+          class="trip-kpi-grid grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-4"
+        >
+          <div class="trip-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold"
+                >Total Trips</span
+              >
+              <div class="trip-kpi-icon">
+                <i class="fa-solid fa-route"></i>
+              </div>
+            </div>
+            <div class="trip-kpi-value" id="kpi-total">0</div>
+            <div class="trip-kpi-label">All registered trips</div>
+          </div>
+
+          <div class="trip-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold"
+                >Scheduled</span
+              >
+              <div class="trip-kpi-icon">
+                <i class="fa-regular fa-calendar"></i>
+              </div>
+            </div>
+            <div class="trip-kpi-value" id="kpi-scheduled">0</div>
+            <div class="trip-kpi-label">Upcoming trips</div>
+          </div>
+
+          <div class="trip-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold"
+                >In Progress</span
+              >
+              <div class="trip-kpi-icon">
+                <i class="fa-solid fa-truck-fast"></i>
+              </div>
+            </div>
+            <div class="trip-kpi-value" id="kpi-progress">0</div>
+            <div class="trip-kpi-label">Currently running</div>
+          </div>
+
+          <div class="trip-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold"
+                >Completed</span
+              >
+              <div class="trip-kpi-icon">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+            </div>
+            <div class="trip-kpi-value" id="kpi-completed">0</div>
+            <div class="trip-kpi-label">Successfully completed</div>
+          </div>
+
+          <div class="trip-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold">Delayed</span>
+              <div class="trip-kpi-icon">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+            </div>
+            <div class="trip-kpi-value" id="kpi-delayed">0</div>
+            <div class="trip-kpi-label">Delayed trips</div>
+          </div>
+
+          <div class="trip-kpi-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-semibold"
+                >Cancelled</span
+              >
+              <div class="trip-kpi-icon">
+                <i class="fa-solid fa-ban"></i>
+              </div>
+            </div>
+            <div class="trip-kpi-value" id="kpi-cancelled">0</div>
+            <div class="trip-kpi-label">Cancelled trips</div>
+          </div>
+        </div>
+
+        <!-- =====================================================
+           TRIPS TABLE CARD
+      ====================================================== -->
+
+        <div class="trip-card overflow-hidden">
+          <!-- TABLE HEADER -->
+          <div class="p-4 border-b border-stone-200">
+            <div
+              class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3"
+            >
+              <div>
+                <h2 class="text-sm font-bold text-stone-800">All Trips</h2>
+
+                <p class="text-xs text-stone-500 mt-1">
+                  View and manage your transport operations.
+                </p>
+              </div>
+
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <!-- Search Input -->
+                <div class="relative flex-1 sm:flex-none sm:w-60">
+                  <i
+                    class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[11px] pointer-events-none"
+                  ></i>
+
+                  <input
+                    type="search"
+                    id="trip-search"
+                    class="trip-input !h-[34px] !py-0 !pl-9 !pr-3 !text-[11px] !rounded-md"
+                    placeholder="Search trips..."
+                    aria-label="Search trips"
+                  />
+                </div>
+
+                <!-- Clear Filters -->
+                <button
+                  type="button"
+                  class="trip-secondary-btn !h-[34px] !min-h-[34px] !px-3 !gap-2 !text-[11px] !rounded-md whitespace-nowrap"
+                  id="clear-filters-btn"
+                >
+                  <i class="fa-solid fa-rotate-left text-[10px]"></i>
+                  <span>Clear Filters</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div
+              class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 mt-4"
+            >
+              <select
+                id="filter-status"
+                class="trip-select"
+                aria-label="Filter by status"
+              >
+                <option value="">All Statuses</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Delayed">Delayed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+
+              <select
+                id="filter-customer"
+                class="trip-select"
+                aria-label="Filter by customer"
+              >
+                <option value="">All Customers</option>
+              </select>
+
+              <select
+                id="filter-driver"
+                class="trip-select"
+                aria-label="Filter by driver"
+              >
+                <option value="">All Drivers</option>
+              </select>
+
+              <select
+                id="filter-vehicle"
+                class="trip-select"
+                aria-label="Filter by vehicle"
+              >
+                <option value="">All Vehicles</option>
+              </select>
+
+              <input
+                type="date"
+                id="filter-date"
+                class="trip-input"
+                aria-label="Filter by trip date"
+              />
+            </div>
+          </div>
+
+          <!-- =====================================================
+     TABLE (COMPACT & GRID ALIGNED)
+====================================================== -->
+          <div class="overflow-x-auto">
+            <table class="trip-table w-full min-w-[1050px] border-collapse">
+              <thead>
+                <tr>
+                  <th
+                    class="px-3 py-2 text-left text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    Trip ID
+                  </th>
+                  <th
+                    class="px-3 py-2 text-left text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    Customer
+                  </th>
+                  <th
+                    class="px-3 py-2 text-left text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    Route
+                  </th>
+                  <th
+                    class="px-3 py-2 text-left text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    Vehicle
+                  </th>
+                  <th
+                    class="px-3 py-2 text-left text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    Driver
+                  </th>
+                  <th
+                    class="px-3 py-2 text-left text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    Date
+                  </th>
+                  <th
+                    class="px-3 py-2 text-left text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-3 py-2 text-center text-[10px] font-bold text-stone-600 uppercase tracking-wider whitespace-nowrap w-[110px]"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="trips-table-body">
+                <!-- Rows will be rendered dynamically via JavaScript -->
+              </tbody>
+            </table>
+
+            <!-- EMPTY STATE -->
+            <div id="trip-empty-state" class="hidden py-14 text-center">
+              <div
+                class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400"
+              >
+                <i class="fa-solid fa-route text-lg"></i>
+              </div>
+              <h3 class="text-sm font-semibold text-stone-700">
+                No trips found
+              </h3>
+              <p class="text-xs text-stone-500 mt-1">
+                Try changing your filters or create a new trip.
+              </p>
+            </div>
+          </div>
+
+          <!-- PAGINATION -->
+          <div
+            class="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-stone-200"
+          >
+            <p class="text-xs text-stone-500" id="trip-pagination-info">
+              Showing 0 trips
+            </p>
+
+            <div class="flex items-center gap-1" id="trip-pagination">
+              <!-- Dynamic pagination -->
+            </div>
+          </div>
+        </div>
+
+        <p class="mt-4 text-center text-[10px] text-stone-400">
+          TMS Trips Management Module
+        </p>
+
+        <!-- =====================================================
+           CREATE / EDIT TRIP MODAL
+           IMPORTANT: This modal is INSIDE #trips-page.
+      ====================================================== -->
+
+        <div id="trip-form-modal" class="trip-modal-backdrop hidden">
+          <div class="trip-modal-panel">
+            <div class="trip-modal-header">
+              <div>
+                <h2
+                  class="text-base font-bold text-stone-800"
+                  id="trip-form-title"
+                >
+                  Create New Trip
+                </h2>
+                <p class="text-xs text-stone-500 mt-1">
+                  Enter trip details and assign resources.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                class="trip-close-btn"
+                data-close-modal="trip-form-modal"
+                aria-label="Close"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <form id="trip-form">
+              <div class="trip-modal-body">
+                <input type="hidden" id="trip-edit-id" />
+
+                <!-- BASIC INFORMATION -->
+                <div class="mb-5">
+                  <h3 class="text-xs font-bold text-stone-800 mb-3">
+                    <i class="fa-regular fa-clipboard text-[#601D49] mr-1"></i>
+                    Basic Information
+                  </h3>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="trip-field-label" for="trip-type">
+                        Trip Type <span class="trip-required">*</span>
+                      </label>
+                      <select id="trip-type" class="trip-select" required>
+                        <option value="">Select trip type</option>
+                        <option value="Local">Local</option>
+                        <option value="Intercity">Intercity</option>
+                        <option value="Outstation">Outstation</option>
+                        <option value="Delivery">Delivery</option>
+                        <option value="Pickup">Pickup</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-date">
+                        Trip Date <span class="trip-required">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="trip-date"
+                        class="trip-input"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-customer">
+                        Customer <span class="trip-required">*</span>
+                      </label>
+                      <select id="trip-customer" class="trip-select" required>
+                        <option value="">Select customer</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-status"
+                        >Trip Status</label
+                      >
+                      <select id="trip-status" class="trip-select">
+                        <option value="Scheduled">Scheduled</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ROUTE DETAILS -->
+                <div class="mb-5">
+                  <h3 class="text-xs font-bold text-stone-800 mb-3">
+                    <i class="fa-solid fa-location-dot text-[#601D49] mr-1"></i>
+                    Route Details
+                  </h3>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="trip-field-label" for="trip-origin">
+                        Origin <span class="trip-required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="trip-origin"
+                        class="trip-input"
+                        placeholder="Enter pickup location"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-destination">
+                        Destination <span class="trip-required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="trip-destination"
+                        class="trip-input"
+                        placeholder="Enter destination"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-departure"
+                        >Departure Time</label
+                      >
+                      <input
+                        type="time"
+                        id="trip-departure"
+                        class="trip-input"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-arrival"
+                        >Expected Arrival</label
+                      >
+                      <input type="time" id="trip-arrival" class="trip-input" />
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-distance"
+                        >Distance (KM)</label
+                      >
+                      <input
+                        type="number"
+                        id="trip-distance"
+                        class="trip-input"
+                        min="0"
+                        step="0.1"
+                        placeholder="e.g. 150"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- RESOURCE ASSIGNMENT -->
+                <div class="mb-5">
+                  <h3 class="text-xs font-bold text-stone-800 mb-3">
+                    <i class="fa-solid fa-users text-[#601D49] mr-1"></i>
+                    Resource Assignment
+                  </h3>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="trip-field-label" for="trip-driver">
+                        Assign Driver <span class="trip-required">*</span>
+                      </label>
+                      <select id="trip-driver" class="trip-select" required>
+                        <option value="">Select driver</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="trip-field-label" for="trip-vehicle">
+                        Assign Vehicle <span class="trip-required">*</span>
+                      </label>
+                      <select id="trip-vehicle" class="trip-select" required>
+                        <option value="">Select vehicle</option>
+                      </select>
+                      <p
+                        class="text-[10px] text-stone-400 mt-1"
+                        id="vehicle-availability-note"
+                      >
+                        Only available vehicles can be assigned.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- NOTES -->
+                <div>
+                  <label class="trip-field-label" for="trip-notes"
+                    >Additional Notes</label
+                  >
+                  <textarea
+                    id="trip-notes"
+                    class="trip-textarea"
+                    placeholder="Enter any additional trip instructions..."
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="trip-modal-footer">
+                <button
+                  type="button"
+                  class="trip-secondary-btn"
+                  data-close-modal="trip-form-modal"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  class="trip-primary-btn"
+                  id="trip-save-btn"
+                >
+                  <i class="fa-solid fa-check"></i>
+                  Save Trip
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- =====================================================
+           TRIP DETAILS MODAL
+      ====================================================== -->
+
+        <div id="trip-details-modal" class="trip-modal-backdrop hidden">
+          <div class="trip-modal-panel">
+            <div class="trip-modal-header">
+              <div>
+                <h2 class="text-base font-bold text-stone-800">Trip Details</h2>
+                <p class="text-xs text-stone-500 mt-1" id="details-trip-id">
+                  Trip information - From -> To destination
+                </p>
+              </div>
+
+              <button
+                type="button"
+                class="trip-close-btn"
+                data-close-modal="trip-details-modal"
+                aria-label="Close"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div class="trip-modal-body">
+              <!-- HERO: ID + STATUS + UPDATE -->
+              <div class="td-hero">
+                <div>
+                  <div class="td-hero-title" id="details-hero-title">Trip</div>
+                  <div class="td-hero-sub" id="details-hero-sub">-</div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                  <div id="details-status"></div>
+
+                  <select
+                    id="details-status-update"
+                    class="trip-select w-36"
+                    aria-label="Update status"
+                  >
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Delayed">Delayed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- ROUTE -->
+              <div class="td-section">
+                <div class="td-section-head">
+                  <i class="fa-solid fa-location-dot"></i> Route
+                </div>
+                <div class="td-section-body">
+                  <div class="td-route" id="details-route"></div>
+                </div>
+              </div>
+
+              <!-- GENERAL INFORMATION -->
+              <div class="td-section">
+                <div class="td-section-head">
+                  <i class="fa-regular fa-clipboard"></i> General Information
+                </div>
+                <div class="td-section-body">
+                  <div class="td-grid" id="trip-details-grid"></div>
+                </div>
+              </div>
+
+              <!-- HISTORY -->
+              <div class="td-section">
+                <div class="td-section-head">
+                  <i class="fa-solid fa-clock-rotate-left"></i> Trip History
+                </div>
+                <div class="td-section-body">
+                  <div id="trip-history-list" class="text-xs"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="trip-modal-footer">
+              <button
+                type="button"
+                class="trip-secondary-btn"
+                data-close-modal="trip-details-modal"
+              >
+                Close
+              </button>
+
+              <button
+                type="button"
+                class="trip-primary-btn"
+                id="details-edit-btn"
+              >
+                <i class="fa-regular fa-pen-to-square"></i>
+                Edit Trip
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- =====================================================
+           DELETE CONFIRMATION MODAL
+      ====================================================== -->
+
+        <div id="trip-delete-modal" class="trip-modal-backdrop hidden">
+          <div class="trip-modal-panel trip-modal-small">
+            <div class="trip-modal-body text-center py-7">
+              <div
+                class="mx-auto mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-red-50 text-red-600"
+              >
+                <i class="fa-solid fa-trash-can text-lg"></i>
+              </div>
+
+              <h2 class="text-base font-bold text-stone-800">Delete Trip?</h2>
+
+              <p class="text-xs text-stone-500 mt-2 leading-5">
+                Are you sure you want to delete this trip? This action cannot be
+                undone.
+              </p>
+
+              <div class="flex justify-center gap-2 mt-6">
+                <button
+                  type="button"
+                  class="trip-secondary-btn"
+                  data-close-modal="trip-delete-modal"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  class="trip-primary-btn !bg-red-600 !border-red-600 hover:!bg-red-700"
+                  id="confirm-delete-btn"
+                >
+                  Delete Trip
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLOATING ACTION MENU -->
+        <div id="trip-floating-menu" class="trip-floating-menu hidden">
+          <button type="button" class="trip-menu-item" data-menu-action="view">
+            <i class="fa-regular fa-eye w-4"></i>
+            View Details
+          </button>
+
+          <button type="button" class="trip-menu-item" data-menu-action="edit">
+            <i class="fa-regular fa-pen-to-square w-4"></i>
+            Edit Trip
+          </button>
+
+          <button
+            type="button"
+            class="trip-menu-item delete"
+            data-menu-action="delete"
+          >
+            <i class="fa-regular fa-trash-can w-4"></i>
+            Delete Trip
+          </button>
+        </div>
+
+        <!-- TOAST -->
+        <div id="trip-toast" class="trip-toast">
+          <i class="fa-solid fa-circle-check text-green-600"></i>
+          <span id="trip-toast-message">Operation successful</span>
+        </div>
+      </div>
+      <!-- END #trips-page -->
+    </main>
+
+    <!-- =========================================================
+       TRIPS MODULE JAVASCRIPT
+  ========================================================= -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        /* =======================================================
+                   1. DUMMY DATA
+                ======================================================= */
+
+        const customers = [
+          { id: "CUS001", name: "ABC Manufacturing Pvt. Ltd." },
+          { id: "CUS002", name: "Shree Enterprises" },
+          { id: "CUS003", name: "Global Logistics India" },
+          { id: "CUS004", name: "Pune Industrial Solutions" },
+          { id: "CUS005", name: "Mahalaxmi Traders" },
+          { id: "CUS006", name: "Om Sai Distributors" },
+        ];
+
+        const drivers = [
+          { id: "DRV001", name: "Rahul Patil", phone: "9876543210" },
+          { id: "DRV002", name: "Amit Shinde", phone: "9876543211" },
+          { id: "DRV003", name: "Suresh Jadhav", phone: "9876543212" },
+          { id: "DRV004", name: "Vikas More", phone: "9876543213" },
+          { id: "DRV005", name: "Prasad Kulkarni", phone: "9876543214" },
+        ];
+
+        const vehicles = [
+          {
+            id: "VEH001",
+            number: "MH12AB1234",
+            type: "Truck",
+            capacity: "10 Ton",
+          },
+          {
+            id: "VEH002",
+            number: "MH14CD5678",
+            type: "Mini Truck",
+            capacity: "3 Ton",
+          },
+          {
+            id: "VEH003",
+            number: "MH12EF9012",
+            type: "Tempo",
+            capacity: "1 Ton",
+          },
+          {
+            id: "VEH004",
+            number: "MH15GH3456",
+            type: "Truck",
+            capacity: "15 Ton",
+          },
+          {
+            id: "VEH005",
+            number: "MH16JK7890",
+            type: "Container",
+            capacity: "20 Ton",
+          },
+          {
+            id: "VEH006",
+            number: "MH12LM2468",
+            type: "Pickup",
+            capacity: "1 Ton",
+          },
+        ];
+
+        const today = new Date();
+
+        function dateOffset(days) {
+          const date = new Date(today);
+          date.setDate(date.getDate() + days);
+          return formatDateInput(date);
+        }
+
+        function formatDateInput(date) {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        }
+
+        let trips = [
+          {
+            id: "TRP-1001",
+            type: "Intercity",
+            date: dateOffset(-2),
+            customerId: "CUS001",
+            driverId: "DRV001",
+            vehicleId: "VEH001",
+            origin: "Pune",
+            destination: "Mumbai",
+            departure: "08:00",
+            arrival: "12:00",
+            distance: 150,
+            status: "Completed",
+            notes: "Industrial material delivery.",
+            history: [
+              { event: "Trip created", date: new Date().toISOString() },
+              {
+                event: "Status changed to Completed",
+                date: new Date().toISOString(),
+              },
+            ],
+          },
+          {
+            id: "TRP-1002",
+            type: "Local",
+            date: dateOffset(0),
+            customerId: "CUS002",
+            driverId: "DRV002",
+            vehicleId: "VEH002",
+            origin: "Pimpri",
+            destination: "Chinchwad",
+            departure: "10:00",
+            arrival: "11:30",
+            distance: 18,
+            status: "In Progress",
+            notes: "Local goods transportation.",
+            history: [
+              { event: "Trip created", date: new Date().toISOString() },
+              {
+                event: "Status changed to In Progress",
+                date: new Date().toISOString(),
+              },
+            ],
+          },
+          {
+            id: "TRP-1003",
+            type: "Outstation",
+            date: dateOffset(1),
+            customerId: "CUS003",
+            driverId: "DRV003",
+            vehicleId: "VEH004",
+            origin: "Pune",
+            destination: "Nashik",
+            departure: "06:00",
+            arrival: "13:00",
+            distance: 210,
+            status: "Scheduled",
+            notes: "Scheduled commercial shipment.",
+            history: [
+              { event: "Trip created", date: new Date().toISOString() },
+            ],
+          },
+          {
+            id: "TRP-1004",
+            type: "Delivery",
+            date: dateOffset(0),
+            customerId: "CUS004",
+            driverId: "DRV004",
+            vehicleId: "VEH003",
+            origin: "Hadapsar",
+            destination: "Kharadi",
+            departure: "09:00",
+            arrival: "10:00",
+            distance: 12,
+            status: "Delayed",
+            notes: "Delivery delayed due to traffic.",
+            history: [
+              { event: "Trip created", date: new Date().toISOString() },
+              {
+                event: "Status changed to Delayed",
+                date: new Date().toISOString(),
+              },
+            ],
+          },
+          {
+            id: "TRP-1005",
+            type: "Pickup",
+            date: dateOffset(-1),
+            customerId: "CUS005",
+            driverId: "DRV005",
+            vehicleId: "VEH005",
+            origin: "Satara",
+            destination: "Pune",
+            departure: "07:30",
+            arrival: "11:00",
+            distance: 110,
+            status: "Cancelled",
+            notes: "Cancelled as per customer request.",
+            history: [
+              { event: "Trip created", date: new Date().toISOString() },
+              {
+                event: "Status changed to Cancelled",
+                date: new Date().toISOString(),
+              },
+            ],
+          },
+          {
+            id: "TRP-1006",
+            type: "Intercity",
+            date: dateOffset(3),
+            customerId: "CUS006",
+            driverId: "DRV001",
+            vehicleId: "VEH006",
+            origin: "Mumbai",
+            destination: "Pune",
+            departure: "08:30",
+            arrival: "12:00",
+            distance: 150,
+            status: "Scheduled",
+            notes: "Regular goods delivery.",
+            history: [
+              { event: "Trip created", date: new Date().toISOString() },
+            ],
+          },
+        ];
+
+        /* =======================================================
+                   2. DOM ELEMENTS
+                ======================================================= */
+
+        const tableBody = document.getElementById("trips-table-body");
+        const emptyState = document.getElementById("trip-empty-state");
+        const searchInput = document.getElementById("trip-search");
+
+        const filterStatus = document.getElementById("filter-status");
+        const filterCustomer = document.getElementById("filter-customer");
+        const filterDriver = document.getElementById("filter-driver");
+        const filterVehicle = document.getElementById("filter-vehicle");
+        const filterDate = document.getElementById("filter-date");
+
+        const formModal = document.getElementById("trip-form-modal");
+        const detailsModal = document.getElementById("trip-details-modal");
+        const deleteModal = document.getElementById("trip-delete-modal");
+
+        const tripForm = document.getElementById("trip-form");
+
+        const floatingMenu = document.getElementById("trip-floating-menu");
+
+        let currentPage = 1;
+        const pageSize = 5;
+
+        let selectedDeleteId = null;
+        let selectedDetailsId = null;
+        let activeMenuId = null;
+
+        /* =======================================================
+                   3. HELPER FUNCTIONS
+                ======================================================= */
+
+        function escapeHTML(value) {
+          return String(value ?? "").replace(/[&<>"']/g, function (char) {
+            return {
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#039;",
+            }[char];
+          });
+        }
+
+        function getCustomer(id) {
+          return customers.find((item) => item.id === id);
+        }
+
+        function getDriver(id) {
+          return drivers.find((item) => item.id === id);
+        }
+
+        function getVehicle(id) {
+          return vehicles.find((item) => item.id === id);
+        }
+
+        function displayDate(date) {
+          if (!date) return "-";
+
+          const parsed = new Date(date + "T00:00:00");
+
+          if (Number.isNaN(parsed.getTime())) return date;
+
+          return parsed.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          });
+        }
+
+        function displayDateTime(value) {
+          const date = new Date(value);
+
+          if (Number.isNaN(date.getTime())) return "-";
+
+          return date.toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
+        function getStatusClass(status) {
+          const classes = {
+            Scheduled: "status-scheduled",
+            "In Progress": "status-in-progress",
+            Completed: "status-completed",
+            Delayed: "status-delayed",
+            Cancelled: "status-cancelled",
+          };
+
+          return classes[status] || "status-scheduled";
+        }
+
+        function statusBadge(status) {
+          return `
+          <span class="trip-status ${getStatusClass(status)}">
+            ${escapeHTML(status)}
+          </span>
+        `;
+        }
+
+        function addHistory(trip, event) {
+          if (!Array.isArray(trip.history)) {
+            trip.history = [];
+          }
+
+          trip.history.unshift({
+            event: event,
+            date: new Date().toISOString(),
+          });
+        }
+
+        function showToast(message, type = "success") {
+          const toast = document.getElementById("trip-toast");
+          const messageElement = document.getElementById("trip-toast-message");
+          const icon = toast.querySelector("i");
+
+          messageElement.textContent = message;
+
+          icon.className =
+            type === "error"
+              ? "fa-solid fa-circle-exclamation text-red-600"
+              : "fa-solid fa-circle-check text-green-600";
+
+          toast.classList.add("show");
+
+          clearTimeout(showToast.timer);
+
+          showToast.timer = setTimeout(() => {
+            toast.classList.remove("show");
+          }, 2800);
+        }
+
+        function openModal(modal) {
+          closeFloatingMenu();
+          modal.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeModal(modal) {
+          modal.classList.add("hidden");
+
+          const anyOpen = [formModal, detailsModal, deleteModal].some(
+            (item) => !item.classList.contains("hidden"),
+          );
+
+          if (!anyOpen) {
+            document.body.style.overflow = "";
+          }
+        }
+
+        function closeAllModals() {
+          [formModal, detailsModal, deleteModal].forEach((modal) => {
+            modal.classList.add("hidden");
+          });
+
+          document.body.style.overflow = "";
+        }
+
+        /* =======================================================
+                   4. RESOURCE DROPDOWNS
+                ======================================================= */
+
+        function populateSelect(
+          select,
+          items,
+          placeholder,
+          valueKey,
+          labelKey,
+        ) {
+          if (!select) {
+            console.warn(
+              "populateSelect: dropdown element not found for",
+              placeholder,
+            );
+            return;
+          }
+
+          select.innerHTML = `<option value="">${placeholder}</option>`;
+
+          items.forEach((item) => {
+            const option = document.createElement("option");
+            option.value = item[valueKey];
+            option.textContent = item[labelKey];
+            select.appendChild(option);
+          });
+        }
+
+        function populateDropdowns() {
+          populateSelect(
+            document.getElementById("trip-customer"),
+            customers,
+            "Select customer",
+            "id",
+            "name",
+          );
+
+          populateSelect(
+            document.getElementById("trip-driver"),
+            drivers,
+            "Select driver",
+            "id",
+            "name",
+          );
+
+          populateSelect(
+            document.getElementById("filter-customer"),
+            customers,
+            "All Customers",
+            "id",
+            "name",
+          );
+
+          populateSelect(
+            document.getElementById("filter-driver"),
+            drivers,
+            "All Drivers",
+            "id",
+            "name",
+          );
+
+          populateSelect(
+            document.getElementById("filter-vehicle"),
+            vehicles,
+            "All Vehicles",
+            "id",
+            "number",
+          );
+
+          refreshVehicleOptions();
+        }
+
+        function refreshVehicleOptions(selectedVehicleId = "") {
+          const vehicleSelect = document.getElementById("trip-vehicle");
+          if (!vehicleSelect) return;
+
+          const editingId = document.getElementById("trip-edit-id").value;
+
+          const currentTrip = trips.find((trip) => trip.id === editingId);
+
+          const occupiedVehicleIds = trips
+            .filter((trip) => {
+              return trip.status === "In Progress" && trip.id !== editingId;
+            })
+            .map((trip) => trip.vehicleId);
+
+          vehicleSelect.innerHTML = '<option value="">Select vehicle</option>';
+
+          vehicles.forEach((vehicle) => {
+            const isOccupied = occupiedVehicleIds.includes(vehicle.id);
+            const isCurrentVehicle =
+              currentTrip && currentTrip.vehicleId === vehicle.id;
+
+            const option = document.createElement("option");
+
+            option.value = vehicle.id;
+
+            option.textContent =
+              `${vehicle.number} (${vehicle.type})` +
+              (isOccupied && !isCurrentVehicle ? " - Unavailable" : "");
+
+            option.disabled = isOccupied && !isCurrentVehicle;
+
+            if (vehicle.id === selectedVehicleId) {
+              option.selected = true;
+            }
+
+            vehicleSelect.appendChild(option);
+          });
+
+          const note = document.getElementById("vehicle-availability-note");
+
+          note.textContent =
+            "Vehicles assigned to active trips are marked unavailable.";
+        }
+
+        /* =======================================================
+                   5. KPI UPDATES
+                ======================================================= */
+
+        function updateKPIs() {
+          document.getElementById("kpi-total").textContent = trips.length;
+
+          document.getElementById("kpi-scheduled").textContent = trips.filter(
+            (t) => t.status === "Scheduled",
+          ).length;
+
+          document.getElementById("kpi-progress").textContent = trips.filter(
+            (t) => t.status === "In Progress",
+          ).length;
+
+          document.getElementById("kpi-completed").textContent = trips.filter(
+            (t) => t.status === "Completed",
+          ).length;
+
+          document.getElementById("kpi-delayed").textContent = trips.filter(
+            (t) => t.status === "Delayed",
+          ).length;
+
+          document.getElementById("kpi-cancelled").textContent = trips.filter(
+            (t) => t.status === "Cancelled",
+          ).length;
+        }
+
+        /* =======================================================
+                   6. SEARCH AND FILTERS
+                ======================================================= */
+
+        function getFilteredTrips() {
+          const search = searchInput.value.trim().toLowerCase();
+
+          return trips.filter((trip) => {
+            const customer = getCustomer(trip.customerId)?.name || "";
+            const driver = getDriver(trip.driverId)?.name || "";
+            const vehicle = getVehicle(trip.vehicleId)?.number || "";
+
+            const searchable = [
+              trip.id,
+              customer,
+              driver,
+              vehicle,
+              trip.origin,
+              trip.destination,
+            ]
+              .join(" ")
+              .toLowerCase();
+
+            const matchesSearch = !search || searchable.includes(search);
+
+            const matchesStatus =
+              !filterStatus.value || trip.status === filterStatus.value;
+
+            const matchesCustomer =
+              !filterCustomer.value || trip.customerId === filterCustomer.value;
+
+            const matchesDriver =
+              !filterDriver.value || trip.driverId === filterDriver.value;
+
+            const matchesVehicle =
+              !filterVehicle.value || trip.vehicleId === filterVehicle.value;
+
+            const matchesDate =
+              !filterDate.value || trip.date === filterDate.value;
+
+            return (
+              matchesSearch &&
+              matchesStatus &&
+              matchesCustomer &&
+              matchesDriver &&
+              matchesVehicle &&
+              matchesDate
+            );
+          });
+        }
+
+        /* =======================================================
+                   7. TABLE RENDERING
+                ======================================================= */
+
+        /* =======================================================
+   7. TABLE RENDERING (COMPACT & WORKING ACTIONS)
+   ======================================================= */
+        function renderTrips() {
+          const filteredTrips = getFilteredTrips();
+          const totalPages = Math.max(
+            1,
+            Math.ceil(filteredTrips.length / pageSize),
+          );
+
+          if (currentPage > totalPages) currentPage = totalPages;
+
+          const startIndex = (currentPage - 1) * pageSize;
+          const visibleTrips = filteredTrips.slice(
+            startIndex,
+            startIndex + pageSize,
+          );
+
+          tableBody.innerHTML = "";
+
+          if (visibleTrips.length === 0) {
+            emptyState.classList.remove("hidden");
+          } else {
+            emptyState.classList.add("hidden");
+
+            visibleTrips.forEach((trip) => {
+              const customer = getCustomer(trip.customerId);
+              const driver = getDriver(trip.driverId);
+              const vehicle = getVehicle(trip.vehicleId);
+
+              const row = document.createElement("tr");
+
+              // Compact inner layout: removed mt-1 padding from secondary text
+              row.innerHTML = `
+                <td class="px-3 py-2.5 border border-stone-200">
+                    <div class="trip-id text-xs font-bold text-[#601D49]">${escapeHTML(trip.id)}</div>
+                    <div class="text-[10px] text-stone-400">${escapeHTML(trip.type)}</div>
+                </td>
+
+                <td class="px-3 py-2.5 border border-stone-200">
+                    <div class="text-xs font-semibold text-stone-700">${escapeHTML(customer?.name || "Unknown")}</div>
+                    <div class="text-[10px] text-stone-400">${escapeHTML(customer?.id || "")}</div>
+                </td>
+
+                <td class="px-3 py-2.5 border border-stone-200">
+                    <div class="text-xs font-medium text-stone-700">${escapeHTML(trip.origin)}</div>
+                    <div class="text-[10px] text-stone-400"><i class="fa-solid fa-arrow-down text-[8px] mx-0.5"></i> ${escapeHTML(trip.destination)}</div>
+                </td>
+
+                <td class="px-3 py-2.5 border border-stone-200">
+                    <div class="text-xs font-semibold text-stone-700">${escapeHTML(vehicle?.number || "Unknown")}</div>
+                    <div class="text-[10px] text-stone-400">${escapeHTML(vehicle?.type || "")}</div>
+                </td>
+
+                <td class="px-3 py-2.5 border border-stone-200">
+                    <div class="text-xs font-medium text-stone-700">${escapeHTML(driver?.name || "Unknown")}</div>
+                    <div class="text-[10px] text-stone-400">${escapeHTML(driver?.phone || "")}</div>
+                </td>
+
+                <td class="px-3 py-2.5 border border-stone-200">
+                    <div class="text-xs font-medium text-stone-700">${escapeHTML(displayDate(trip.date))}</div>
+                    <div class="text-[10px] text-stone-400">${escapeHTML(trip.departure || "-")}</div>
+                </td>
+
+                <td class="px-3 py-2.5 border border-stone-200">
+                    ${statusBadge(trip.status)}
+                </td>
+
+                <td class="px-2 py-2.5 border border-stone-200 text-center whitespace-nowrap">
+                    <div class="flex items-center justify-center gap-1">
+                        <button type="button" 
+                                data-action="view" data-id="${escapeHTML(trip.id)}"
+                                class="action-icon-btn text-stone-500 hover:text-blue-600 hover:bg-blue-50" 
+                                title="View Trip">
+                            <i class="fa-solid fa-eye text-[11px]"></i>
+                        </button>
+
+                        <button type="button" 
+                                data-action="edit" data-id="${escapeHTML(trip.id)}"
+                                class="action-icon-btn text-[#601D49] hover:bg-[#601D49]/10" 
+                                title="Edit Trip">
+                            <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                        </button>
+
+                        <button type="button" 
+                                data-action="delete" data-id="${escapeHTML(trip.id)}"
+                                class="action-icon-btn text-stone-500 hover:text-red-600 hover:bg-red-50" 
+                                title="Delete Trip">
+                            <i class="fa-solid fa-trash text-[11px]"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+
+              tableBody.appendChild(row);
+            });
+          }
+
+          renderPagination(filteredTrips.length, totalPages);
+
+          const showingStart = filteredTrips.length ? startIndex + 1 : 0;
+          const showingEnd = Math.min(
+            startIndex + pageSize,
+            filteredTrips.length,
+          );
+
+          document.getElementById("trip-pagination-info").textContent =
+            `Showing ${showingStart}-${showingEnd} of ${filteredTrips.length} trips`;
+
+          updateKPIs();
+        }
+
+        /* =======================================================
+   ACTION BUTTON EVENT DELEGATION (Fixes the onclick issue)
+   ======================================================= */
+        tableBody.addEventListener("click", function (event) {
+          const button = event.target.closest("[data-action]");
+          if (!button) return;
+
+          const action = button.dataset.action;
+          const tripId = button.dataset.id;
+
+          if (action === "view") openDetailsModal(tripId);
+          if (action === "edit") openEditModal(tripId);
+          if (action === "delete") openDeleteModal(tripId);
+        });
+        /* =======================================================
+                   8. PAGINATION
+                ======================================================= */
+
+        function renderPagination(totalItems, totalPages) {
+          const container = document.getElementById("trip-pagination");
+
+          container.innerHTML = "";
+
+          const previous = document.createElement("button");
+
+          previous.className = "trip-page-btn";
+          previous.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+          previous.disabled = currentPage === 1;
+
+          previous.addEventListener("click", () => {
+            if (currentPage > 1) {
+              currentPage--;
+              renderTrips();
+            }
+          });
+
+          container.appendChild(previous);
+
+          for (let page = 1; page <= totalPages; page++) {
+            const button = document.createElement("button");
+
+            button.className = `trip-page-btn ${page === currentPage ? "active" : ""}`;
+
+            button.textContent = page;
+
+            button.addEventListener("click", () => {
+              currentPage = page;
+              renderTrips();
+            });
+
+            container.appendChild(button);
+          }
+
+          const next = document.createElement("button");
+
+          next.className = "trip-page-btn";
+          next.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+          next.disabled = currentPage === totalPages || totalItems === 0;
+
+          next.addEventListener("click", () => {
+            if (currentPage < totalPages) {
+              currentPage++;
+              renderTrips();
+            }
+          });
+
+          container.appendChild(next);
+        }
+
+        /* =======================================================
+                   9. CREATE TRIP
+                ======================================================= */
+
+        function generateTripId() {
+          const numbers = trips
+            .map((trip) => Number(trip.id.replace("TRP-", "")))
+            .filter((number) => Number.isFinite(number));
+
+          const nextNumber = Math.max(1000, ...numbers) + 1;
+
+          return `TRP-${nextNumber}`;
+        }
+
+        function resetTripForm() {
+          tripForm.reset();
+
+          document.getElementById("trip-edit-id").value = "";
+
+          document.getElementById("trip-form-title").textContent =
+            "Create New Trip";
+
+          document.getElementById("trip-save-btn").innerHTML =
+            '<i class="fa-solid fa-check"></i> Save Trip';
+
+          document.getElementById("trip-date").value = dateOffset(0);
+
+          refreshVehicleOptions();
+        }
+
+        function openCreateModal() {
+          resetTripForm();
+
+          openModal(formModal);
+        }
+
+        /* =======================================================
+                   10. EDIT TRIP
+                ======================================================= */
+
+        function openEditModal(tripId) {
+          const trip = trips.find((item) => item.id === tripId);
+
+          if (!trip) return;
+
+          resetTripForm();
+
+          document.getElementById("trip-edit-id").value = trip.id;
+          document.getElementById("trip-type").value = trip.type;
+          document.getElementById("trip-date").value = trip.date;
+          document.getElementById("trip-customer").value = trip.customerId;
+          document.getElementById("trip-status").value = trip.status;
+
+          document.getElementById("trip-origin").value = trip.origin;
+          document.getElementById("trip-destination").value = trip.destination;
+
+          document.getElementById("trip-departure").value =
+            trip.departure || "";
+          document.getElementById("trip-arrival").value = trip.arrival || "";
+          document.getElementById("trip-distance").value = trip.distance || "";
+
+          document.getElementById("trip-driver").value = trip.driverId;
+
+          refreshVehicleOptions(trip.vehicleId);
+
+          document.getElementById("trip-notes").value = trip.notes || "";
+
+          document.getElementById("trip-form-title").textContent = "Edit Trip";
+
+          document.getElementById("trip-save-btn").innerHTML =
+            '<i class="fa-solid fa-check"></i> Update Trip';
+
+          openModal(formModal);
+        }
+
+        /* =======================================================
+                   11. FORM SUBMISSION
+                ======================================================= */
+
+        tripForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const editId = document.getElementById("trip-edit-id").value;
+
+          const tripData = {
+            type: document.getElementById("trip-type").value,
+
+            date: document.getElementById("trip-date").value,
+
+            customerId: document.getElementById("trip-customer").value,
+
+            status: document.getElementById("trip-status").value,
+
+            origin: document.getElementById("trip-origin").value.trim(),
+
+            destination: document
+              .getElementById("trip-destination")
+              .value.trim(),
+
+            departure: document.getElementById("trip-departure").value,
+
+            arrival: document.getElementById("trip-arrival").value,
+
+            distance:
+              Number(document.getElementById("trip-distance").value) || 0,
+
+            driverId: document.getElementById("trip-driver").value,
+
+            vehicleId: document.getElementById("trip-vehicle").value,
+
+            notes: document.getElementById("trip-notes").value.trim(),
+          };
+
+          if (
+            !tripData.type ||
+            !tripData.date ||
+            !tripData.customerId ||
+            !tripData.origin ||
+            !tripData.destination ||
+            !tripData.driverId ||
+            !tripData.vehicleId
+          ) {
+            showToast("Please complete all required fields.", "error");
+            return;
+          }
+
+          if (
+            tripData.departure &&
+            tripData.arrival &&
+            tripData.arrival < tripData.departure
+          ) {
+            showToast("Arrival time must be after departure time.", "error");
+            return;
+          }
+
+          const conflictingTrip = trips.find((trip) => {
+            if (trip.id === editId) return false;
+
+            if (trip.status !== "In Progress") return false;
+
+            return (
+              trip.driverId === tripData.driverId ||
+              trip.vehicleId === tripData.vehicleId
+            );
+          });
+
+          if (conflictingTrip && tripData.status === "In Progress") {
+            showToast(
+              "This driver or vehicle is already assigned to an active trip.",
+              "error",
+            );
+            return;
+          }
+
+          if (editId) {
+            const trip = trips.find((item) => item.id === editId);
+
+            if (!trip) return;
+
+            const oldStatus = trip.status;
+
+            Object.assign(trip, tripData);
+
+            if (oldStatus !== tripData.status) {
+              addHistory(
+                trip,
+                `Status changed from ${oldStatus} to ${tripData.status}`,
+              );
+            }
+
+            addHistory(trip, "Trip details updated");
+
+            showToast("Trip updated successfully.");
+          } else {
+            const newTrip = {
+              id: generateTripId(),
+              ...tripData,
+              history: [],
+            };
+
+            addHistory(newTrip, "Trip created");
+
+            trips.unshift(newTrip);
+
+            showToast("New trip created successfully.");
+          }
+
+          closeModal(formModal);
+
+          currentPage = 1;
+
+          renderTrips();
+        });
+
+        /* =======================================================
+                   12. TRIP DETAILS
+                ======================================================= */
+
+        function openDetailsModal(tripId) {
+          const trip = trips.find((item) => item.id === tripId);
+
+          if (!trip) return;
+
+          selectedDetailsId = tripId;
+
+          const customer = getCustomer(trip.customerId);
+          const driver = getDriver(trip.driverId);
+          const vehicle = getVehicle(trip.vehicleId);
+
+          document.getElementById("details-trip-id").textContent = trip.id;
+          document.getElementById("details-hero-title").textContent =
+            `${trip.id} • ${trip.type} Trip`;
+          document.getElementById("details-hero-sub").textContent =
+            `${customer?.name || "-"} • ${displayDate(trip.date)}`;
+
+          document.getElementById("details-status").innerHTML = statusBadge(
+            trip.status,
+          );
+          document.getElementById("details-status-update").value = trip.status;
+
+          document.getElementById("details-route").innerHTML = `
+    <div class="td-route-point">
+        <small>Origin</small>
+        <span>${escapeHTML(trip.origin)}</span>
+    </div>
+    <i class="fa-solid fa-arrow-right-long td-route-arrow"></i>
+    <div class="td-route-point">
+        <small>Destination</small>
+        <span>${escapeHTML(trip.destination)}</span>
+    </div>
+    <div class="td-route-point" style="flex:0 0 auto;min-width:90px">
+        <small>Distance</small>
+        <span>${trip.distance ? escapeHTML(trip.distance) + " KM" : "-"}</span>
+    </div>
+`;
+
+          const details = [
+            ["fa-solid fa-tag", "Trip Type", trip.type],
+            ["fa-regular fa-calendar", "Trip Date", displayDate(trip.date)],
+            ["fa-regular fa-building", "Customer", customer?.name || "-"],
+            ["fa-regular fa-user", "Driver", driver?.name || "-"],
+            ["fa-solid fa-phone", "Driver Contact", driver?.phone || "-"],
+            ["fa-solid fa-truck", "Vehicle Number", vehicle?.number || "-"],
+            [
+              "fa-solid fa-truck-ramp-box",
+              "Vehicle Type",
+              vehicle?.type || "-",
+            ],
+            [
+              "fa-solid fa-weight-hanging",
+              "Capacity",
+              vehicle?.capacity || "-",
+            ],
+            ["fa-regular fa-clock", "Departure", trip.departure || "-"],
+            [
+              "fa-solid fa-flag-checkered",
+              "Expected Arrival",
+              trip.arrival || "-",
+            ],
+            [
+              "fa-regular fa-note-sticky",
+              "Additional Notes",
+              trip.notes || "-",
+              true,
+            ],
+          ];
+
+          document.getElementById("trip-details-grid").innerHTML = details
+            .map(
+              ([icon, label, value, wide]) => `
+        <div class="trip-detail-box ${wide ? "td-wide" : ""}">
+            <div class="trip-detail-label">
+                <i class="${icon}"></i> ${escapeHTML(label)}
+            </div>
+            <div class="trip-detail-value">${escapeHTML(value)}</div>
+        </div>
+    `,
+            )
+            .join("");
+
+          const history = Array.isArray(trip.history) ? trip.history : [];
+
+          document.getElementById("trip-history-list").innerHTML =
+            history.length
+              ? history
+                  .map(
+                    (item) => `
+                <div class="trip-history-item">
+                  <span class="trip-history-dot"></span>
+                  <p class="text-xs font-semibold text-stone-700">
+                    ${escapeHTML(item.event)}
+                  </p>
+                  <p class="text-[10px] text-stone-400 mt-1">
+                    ${escapeHTML(displayDateTime(item.date))}
+                  </p>
+                </div>
+              `,
+                  )
+                  .join("")
+              : '<p class="text-xs text-stone-400">No history available.</p>';
+
+          openModal(detailsModal);
+        }
+
+        /* =======================================================
+                   13. STATUS UPDATE
+                ======================================================= */
+
+        document
+          .getElementById("details-status-update")
+          .addEventListener("change", function () {
+            const trip = trips.find((item) => item.id === selectedDetailsId);
+
+            if (!trip) return;
+
+            const oldStatus = trip.status;
+            const newStatus = this.value;
+
+            if (oldStatus === newStatus) return;
+
+            const conflict = trips.find((item) => {
+              if (item.id === trip.id) return false;
+              if (item.status !== "In Progress") return false;
+
+              return (
+                item.vehicleId === trip.vehicleId ||
+                item.driverId === trip.driverId
+              );
+            });
+
+            if (newStatus === "In Progress" && conflict) {
+              showToast(
+                "The assigned driver or vehicle is already on another active trip.",
+                "error",
+              );
+
+              this.value = oldStatus;
+              return;
+            }
+
+            trip.status = newStatus;
+
+            addHistory(
+              trip,
+              `Status changed from ${oldStatus} to ${newStatus}`,
+            );
+
+            renderTrips();
+
+            openDetailsModal(trip.id);
+
+            showToast("Trip status updated.");
+          });
+
+        /* =======================================================
+                   14. DELETE TRIP
+                ======================================================= */
+
+        function openDeleteModal(tripId) {
+          selectedDeleteId = tripId;
+
+          openModal(deleteModal);
+        }
+
+        document
+          .getElementById("confirm-delete-btn")
+          .addEventListener("click", function () {
+            if (!selectedDeleteId) return;
+
+            trips = trips.filter((trip) => trip.id !== selectedDeleteId);
+
+            selectedDeleteId = null;
+
+            closeModal(deleteModal);
+
+            renderTrips();
+
+            showToast("Trip deleted successfully.");
+          });
+
+        /* =======================================================
+                   15. FLOATING ACTION MENU
+                   Fixed position prevents clipping inside table overflow.
+                ======================================================= */
+
+        function closeFloatingMenu() {
+          floatingMenu.classList.add("hidden");
+
+          activeMenuId = null;
+
+          document
+            .querySelectorAll(".trip-action-trigger")
+            .forEach((button) => {
+              button.setAttribute("aria-expanded", "false");
+            });
+        }
+
+        function openFloatingMenu(button, tripId) {
+          const isSameMenuOpen =
+            activeMenuId === tripId &&
+            !floatingMenu.classList.contains("hidden");
+
+          closeFloatingMenu();
+
+          if (isSameMenuOpen) return;
+
+          activeMenuId = tripId;
+
+          const rect = button.getBoundingClientRect();
+
+          floatingMenu.classList.remove("hidden");
+
+          button.setAttribute("aria-expanded", "true");
+
+          const menuWidth = floatingMenu.offsetWidth;
+          const menuHeight = floatingMenu.offsetHeight;
+
+          let left = rect.right - menuWidth;
+          let top = rect.bottom + 5;
+
+          if (left < 8) left = 8;
+
+          if (left + menuWidth > window.innerWidth - 8) {
+            left = window.innerWidth - menuWidth - 8;
+          }
+
+          if (top + menuHeight > window.innerHeight - 8) {
+            top = rect.top - menuHeight - 5;
+          }
+
+          floatingMenu.style.left = `${left}px`;
+          floatingMenu.style.top = `${Math.max(8, top)}px`;
+        }
+
+        tableBody.addEventListener("click", function (event) {
+          const button = event.target.closest("[data-action='menu']");
+
+          if (!button) return;
+
+          const tripId = button.dataset.id;
+
+          openFloatingMenu(button, tripId);
+        });
+
+        floatingMenu.addEventListener("click", function (event) {
+          const button = event.target.closest("[data-menu-action]");
+
+          if (!button || !activeMenuId) return;
+
+          const action = button.dataset.menuAction;
+          const tripId = activeMenuId;
+
+          closeFloatingMenu();
+
+          if (action === "view") {
+            openDetailsModal(tripId);
+          }
+
+          if (action === "edit") {
+            openEditModal(tripId);
+          }
+
+          if (action === "delete") {
+            openDeleteModal(tripId);
+          }
+        });
+
+        document.addEventListener("click", function (event) {
+          if (
+            !event.target.closest(".trip-action-trigger") &&
+            !event.target.closest("#trip-floating-menu")
+          ) {
+            closeFloatingMenu();
+          }
+        });
+
+        window.addEventListener("resize", closeFloatingMenu);
+        window.addEventListener("scroll", closeFloatingMenu, true);
+
+        /* =======================================================
+                   16. SEARCH AND FILTER EVENTS
+                ======================================================= */
+
+        searchInput.addEventListener("input", function () {
+          currentPage = 1;
+          renderTrips();
+        });
+
+        [
+          filterStatus,
+          filterCustomer,
+          filterDriver,
+          filterVehicle,
+          filterDate,
+        ].forEach((element) => {
+          element.addEventListener("change", function () {
+            currentPage = 1;
+            renderTrips();
+          });
+        });
+
+        document
+          .getElementById("clear-filters-btn")
+          .addEventListener("click", function () {
+            searchInput.value = "";
+
+            filterStatus.value = "";
+            filterCustomer.value = "";
+            filterDriver.value = "";
+            filterVehicle.value = "";
+            filterDate.value = "";
+
+            currentPage = 1;
+
+            renderTrips();
+          });
+
+        /* =======================================================
+                   17. MODAL BUTTON EVENTS
+                ======================================================= */
+
+        document
+          .getElementById("add-trip-btn")
+          .addEventListener("click", openCreateModal);
+
+        document.querySelectorAll("[data-close-modal]").forEach((button) => {
+          button.addEventListener("click", function () {
+            const modalId = this.dataset.closeModal;
+
+            const modal = document.getElementById(modalId);
+
+            if (modal) {
+              closeModal(modal);
+            }
+          });
+        });
+
+        document
+          .getElementById("details-edit-btn")
+          .addEventListener("click", function () {
+            if (!selectedDetailsId) return;
+
+            const tripId = selectedDetailsId;
+
+            closeModal(detailsModal);
+
+            openEditModal(tripId);
+          });
+
+        [formModal, detailsModal, deleteModal].forEach((modal) => {
+          modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+              closeModal(modal);
+            }
+          });
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            closeFloatingMenu();
+
+            const openModalElement = [
+              formModal,
+              detailsModal,
+              deleteModal,
+            ].find((modal) => !modal.classList.contains("hidden"));
+
+            if (openModalElement) {
+              closeModal(openModalElement);
+            }
+          }
+        });
+
+        /* =======================================================
+                   18. INITIALIZE MODULE
+                ======================================================= */
+
+        populateDropdowns();
+
+        updateKPIs();
+
+        renderTrips();
+      });
+    </script>
+
+    <!-- Shared Navigation JavaScript -->
+    <script src="../../js/nav-sidebar.js"></script>
+  </body>
+</html>

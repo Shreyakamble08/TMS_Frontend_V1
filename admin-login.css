@@ -1,0 +1,318 @@
+
+/* =====================================================
+   TRANSPORT MANAGEMENT SYSTEM
+   ADMIN LOGIN - CUSTOM CSS
+   Brand Color: #601D49
+
+   This file contains only styles that are more
+   convenient to maintain outside Tailwind utilities.
+===================================================== */
+
+
+/* =====================================================
+   1. GLOBAL BASE STYLES
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =====================================================
+   2. MAIN PAGE WRAPPER
+   Controls the card's vertical positioning.
+===================================================== */
+
+.login-page {
+    padding-top: 52px;
+    padding-bottom: 20px;
+}
+
+
+/* =====================================================
+   3. MAIN FLOATING LOGIN CARD
+   Wide rectangular layout with compact height.
+===================================================== */
+
+.login-card {
+    min-height: 490px;
+    border: 1px solid #eee8ed;
+
+    /* Soft floating-card shadow */
+    box-shadow:
+        0 20px 55px rgba(65, 30, 55, 0.09),
+        0 4px 14px rgba(65, 30, 55, 0.035);
+
+    /* Slight downward positioning */
+    transform: translateY(10px);
+
+    transition: box-shadow 0.25s ease;
+}
+
+.login-card:hover {
+    box-shadow:
+        0 24px 65px rgba(65, 30, 55, 0.11),
+        0 5px 16px rgba(65, 30, 55, 0.04);
+}
+
+
+/* =====================================================
+   4. LEFT IMAGE SECTION
+===================================================== */
+
+.illustration-section {
+    min-height: 490px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f7f1f5 0%,
+            #f0e6ed 100%
+        );
+}
+
+
+/* Separate decorative background circles */
+
+.image-decoration {
+    position: absolute;
+    pointer-events: none;
+    border: 1px solid rgba(96, 29, 73, 0.08);
+    border-radius: 50%;
+}
+
+.image-decoration-one {
+    width: 300px;
+    height: 300px;
+    top: -170px;
+    left: -140px;
+}
+
+.image-decoration-two {
+    width: 350px;
+    height: 350px;
+    right: -220px;
+    bottom: -220px;
+}
+
+
+/* Main illustration image */
+
+.login-illustration {
+    display: block;
+    height: auto;
+    max-height: 310px;
+
+    object-position: center;
+
+    filter: drop-shadow(
+        0 10px 12px rgba(60, 30, 50, 0.07)
+    );
+}
+
+
+/* =====================================================
+   5. RIGHT LOGIN SECTION
+===================================================== */
+
+.login-section {
+    min-width: 0;
+}
+
+.login-content {
+    margin: auto;
+}
+
+
+/* =====================================================
+   6. INPUT FOCUS AND INTERACTION
+===================================================== */
+
+.input-wrapper:focus-within {
+    border-color: #601D49;
+    background-color: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(96, 29, 73, 0.08);
+}
+
+.input-wrapper.has-error {
+    border-color: #dc2626;
+    background-color: #fffafa;
+}
+
+
+/* =====================================================
+   7. PASSWORD TOGGLE
+===================================================== */
+
+.password-toggle:focus-visible {
+    outline: 2px solid #601D49;
+    outline-offset: 1px;
+}
+
+
+/* =====================================================
+   8. LOGIN BUTTON
+===================================================== */
+
+.login-btn {
+    transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease,
+        opacity 0.2s ease;
+}
+
+.login-btn:active:not(:disabled) {
+    transform: scale(0.99);
+}
+
+
+/* =====================================================
+   9. FORM STATUS MESSAGES
+===================================================== */
+
+.form-status {
+    line-height: 1.5;
+}
+
+.form-status.status-error {
+    color: #b91c1c;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.form-status.status-success {
+    color: #15803d;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+
+/* =====================================================
+   10. FIELD VALIDATION
+===================================================== */
+
+.field-error {
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   11. TABLET RESPONSIVENESS
+===================================================== */
+
+@media (max-width: 767px) {
+
+    .login-page {
+        padding: 28px 18px;
+    }
+
+    .login-card {
+        max-width: 560px;
+        min-height: auto;
+        transform: none;
+    }
+
+    .illustration-section {
+        min-height: 245px;
+        padding: 22px 28px;
+    }
+
+    .login-illustration {
+        max-height: 145px;
+    }
+
+    .login-section {
+        padding: 30px 35px;
+    }
+
+}
+
+
+/* =====================================================
+   12. MOBILE RESPONSIVENESS
+===================================================== */
+
+@media (max-width: 480px) {
+
+    .login-page {
+        padding: 18px 12px;
+    }
+
+    .login-card {
+        border-radius: 14px;
+    }
+
+    .illustration-section {
+        min-height: 205px;
+        padding: 18px 22px;
+    }
+
+    .login-illustration {
+        max-height: 115px;
+    }
+
+    .login-section {
+        padding: 25px 22px 28px;
+    }
+
+    .login-header {
+        margin-bottom: 22px;
+    }
+
+    .security-footer {
+        margin-top: 22px;
+    }
+
+    .demo-credentials {
+        margin-top: 15px;
+    }
+
+}
+
+
+/* =====================================================
+   13. EXTRA SMALL DEVICES
+===================================================== */
+
+@media (max-width: 360px) {
+
+    .login-section {
+        padding-left: 17px;
+        padding-right: 17px;
+    }
+
+    .demo-credentials p {
+        font-size: 10px;
+    }
+
+}
+
+
+/* =====================================================
+   14. ACCESSIBILITY - REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+}

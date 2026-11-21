@@ -1,0 +1,3126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver Management | TMS Admin</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Shared Navigation Styles -->
+  <link rel="stylesheet" href="../../css/nav-sidebar.css" />
+
+  <style>
+    /* =========================================================
+       1. PAGE THEME — aligned to Trips design language
+    ========================================================= */
+    :root {
+      --driver-brand: #601d49;
+      --driver-brand-dark: #4b1738;
+      --driver-brand-soft: #f7eff4;
+      --driver-bg: #fafaf9;
+      --driver-surface: #ffffff;
+      --driver-border: #e7e5e4;
+      --driver-text: #292524;
+      --driver-muted: #78716c;
+      --driver-green: #15803d;
+      --driver-blue: #2563eb;
+      --driver-orange: #b45309;
+      --driver-red: #b91c1c;
+      --driver-radius: 10px;
+      --driver-shadow: 0 2px 5px rgba(96, 29, 73, 0.04),
+        0 4px 10px rgba(96, 29, 73, 0.035);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--driver-bg);
+      color: var(--driver-text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid rgba(96, 29, 73, 0.35);
+      outline-offset: 2px;
+    }
+
+    .driver-page {
+      width: 100%;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px 25px 25px;
+    }
+
+    /* =========================================================
+       2. PAGE HEADER — Trips style
+    ========================================================= */
+    .driver-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .driver-page-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--driver-text);
+      letter-spacing: -0.3px;
+      margin: 0;
+    }
+
+    .driver-page-description {
+      color: var(--driver-muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* ---------- Buttons — Trips style ---------- */
+    .driver-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--driver-brand);
+      color: #fff;
+      border: 1px solid var(--driver-brand);
+      padding: 0 15px;
+      min-height: 38px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .driver-primary-btn:hover {
+      background: var(--driver-brand-dark);
+      border-color: var(--driver-brand-dark);
+    }
+
+    .driver-secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 12px;
+      min-height: 36px;
+      border: 1px solid var(--driver-border);
+      border-radius: 7px;
+      background: #fff;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .driver-secondary-btn:hover {
+      background: #f5f5f4;
+    }
+
+    /* =========================================================
+       3. KPI CARDS — Trips style
+    ========================================================= */
+    .driver-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .driver-kpi-card {
+      min-width: 0;
+      min-height: 76px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #faf5f8 55%, #f7eff4 100%);
+      border: 1px solid rgba(96, 29, 73, 0.16);
+      border-radius: 9px;
+      box-shadow: var(--driver-shadow);
+      transition: all 0.2s ease;
+    }
+
+    .driver-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 29, 73, 0.28);
+      box-shadow: 0 5px 12px rgba(96, 29, 73, 0.07);
+    }
+
+    .driver-kpi-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .driver-kpi-label {
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    .driver-kpi-value {
+      margin-top: 5px;
+      font-size: 19px;
+      font-weight: 700;
+      color: #292524;
+      line-height: 1.1;
+    }
+
+    .driver-kpi-sub {
+      margin-top: 2px;
+      font-size: 10px;
+      color: #78716c;
+      line-height: 1.15;
+    }
+
+    .driver-kpi-icon {
+      height: 30px;
+      width: 30px;
+      min-width: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 7px;
+      background: rgba(96, 29, 73, 0.06);
+      color: var(--driver-brand);
+      font-size: 13px;
+    }
+
+    .driver-kpi-card:nth-child(2) .driver-kpi-icon {
+      background: rgba(21, 128, 61, 0.08);
+      color: #15803d;
+    }
+
+    .driver-kpi-card:nth-child(3) .driver-kpi-icon {
+      background: rgba(37, 99, 235, 0.08);
+      color: #2563eb;
+    }
+
+    .driver-kpi-card:nth-child(4) .driver-kpi-icon {
+      background: rgba(126, 34, 206, 0.08);
+      color: #7e22ce;
+    }
+
+    .driver-kpi-card:nth-child(5) .driver-kpi-icon {
+      background: rgba(120, 113, 108, 0.1);
+      color: #57534e;
+    }
+
+    /* =========================================================
+       4. DRIVER TABLE SECTION — Trips card
+    ========================================================= */
+    .driver-table-card {
+      background: #fff;
+      border: 1px solid var(--driver-border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .driver-table-top {
+      padding: 16px;
+      border-bottom: 1px solid #e7e5e4;
+    }
+
+    .driver-section-heading {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--driver-text);
+      margin: 0;
+    }
+
+    .driver-section-subtitle {
+      font-size: 11px;
+      color: var(--driver-muted);
+      margin-top: 4px;
+    }
+
+    /* Toolbar */
+    .driver-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .driver-search {
+      position: relative;
+      flex: 1 1 260px;
+      min-width: 220px;
+    }
+
+    .driver-search i {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a8a29e;
+      font-size: 11px;
+      pointer-events: none;
+    }
+
+    .driver-search input {
+      width: 100%;
+      height: 35px;
+      padding: 0 12px 0 32px;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--driver-text);
+      font-size: 12px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .driver-search input::placeholder {
+      color: #a8a29e;
+    }
+
+    .driver-search input:focus,
+    .driver-filter:focus {
+      border-color: var(--driver-brand);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, 0.08);
+    }
+
+    .driver-filter {
+      height: 35px;
+      min-width: 130px;
+      padding: 0 27px 0 10px;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      background-color: #fff;
+      color: #57534e;
+      font-size: 12px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .driver-clear-btn {
+      height: 35px;
+      padding: 0 12px;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+
+    .driver-clear-btn:hover {
+      background: #f5f5f4;
+    }
+
+    /* =========================================================
+       5. TABLE — Trips compact grid
+    ========================================================= */
+    .driver-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .driver-table {
+      width: 100%;
+      min-width: 1150px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .driver-table thead {
+      background: #fafaf9;
+    }
+
+    .driver-table th {
+      padding: 8px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #78716c;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--driver-border);
+      white-space: nowrap;
+    }
+
+    .driver-table td {
+      padding: 6px 12px;
+      font-size: 11px;
+      color: #57534e;
+      border: 1px solid var(--driver-border);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .driver-table tbody tr {
+      transition: background 0.15s;
+    }
+
+    .driver-table tbody tr:hover {
+      background: #fdfbfd;
+    }
+
+    .driver-id {
+      color: var(--driver-brand);
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    .driver-person {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 175px;
+    }
+
+    .driver-avatar {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: rgba(96, 29, 73, 0.08);
+      color: var(--driver-brand);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .driver-person-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #292524;
+      line-height: 1.2;
+    }
+
+    .driver-person-sub {
+      font-size: 10px;
+      color: #a8a29e;
+      margin-top: 2px;
+    }
+
+    .driver-contact-main {
+      font-weight: 600;
+      color: #292524;
+      font-size: 11px;
+    }
+
+    .driver-contact-sub {
+      color: #a8a29e;
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    /* Badges — Trips status style */
+    .driver-status-badge,
+    .driver-account-badge,
+    .driver-license-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 20px;
+      padding: 5px 9px;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .driver-status-badge::before,
+    .driver-account-badge::before {
+      content: "";
+      height: 6px;
+      width: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .status-available {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .status-assigned {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .status-on-trip {
+      background: #f3e8ff;
+      color: #7e22ce;
+    }
+
+    .status-inactive {
+      background: #e7e5e4;
+      color: #57534e;
+    }
+
+    .status-suspended {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .account-active {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .account-inactive {
+      background: #e7e5e4;
+      color: #57534e;
+    }
+
+    .account-suspended {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .driver-license-badge {
+      background: #f5f1f4;
+      color: #6b5264;
+    }
+
+    /* Actions — Trips icon-btn style */
+    .driver-action-list {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .driver-action-btn {
+      height: 24px;
+      width: 24px;
+      min-width: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: #78716c;
+      font-size: 11px;
+      transition: 0.15s;
+    }
+
+    .driver-action-btn:hover {
+      background: rgba(96, 29, 73, 0.08);
+      color: var(--driver-brand);
+    }
+
+    .driver-action-btn.danger:hover {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .driver-action-btn.assign {
+      color: #2563eb;
+    }
+
+    .driver-action-btn.assign:hover {
+      background: #eff6ff;
+    }
+
+    .driver-action-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      background: transparent;
+    }
+
+    .driver-table-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--driver-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .driver-result-count {
+      font-size: 12px;
+      color: var(--driver-muted);
+    }
+
+    /* =========================================================
+       6. EMPTY STATE — Trips style
+    ========================================================= */
+    .driver-empty-state {
+      padding: 45px 15px;
+      text-align: center;
+    }
+
+    .driver-empty-icon {
+      height: 48px;
+      width: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: #f5f5f4;
+      color: #a8a29e;
+      font-size: 18px;
+    }
+
+    .driver-empty-title {
+      color: #44403c;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .driver-empty-text {
+      color: #78716c;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    /* =========================================================
+       7. MODAL SYSTEM — Trips style
+    ========================================================= */
+    .driver-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(28, 25, 23, 0.55);
+      backdrop-filter: blur(3px);
+    }
+
+    .driver-modal-overlay.show {
+      display: flex;
+    }
+
+    .driver-modal {
+      width: 100%;
+      max-width: 660px;
+      max-height: 90vh;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .driver-modal.modal-small {
+      max-width: 430px;
+    }
+
+    .driver-modal.modal-large {
+      max-width: 720px;
+    }
+
+    /* Details modal — Trips hero/section style */
+    .driver-modal.modal-large {
+      border: 1.5px solid #601d49;
+    }
+
+    .driver-modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 17px 20px;
+      border-bottom: 1px solid var(--driver-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .driver-modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #292524;
+      margin: 0;
+    }
+
+    .driver-modal-subtitle {
+      font-size: 12px;
+      color: #78716c;
+      margin-top: 4px;
+    }
+
+    .driver-modal-close {
+      height: 30px;
+      width: 30px;
+      min-width: 30px;
+      border: none;
+      border-radius: 6px;
+      background: #f5f5f4;
+      color: #57534e;
+      font-size: 13px;
+    }
+
+    .driver-modal-close:hover {
+      background: #e7e5e4;
+    }
+
+    .driver-modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      min-height: 0;
+      flex: 1;
+    }
+
+    .driver-modal-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      padding: 13px 20px;
+      border-top: 1px solid var(--driver-border);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 9px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    /* =========================================================
+       8. FORM FIELDS — Trips style
+    ========================================================= */
+    .driver-form-section {
+      margin-bottom: 20px;
+    }
+
+    .driver-form-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .driver-form-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #44403c;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #f0eeec;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .driver-form-section-title i {
+      color: var(--driver-brand);
+    }
+
+    .driver-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .driver-form-field {
+      min-width: 0;
+    }
+
+    .driver-form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .driver-form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #57534e;
+      margin-bottom: 6px;
+    }
+
+    .driver-required {
+      color: #dc2626;
+      margin-left: 2px;
+    }
+
+    .driver-form-control {
+      width: 100%;
+      height: 38px;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      padding: 0 11px;
+      font-size: 12px;
+      color: #292524;
+      background: #fff;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    textarea.driver-form-control {
+      height: auto;
+      min-height: 75px;
+      padding: 9px 11px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .driver-form-control:focus {
+      border-color: var(--driver-brand);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, 0.08);
+    }
+
+    .driver-form-control[readonly],
+    .driver-form-control:disabled {
+      background: #fafaf9;
+      color: #78716c;
+      cursor: not-allowed;
+    }
+
+    .driver-field-error {
+      display: none;
+      color: #dc2626;
+      font-size: 10px;
+      margin-top: 5px;
+      line-height: 1.35;
+    }
+
+    .driver-field-error.show {
+      display: block;
+    }
+
+    .driver-form-note {
+      font-size: 10px;
+      color: #78716c;
+      margin-top: 6px;
+    }
+
+    /* =========================================================
+       9. VIEW DETAILS — Trips hero + sections
+    ========================================================= */
+    .driver-detail-hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1.5px solid #601d49;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #601d49 0%, #8a2d6a 100%);
+      color: #fff;
+    }
+
+    .driver-detail-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .driver-detail-avatar {
+      height: 44px;
+      width: 44px;
+      min-width: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .driver-detail-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .driver-detail-meta {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .driver-detail-hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* Sections — Trips style */
+    .driver-detail-section {
+      margin-bottom: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(96, 29, 73, 0.4);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(96, 29, 73, 0.08);
+    }
+
+    .driver-detail-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: rgba(96, 29, 72, 0.08);
+      border-bottom: 1.5px solid #601d49;
+      color: #601d49;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .driver-detail-section-body {
+      padding: 12px 14px;
+    }
+
+    .driver-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .driver-detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .driver-detail-box {
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid rgba(96, 29, 73, 0.3);
+      border-radius: 8px;
+      min-width: 0;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+
+    .driver-detail-box:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(96, 29, 73, 0.15);
+    }
+
+    .driver-detail-box-label {
+      color: #601d49;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 3px;
+    }
+
+    .driver-detail-box-value {
+      color: #292524;
+      font-size: 12px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    .driver-detail-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .driver-detail-item-label {
+      color: #601d49;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 3px;
+    }
+
+    .driver-detail-item-value {
+      color: #292524;
+      font-size: 12px;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .driver-warning {
+      padding: 9px 11px;
+      border-radius: 8px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #b45309;
+      font-size: 11px;
+      margin-top: 10px;
+    }
+
+    .driver-danger-warning {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    /* History summary — Trips feel */
+    .driver-history-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .driver-history-stat {
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid rgba(96, 29, 73, 0.3);
+      border-radius: 8px;
+    }
+
+    .driver-history-stat strong {
+      display: block;
+      font-size: 15px;
+      color: var(--driver-brand);
+      margin-bottom: 2px;
+    }
+
+    .driver-history-stat span {
+      font-size: 9px;
+      color: #78716c;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .driver-history-table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(96, 29, 73, 0.3);
+      border-radius: 8px;
+    }
+
+    .driver-history-table {
+      width: 100%;
+      min-width: 550px;
+      border-collapse: collapse;
+    }
+
+    .driver-history-table th,
+    .driver-history-table td {
+      text-align: left;
+      padding: 8px 10px;
+      font-size: 10px;
+      border-bottom: 1px solid #f0eeec;
+    }
+
+    .driver-history-table th {
+      background: #fafaf9;
+      color: #78716c;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .driver-history-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    /* =========================================================
+       10. CONFIRMATION MODAL — Trips style
+    ========================================================= */
+    .driver-confirm-icon {
+      height: 48px;
+      width: 48px;
+      border-radius: 50%;
+      background: #fffbeb;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin: 0 auto 12px;
+    }
+
+    .driver-confirm-icon.danger {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .driver-confirm-message {
+      color: #57534e;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* =========================================================
+       11. TOAST — Trips style (bottom-right)
+    ========================================================= */
+    .driver-toast-container {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 12000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .driver-toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 250px;
+      max-width: 360px;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 9px;
+      padding: 12px 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      color: #292524;
+      font-size: 12px;
+      pointer-events: auto;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .driver-toast i {
+      color: var(--driver-brand);
+      font-size: 14px;
+    }
+
+    .driver-toast.success i {
+      color: #15803d;
+    }
+
+    .driver-toast.error i {
+      color: #dc2626;
+    }
+
+    .driver-toast.warning i {
+      color: #b45309;
+    }
+
+    /* =========================================================
+       12. RESPONSIVE
+    ========================================================= */
+    @media (max-width: 1100px) {
+      .driver-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .driver-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .driver-page {
+        padding: 16px 12px 24px;
+      }
+
+      .driver-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .driver-page-title {
+        font-size: 18px;
+      }
+
+      .driver-primary-btn {
+        min-height: 36px;
+        font-size: 12px;
+      }
+
+      .driver-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .driver-toolbar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .driver-search {
+        grid-column: 1 / -1;
+        min-width: 0;
+      }
+
+      .driver-filter {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .driver-clear-btn {
+        width: 100%;
+      }
+
+      .driver-modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      .driver-modal {
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0;
+      }
+
+      .driver-modal-header,
+      .driver-modal-body,
+      .driver-modal-footer {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      .driver-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .driver-form-field.full {
+        grid-column: auto;
+      }
+
+      .driver-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .driver-detail-list {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .driver-history-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .driver-toast-container {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+
+      .driver-toast {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .driver-kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .driver-detail-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .driver-detail-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =======================================================
+       SHARED SIDEBAR + NAVBAR
+  ======================================================== -->
+  <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html">
+  </div>
+
+  <!-- =======================================================
+       MAIN PAGE CONTENT
+  ======================================================== -->
+  <main class="tms-main">
+    <div class="driver-page">
+
+      <!-- PAGE HEADER -->
+      <section class="driver-page-header">
+        <div>
+          <h1 class="driver-page-title">Driver Management</h1>
+          <p class="driver-page-description">
+            Manage driver profiles, account access, availability, trip assignments and driver history.
+          </p>
+        </div>
+
+        <button class="driver-primary-btn" id="addDriverBtn">
+          <i class="fa-solid fa-plus"></i>
+          Add Driver
+        </button>
+      </section>
+
+      <!-- KPI CARDS -->
+      <section class="driver-kpi-grid" aria-label="Driver statistics">
+
+        <div class="driver-kpi-card">
+          <div class="driver-kpi-head">
+            <span class="driver-kpi-label">Total Drivers</span>
+            <div class="driver-kpi-icon"><i class="fa-solid fa-users"></i></div>
+          </div>
+          <div class="driver-kpi-value" id="totalDrivers">0</div>
+          <div class="driver-kpi-sub">All registered drivers</div>
+        </div>
+
+        <div class="driver-kpi-card">
+          <div class="driver-kpi-head">
+            <span class="driver-kpi-label">Available</span>
+            <div class="driver-kpi-icon"><i class="fa-solid fa-user-check"></i></div>
+          </div>
+          <div class="driver-kpi-value" id="availableDrivers">0</div>
+          <div class="driver-kpi-sub">Ready for assignment</div>
+        </div>
+
+        <div class="driver-kpi-card">
+          <div class="driver-kpi-head">
+            <span class="driver-kpi-label">Assigned</span>
+            <div class="driver-kpi-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          </div>
+          <div class="driver-kpi-value" id="assignedDrivers">0</div>
+          <div class="driver-kpi-sub">Allocated drivers</div>
+        </div>
+
+        <div class="driver-kpi-card">
+          <div class="driver-kpi-head">
+            <span class="driver-kpi-label">On Trip</span>
+            <div class="driver-kpi-icon"><i class="fa-solid fa-truck-fast"></i></div>
+          </div>
+          <div class="driver-kpi-value" id="onTripDrivers">0</div>
+          <div class="driver-kpi-sub">Currently operating</div>
+        </div>
+
+        <div class="driver-kpi-card">
+          <div class="driver-kpi-head">
+            <span class="driver-kpi-label">Inactive</span>
+            <div class="driver-kpi-icon"><i class="fa-solid fa-user-clock"></i></div>
+          </div>
+          <div class="driver-kpi-value" id="inactiveDrivers">0</div>
+          <div class="driver-kpi-sub">Not available</div>
+        </div>
+
+      </section>
+
+      <!-- DRIVER TABLE CARD -->
+      <section class="driver-table-card">
+
+        <div class="driver-table-top">
+          <div>
+            <h2 class="driver-section-heading">All Drivers</h2>
+            <p class="driver-section-subtitle">
+              View and manage driver information, availability and assignments.
+            </p>
+          </div>
+
+          <!-- SEARCH + FILTERS -->
+          <div class="driver-toolbar">
+
+            <div class="driver-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="search" id="driverSearch"
+                placeholder="Search drivers by name, phone, license, vehicle or driver ID..." autocomplete="off"
+                aria-label="Search drivers" />
+            </div>
+
+            <select class="driver-filter" id="statusFilter" aria-label="Filter by operational status">
+              <option value="">All Status</option>
+              <option value="Available">Available</option>
+              <option value="Assigned">Assigned</option>
+              <option value="On Trip">On Trip</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Suspended">Suspended</option>
+            </select>
+
+            <select class="driver-filter" id="accountFilter" aria-label="Filter by account access">
+              <option value="">All Accounts</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Suspended">Suspended</option>
+            </select>
+
+            <select class="driver-filter" id="licenseFilter" aria-label="Filter by license type">
+              <option value="">All Licenses</option>
+              <option value="LMV">LMV</option>
+              <option value="LMV-TR">LMV-TR</option>
+              <option value="HMV">HMV</option>
+              <option value="HGV">HGV</option>
+            </select>
+
+            <select class="driver-filter" id="assignmentFilter" aria-label="Filter by assignment">
+              <option value="">All Assignments</option>
+              <option value="assigned">Assigned</option>
+              <option value="unassigned">Unassigned</option>
+            </select>
+
+            <button class="driver-clear-btn" id="clearFiltersBtn">
+              <i class="fa-solid fa-rotate-left mr-1"></i>
+              Clear Filters
+            </button>
+
+          </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="driver-table-scroll">
+          <table class="driver-table">
+            <thead>
+              <tr>
+                <th>Driver ID</th>
+                <th>Driver</th>
+                <th>Contact</th>
+                <th>License</th>
+                <th>Vehicle</th>
+                <th>Current Trip</th>
+                <th>Status</th>
+                <th>Account</th>
+                <th class="text-center w-[130px]">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="driverTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="driver-table-footer" id="driverTableFooter">
+          <div class="driver-result-count" id="driverResultCount">
+            Showing 0 drivers
+          </div>
+
+          <div class="driver-pagination" id="driverPagination"></div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =======================================================
+       MODAL ROOT — single overlay, body/footer injected via JS
+  ======================================================== -->
+  <div class="driver-modal-overlay" id="driverModalOverlay" role="presentation" aria-hidden="true">
+    <div class="driver-modal" id="driverModal" role="dialog" aria-modal="true" aria-labelledby="driverModalTitle">
+
+      <div class="driver-modal-header">
+        <div>
+          <h2 class="driver-modal-title" id="driverModalTitle">Driver Details</h2>
+          <p class="driver-modal-subtitle" id="driverModalSubtitle"></p>
+        </div>
+
+        <button class="driver-modal-close" id="closeDriverModal" aria-label="Close dialog" type="button">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="driver-modal-body" id="driverModalBody"></div>
+      <div class="driver-modal-footer" id="driverModalFooter"></div>
+
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="driver-toast-container" id="driverToastContainer" aria-live="polite" aria-atomic="true">
+  </div>
+
+  <!-- =======================================================
+       SHARED NAVIGATION SCRIPT
+  ======================================================== -->
+  <script src="../../js/nav-sidebar.js"></script>
+
+  <!-- =======================================================
+       DRIVER MANAGEMENT JAVASCRIPT
+       (Functionality unchanged — only two render functions
+        below emit Trips-style markup. All logic/data/rules
+        are byte-for-byte preserved.)
+  ======================================================== -->
+  <script>
+    "use strict";
+
+    /* =========================================================
+       1. DRIVER DATA
+    ========================================================= */
+
+    const drivers = [
+      {
+        id: "DRV-1001", name: "Rajesh Kumar", phone: "9876501001",
+        alternatePhone: "9876502001", email: "rajesh.kumar@example.com",
+        address: "Kothrud, Pune, Maharashtra", dateOfBirth: "1988-04-12",
+        gender: "Male", emergencyContact: "Sunita Kumar",
+        emergencyPhone: "9876503001", emergencyRelation: "Wife",
+        licenseNumber: "MH1220180001001", licenseType: "HMV",
+        licenseIssueDate: "2021-04-10", licenseExpiry: "2028-04-09",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2023-02-15", lastLogin: "2026-11-19 09:20 AM",
+        accountCreatedDate: "2023-02-15",
+        notes: "Experienced heavy vehicle driver.",
+        tripHistory: [
+          { id: "TRP-1018", route: "Pune → Mumbai", vehicle: "Tata 407", date: "2026-11-17", status: "Completed" },
+          { id: "TRP-1011", route: "Pune → Nashik", vehicle: "Tata Ace", date: "2026-11-13", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1002", name: "Amit Patil", phone: "9876501002",
+        alternatePhone: "9876502002", email: "amit.patil@example.com",
+        address: "Wakad, Pune, Maharashtra", dateOfBirth: "1991-08-21",
+        gender: "Male", emergencyContact: "Priya Patil",
+        emergencyPhone: "9876503002", emergencyRelation: "Wife",
+        licenseNumber: "MH1420190001002", licenseType: "HMV",
+        licenseIssueDate: "2022-05-10", licenseExpiry: "2027-05-09",
+        status: "Assigned", accountStatus: "Active",
+        assignedVehicle: "MH12AB1234", currentTrip: "TRP-1024",
+        assignmentDate: "2026-11-20", joiningDate: "2023-06-12",
+        lastLogin: "2026-11-20 08:15 AM",
+        accountCreatedDate: "2023-06-12",
+        notes: "Regular intercity route driver.",
+        tripHistory: [
+          { id: "TRP-1015", route: "Pune → Satara", vehicle: "Eicher 14ft", date: "2026-11-15", status: "Completed" },
+          { id: "TRP-1008", route: "Pune → Mumbai", vehicle: "Tata 407", date: "2026-11-10", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1003", name: "Suresh Jadhav", phone: "9876501003",
+        alternatePhone: "9876502003", email: "suresh.jadhav@example.com",
+        address: "Hadapsar, Pune, Maharashtra", dateOfBirth: "1986-02-18",
+        gender: "Male", emergencyContact: "Meena Jadhav",
+        emergencyPhone: "9876503003", emergencyRelation: "Wife",
+        licenseNumber: "MH1220170001003", licenseType: "HGV",
+        licenseIssueDate: "2020-03-11", licenseExpiry: "2027-03-10",
+        status: "On Trip", accountStatus: "Active",
+        assignedVehicle: "MH14CD5678", currentTrip: "TRP-1026",
+        assignmentDate: "2026-11-20", joiningDate: "2022-08-01",
+        lastLogin: "2026-11-20 07:45 AM",
+        accountCreatedDate: "2022-08-01",
+        notes: "Long-distance transport experience.",
+        tripHistory: [
+          { id: "TRP-1012", route: "Pune → Kolhapur", vehicle: "Eicher 14ft", date: "2026-11-14", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1004", name: "Vikas Sharma", phone: "9876501004",
+        alternatePhone: "9876502004", email: "vikas.sharma@example.com",
+        address: "Pimpri, Pune, Maharashtra", dateOfBirth: "1990-11-04",
+        gender: "Male", emergencyContact: "Neha Sharma",
+        emergencyPhone: "9876503004", emergencyRelation: "Wife",
+        licenseNumber: "MH1420200001004", licenseType: "LMV-TR",
+        licenseIssueDate: "2022-08-15", licenseExpiry: "2027-08-14",
+        status: "Assigned", accountStatus: "Active",
+        assignedVehicle: "MH12EF9012", currentTrip: "TRP-1025",
+        assignmentDate: "2026-11-20", joiningDate: "2024-01-10",
+        lastLogin: "2026-11-19 06:30 PM",
+        accountCreatedDate: "2024-01-10",
+        notes: "Experienced city and regional driver.",
+        tripHistory: [
+          { id: "TRP-1009", route: "Pune → Ahmednagar", vehicle: "Tata Ace", date: "2026-11-11", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1005", name: "Prakash More", phone: "9876501005",
+        alternatePhone: "9876502005", email: "prakash.more@example.com",
+        address: "Chinchwad, Pune, Maharashtra", dateOfBirth: "1987-06-25",
+        gender: "Male", emergencyContact: "Kavita More",
+        emergencyPhone: "9876503005", emergencyRelation: "Wife",
+        licenseNumber: "MH1520180001005", licenseType: "HMV",
+        licenseIssueDate: "2021-02-10", licenseExpiry: "2027-02-09",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2023-09-01", lastLogin: "2026-11-18 10:00 AM",
+        accountCreatedDate: "2023-09-01",
+        notes: "Available for upcoming trips.",
+        tripHistory: [
+          { id: "TRP-1007", route: "Pune → Solapur", vehicle: "BharatBenz 19ft", date: "2026-11-09", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1006", name: "Rohit Shinde", phone: "9876501006",
+        alternatePhone: "9876502006", email: "rohit.shinde@example.com",
+        address: "Baner, Pune, Maharashtra", dateOfBirth: "1994-01-17",
+        gender: "Male", emergencyContact: "Pooja Shinde",
+        emergencyPhone: "9876503006", emergencyRelation: "Sister",
+        licenseNumber: "MH1220210001006", licenseType: "LMV",
+        licenseIssueDate: "2023-01-15", licenseExpiry: "2028-01-14",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2024-04-18", lastLogin: "2026-11-19 11:10 AM",
+        accountCreatedDate: "2024-04-18", notes: "", tripHistory: []
+      },
+      {
+        id: "DRV-1007", name: "Akash Pawar", phone: "9876501007",
+        alternatePhone: "9876502007", email: "akash.pawar@example.com",
+        address: "Katraj, Pune, Maharashtra", dateOfBirth: "1992-07-09",
+        gender: "Male", emergencyContact: "Ramesh Pawar",
+        emergencyPhone: "9876503007", emergencyRelation: "Father",
+        licenseNumber: "MH1220190001007", licenseType: "LMV-TR",
+        licenseIssueDate: "2022-07-12", licenseExpiry: "2026-12-08",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2023-11-05", lastLogin: "2026-11-17 04:20 PM",
+        accountCreatedDate: "2023-11-05",
+        notes: "License renewal should be planned.",
+        tripHistory: [
+          { id: "TRP-1005", route: "Pune → Lonavala", vehicle: "Tata Ace", date: "2026-11-07", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1008", name: "Mahesh Deshmukh", phone: "9876501008",
+        alternatePhone: "9876502008", email: "mahesh.deshmukh@example.com",
+        address: "Viman Nagar, Pune, Maharashtra", dateOfBirth: "1985-03-14",
+        gender: "Male", emergencyContact: "Anita Deshmukh",
+        emergencyPhone: "9876503008", emergencyRelation: "Wife",
+        licenseNumber: "MH1420160001008", licenseType: "HGV",
+        licenseIssueDate: "2019-03-12", licenseExpiry: "2026-11-10",
+        status: "Inactive", accountStatus: "Inactive",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2021-02-20", lastLogin: "2026-10-28 02:30 PM",
+        accountCreatedDate: "2021-02-20",
+        notes: "License expired. Renewal required.",
+        tripHistory: [
+          { id: "TRP-1001", route: "Pune → Mumbai", vehicle: "Ashok Leyland", date: "2026-11-01", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1009", name: "Sunil Kadam", phone: "9876501009",
+        alternatePhone: "9876502009", email: "sunil.kadam@example.com",
+        address: "Akurdi, Pune, Maharashtra", dateOfBirth: "1989-09-30",
+        gender: "Male", emergencyContact: "Lata Kadam",
+        emergencyPhone: "9876503009", emergencyRelation: "Wife",
+        licenseNumber: "MH1220180001009", licenseType: "HMV",
+        licenseIssueDate: "2021-09-01", licenseExpiry: "2027-08-31",
+        status: "Available", accountStatus: "Suspended",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2022-12-12", lastLogin: "2026-11-02 12:10 PM",
+        accountCreatedDate: "2022-12-12",
+        notes: "Account access temporarily suspended.",
+        tripHistory: []
+      },
+      {
+        id: "DRV-1010", name: "Nitin Patil", phone: "9876501010",
+        alternatePhone: "9876502010", email: "nitin.patil@example.com",
+        address: "Kharadi, Pune, Maharashtra", dateOfBirth: "1993-05-08",
+        gender: "Male", emergencyContact: "Asha Patil",
+        emergencyPhone: "9876503010", emergencyRelation: "Mother",
+        licenseNumber: "MH1420200001010", licenseType: "LMV",
+        licenseIssueDate: "2022-05-10", licenseExpiry: "2027-05-09",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2024-06-03", lastLogin: "2026-11-19 08:40 AM",
+        accountCreatedDate: "2024-06-03", notes: "",
+        tripHistory: [
+          { id: "TRP-0998", route: "Pune → Baramati", vehicle: "Tata Ace", date: "2026-10-29", status: "Completed" }
+        ]
+      },
+      {
+        id: "DRV-1011", name: "Ganesh Chavan", phone: "9876501011",
+        alternatePhone: "9876502011", email: "ganesh.chavan@example.com",
+        address: "Sinhagad Road, Pune, Maharashtra", dateOfBirth: "1984-12-22",
+        gender: "Male", emergencyContact: "Rekha Chavan",
+        emergencyPhone: "9876503011", emergencyRelation: "Wife",
+        licenseNumber: "MH1220150001011", licenseType: "HGV",
+        licenseIssueDate: "2019-12-10", licenseExpiry: "2027-12-09",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2020-08-12", lastLogin: "2026-11-16 09:00 AM",
+        accountCreatedDate: "2020-08-12", notes: "Senior driver.",
+        tripHistory: []
+      },
+      {
+        id: "DRV-1012", name: "Sanjay Bhosale", phone: "9876501012",
+        alternatePhone: "9876502012", email: "sanjay.bhosale@example.com",
+        address: "Dhayari, Pune, Maharashtra", dateOfBirth: "1990-10-15",
+        gender: "Male", emergencyContact: "Manisha Bhosale",
+        emergencyPhone: "9876503012", emergencyRelation: "Wife",
+        licenseNumber: "MH1520190001012", licenseType: "LMV-TR",
+        licenseIssueDate: "2022-10-10", licenseExpiry: "2027-10-09",
+        status: "Suspended", accountStatus: "Suspended",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2022-05-05", lastLogin: "2026-10-20 11:00 AM",
+        accountCreatedDate: "2022-05-05",
+        notes: "Temporarily suspended pending review.",
+        tripHistory: [
+          { id: "TRP-0995", route: "Pune → Nashik", vehicle: "Eicher 14ft", date: "2026-10-25", status: "Cancelled" }
+        ]
+      },
+      {
+        id: "DRV-1013", name: "Dinesh Gaikwad", phone: "9876501013",
+        alternatePhone: "9876502013", email: "dinesh.gaikwad@example.com",
+        address: "Warje, Pune, Maharashtra", dateOfBirth: "1995-02-05",
+        gender: "Male", emergencyContact: "Sonal Gaikwad",
+        emergencyPhone: "9876503013", emergencyRelation: "Sister",
+        licenseNumber: "MH1220220001013", licenseType: "LMV",
+        licenseIssueDate: "2024-02-01", licenseExpiry: "2029-01-31",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2025-01-15", lastLogin: "2026-11-18 03:15 PM",
+        accountCreatedDate: "2025-01-15", notes: "", tripHistory: []
+      },
+      {
+        id: "DRV-1014", name: "Vijay Salunkhe", phone: "9876501014",
+        alternatePhone: "9876502014", email: "vijay.salunkhe@example.com",
+        address: "Pashan, Pune, Maharashtra", dateOfBirth: "1987-07-19",
+        gender: "Male", emergencyContact: "Suman Salunkhe",
+        emergencyPhone: "9876503014", emergencyRelation: "Wife",
+        licenseNumber: "MH1420170001014", licenseType: "HMV",
+        licenseIssueDate: "2020-07-10", licenseExpiry: "2027-07-09",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2021-09-10", lastLogin: "2026-11-15 01:00 PM",
+        accountCreatedDate: "2021-09-10", notes: "", tripHistory: []
+      },
+      {
+        id: "DRV-1015", name: "Ramesh Gawade", phone: "9876501015",
+        alternatePhone: "9876502015", email: "ramesh.gawade@example.com",
+        address: "Moshi, Pune, Maharashtra", dateOfBirth: "1983-04-03",
+        gender: "Male", emergencyContact: "Shobha Gawade",
+        emergencyPhone: "9876503015", emergencyRelation: "Wife",
+        licenseNumber: "MH1220140001015", licenseType: "HGV",
+        licenseIssueDate: "2019-04-01", licenseExpiry: "2027-03-31",
+        status: "Inactive", accountStatus: "Inactive",
+        assignedVehicle: "", currentTrip: "", assignmentDate: "",
+        joiningDate: "2020-03-12", lastLogin: "2026-09-15 10:30 AM",
+        accountCreatedDate: "2020-03-12",
+        notes: "Currently not available for assignments.",
+        tripHistory: []
+      }
+    ];
+
+    /* =========================================================
+       2. TRIP DATA
+    ========================================================= */
+    const trips = [
+      { id: "TRP-1024", route: "Pune → Mumbai", status: "Scheduled", driverId: "DRV-1002", vehicle: "MH12AB1234" },
+      { id: "TRP-1025", route: "Mumbai → Nashik", status: "Scheduled", driverId: "DRV-1004", vehicle: "MH12EF9012" },
+      { id: "TRP-1026", route: "Pune → Satara", status: "In Progress", driverId: "DRV-1003", vehicle: "MH14CD5678" },
+      { id: "TRP-1027", route: "Pune → Kolhapur", status: "Scheduled", driverId: "", vehicle: "" }
+    ];
+
+    const vehicles = [
+      { number: "MH12AB1234", name: "Tata Ace" },
+      { number: "MH14CD5678", name: "Eicher 14ft" },
+      { number: "MH12EF9012", name: "BharatBenz 19ft" },
+      { number: "MH15GH3456", name: "Ashok Leyland" }
+    ];
+
+    /* =========================================================
+       3. DOM ELEMENTS AND STATE
+    ========================================================= */
+    const driverTableBody = document.getElementById("driverTableBody");
+    const driverSearch = document.getElementById("driverSearch");
+    const statusFilter = document.getElementById("statusFilter");
+    const accountFilter = document.getElementById("accountFilter");
+    const licenseFilter = document.getElementById("licenseFilter");
+    const assignmentFilter = document.getElementById("assignmentFilter");
+
+    const modalOverlay = document.getElementById("driverModalOverlay");
+    const modal = document.getElementById("driverModal");
+    const modalTitle = document.getElementById("driverModalTitle");
+    const modalSubtitle = document.getElementById("driverModalSubtitle");
+    const modalBody = document.getElementById("driverModalBody");
+    const modalFooter = document.getElementById("driverModalFooter");
+
+    const PAGE_SIZE = 8;
+    let currentPage = 1;
+    let editingDriverId = null;
+    let activeModalDriverId = null;
+    let lastFocusedElement = null;
+
+    /* =========================================================
+       4. INITIALIZATION
+    ========================================================= */
+    document.addEventListener("DOMContentLoaded", initializeDriverPage);
+
+    function initializeDriverPage() {
+      bindPageEvents();
+      calculateDriverKPIs();
+      renderDrivers();
+    }
+
+    function bindPageEvents() {
+      document.getElementById("addDriverBtn")
+        .addEventListener("click", openAddDriverModal);
+
+      document.getElementById("clearFiltersBtn")
+        .addEventListener("click", clearFilters);
+
+      driverSearch.addEventListener("input", handleFilterChange);
+
+      [statusFilter, accountFilter, licenseFilter, assignmentFilter]
+        .forEach(filter => filter.addEventListener("change", handleFilterChange));
+
+      document.getElementById("closeDriverModal")
+        .addEventListener("click", closeDriverModal);
+
+      modalOverlay.addEventListener("click", event => {
+        if (event.target === modalOverlay) closeDriverModal();
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && modalOverlay.classList.contains("show")) {
+          closeDriverModal();
+        }
+      });
+
+      driverTableBody.addEventListener("click", handleTableAction);
+      modalBody.addEventListener("click", handleModalAction);
+      modalFooter.addEventListener("click", handleModalAction);
+    }
+
+    /* =========================================================
+       5. KPI CALCULATIONS
+    ========================================================= */
+    function calculateDriverKPIs() {
+      const counts = { total: drivers.length, available: 0, assigned: 0, onTrip: 0, inactive: 0 };
+
+      drivers.forEach(driver => {
+        switch (driver.status) {
+          case "Available": counts.available++; break;
+          case "Assigned": counts.assigned++; break;
+          case "On Trip": counts.onTrip++; break;
+          case "Inactive": counts.inactive++; break;
+        }
+      });
+
+      document.getElementById("totalDrivers").textContent = counts.total;
+      document.getElementById("availableDrivers").textContent = counts.available;
+      document.getElementById("assignedDrivers").textContent = counts.assigned;
+      document.getElementById("onTripDrivers").textContent = counts.onTrip;
+      document.getElementById("inactiveDrivers").textContent = counts.inactive;
+    }
+
+    /* =========================================================
+       6. SEARCH AND FILTERS
+    ========================================================= */
+    function handleFilterChange() {
+      currentPage = 1;
+      renderDrivers();
+    }
+
+    function clearFilters() {
+      driverSearch.value = "";
+      statusFilter.value = "";
+      accountFilter.value = "";
+      licenseFilter.value = "";
+      assignmentFilter.value = "";
+      currentPage = 1;
+      renderDrivers();
+    }
+
+    function filterDrivers() {
+      const searchValue = driverSearch.value.trim().toLowerCase();
+      const operationalStatus = statusFilter.value;
+      const accountStatus = accountFilter.value;
+      const licenseType = licenseFilter.value;
+      const assignment = assignmentFilter.value;
+
+      return drivers.filter(driver => {
+        const searchableValues = [
+          driver.id, driver.name, driver.phone, driver.alternatePhone,
+          driver.email, driver.licenseNumber, driver.licenseType,
+          driver.assignedVehicle, driver.currentTrip
+        ];
+
+        const matchesSearch = !searchValue ||
+          searchableValues.some(value =>
+            String(value || "").toLowerCase().includes(searchValue));
+
+        const matchesStatus = !operationalStatus || driver.status === operationalStatus;
+        const matchesAccount = !accountStatus || driver.accountStatus === accountStatus;
+        const matchesLicense = !licenseType || driver.licenseType === licenseType;
+
+        const hasAssignment = isDriverAssignedToActiveTrip(driver);
+        const matchesAssignment =
+          !assignment ||
+          (assignment === "assigned" && hasAssignment) ||
+          (assignment === "unassigned" && !hasAssignment);
+
+        return matchesSearch && matchesStatus && matchesAccount &&
+          matchesLicense && matchesAssignment;
+      });
+    }
+
+    /* =========================================================
+       7. RENDER DRIVERS TABLE
+    ========================================================= */
+    function renderDrivers() {
+      const filteredDrivers = filterDrivers();
+      const totalPages = Math.max(1, Math.ceil(filteredDrivers.length / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = (currentPage - 1) * PAGE_SIZE;
+      const paginatedDrivers = filteredDrivers.slice(startIndex, startIndex + PAGE_SIZE);
+
+      if (paginatedDrivers.length === 0) {
+        renderEmptyState();
+      } else {
+        driverTableBody.innerHTML = paginatedDrivers.map(renderDriverRow).join("");
+      }
+
+      renderPagination(filteredDrivers.length, totalPages);
+    }
+
+    /* Trips-style row markup */
+    function renderDriverRow(driver) {
+      const initials = getInitials(driver.name);
+      const assignedVehicle = driver.assignedVehicle || "—";
+      const currentTrip = driver.currentTrip || "—";
+      const hasActiveAssignment = isDriverAssignedToActiveTrip(driver);
+      const licenseWarning = getLicenseExpiryInfo(driver.licenseExpiry);
+
+      return `
+        <tr>
+          <td>
+            <span class="driver-id">${escapeHTML(driver.id)}</span>
+          </td>
+
+          <td>
+            <div class="driver-person">
+              <div class="driver-avatar">${escapeHTML(initials)}</div>
+              <div>
+                <div class="driver-person-name">${escapeHTML(driver.name)}</div>
+                <div class="driver-person-sub">${escapeHTML(driver.email || "No email added")}</div>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div class="driver-contact-main">${escapeHTML(driver.phone)}</div>
+            <div class="driver-contact-sub">${escapeHTML(driver.alternatePhone || "No alternate number")}</div>
+          </td>
+
+          <td>
+            <span class="driver-license-badge">${escapeHTML(driver.licenseType)}</span>
+            ${licenseWarning.level !== "normal"
+          ? `<div style="font-size:9px;color:${licenseWarning.level === "expired" ? "#b91c1c" : "#b45309"};margin-top:3px;">${escapeHTML(licenseWarning.label)}</div>`
+          : ""}
+          </td>
+
+          <td>${escapeHTML(assignedVehicle)}</td>
+
+          <td>
+            <span style="font-weight:600;color:#292524;">${escapeHTML(currentTrip)}</span>
+          </td>
+
+          <td>
+            <span class="driver-status-badge ${getStatusClass(driver.status)}">
+              ${escapeHTML(driver.status)}
+            </span>
+          </td>
+
+          <td>
+            <span class="driver-account-badge ${getAccountClass(driver.accountStatus)}">
+              ${escapeHTML(driver.accountStatus)}
+            </span>
+          </td>
+
+          <td>
+            <div class="driver-action-list">
+              <button class="driver-action-btn" data-action="view" data-id="${escapeHTML(driver.id)}"
+                title="View Driver" aria-label="View ${escapeHTML(driver.name)}">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+
+              <button class="driver-action-btn" data-action="edit" data-id="${escapeHTML(driver.id)}"
+                title="Edit Driver" aria-label="Edit ${escapeHTML(driver.name)}">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+
+              <button class="driver-action-btn assign" data-action="assign" data-id="${escapeHTML(driver.id)}"
+                title="${hasActiveAssignment ? "Driver already assigned" : "Assign Trip"}"
+                aria-label="Assign trip to ${escapeHTML(driver.name)}"
+                ${hasActiveAssignment ? "disabled" : ""}>
+                <i class="fa-solid fa-route"></i>
+              </button>
+
+              <button class="driver-action-btn" data-action="account" data-id="${escapeHTML(driver.id)}"
+                title="Account Access" aria-label="Manage account access for ${escapeHTML(driver.name)}">
+                <i class="fa-solid fa-user-shield"></i>
+              </button>
+
+              <button class="driver-action-btn danger" data-action="deactivate" data-id="${escapeHTML(driver.id)}"
+                title="Deactivate Driver" aria-label="Deactivate ${escapeHTML(driver.name)}"
+                ${driver.status === "Inactive" ? "disabled" : ""}>
+                <i class="fa-solid fa-user-slash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderEmptyState() {
+      const hasAnyDrivers = drivers.length > 0;
+
+      driverTableBody.innerHTML = `
+        <tr>
+          <td colspan="9">
+            <div class="driver-empty-state">
+              <div class="driver-empty-icon"><i class="fa-solid fa-users"></i></div>
+              <div class="driver-empty-title">
+                ${hasAnyDrivers ? "No drivers found" : "No drivers available"}
+              </div>
+              <p class="driver-empty-text">
+                ${hasAnyDrivers
+          ? "Try changing your search or filters."
+          : "Add your first driver to start managing your drivers."}
+              </p>
+              ${hasAnyDrivers ? "" : `
+                <button class="driver-primary-btn" onclick="openAddDriverModal()">
+                  <i class="fa-solid fa-plus"></i> Add Driver
+                </button>
+              `}
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    /* =========================================================
+       8. PAGINATION — Trips-style buttons
+    ========================================================= */
+    function renderPagination(totalItems, totalPages) {
+      const pagination = document.getElementById("driverPagination");
+      const resultCount = document.getElementById("driverResultCount");
+
+      const start = totalItems === 0 ? 0 : ((currentPage - 1) * PAGE_SIZE) + 1;
+      const end = Math.min(currentPage * PAGE_SIZE, totalItems);
+
+      resultCount.textContent = `Showing ${start}-${end} of ${totalItems} drivers`;
+
+      if (totalItems === 0) { pagination.innerHTML = ""; return; }
+
+      const btnBase = "display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 8px;border:1px solid #e7e5e4;border-radius:6px;background:#fff;color:#57534e;font-size:11px;cursor:pointer;";
+      const btnActive = "border-color:#601d49;background:#601d49;color:#fff;";
+      const btnDisabled = "opacity:.4;cursor:not-allowed;";
+
+      let html = `
+        <button data-page="${currentPage - 1}" aria-label="Previous page"
+          style="${btnBase}${currentPage === 1 ? btnDisabled : ""}"
+          ${currentPage === 1 ? "disabled" : ""}>
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      for (let page = 1; page <= totalPages; page++) {
+        html += `
+          <button data-page="${page}" aria-label="Page ${page}"
+            ${page === currentPage ? 'aria-current="page"' : ""}
+            style="${btnBase}${page === currentPage ? btnActive : ""}">
+            ${page}
+          </button>
+        `;
+      }
+
+      html += `
+        <button data-page="${currentPage + 1}" aria-label="Next page"
+          style="${btnBase}${currentPage === totalPages ? btnDisabled : ""}"
+          ${currentPage === totalPages ? "disabled" : ""}>
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      pagination.innerHTML = html;
+
+      pagination.querySelectorAll("[data-page]").forEach(button => {
+        button.addEventListener("click", () => {
+          const nextPage = Number(button.dataset.page);
+          if (nextPage < 1 || nextPage > totalPages) return;
+          currentPage = nextPage;
+          renderDrivers();
+        });
+      });
+    }
+
+    /* =========================================================
+       9. TABLE ACTION HANDLER
+    ========================================================= */
+    function handleTableAction(event) {
+      const button = event.target.closest("[data-action]");
+      if (!button || button.disabled) return;
+
+      const action = button.dataset.action;
+      const driverId = button.dataset.id;
+
+      switch (action) {
+        case "view": openViewDriverModal(driverId); break;
+        case "edit": openEditDriverModal(driverId); break;
+        case "assign": openAssignTripModal(driverId); break;
+        case "account": openAccountAccessModal(driverId); break;
+        case "deactivate": deactivateDriver(driverId); break;
+      }
+    }
+
+    /* =========================================================
+       10. ADD DRIVER
+    ========================================================= */
+    function openAddDriverModal() {
+      editingDriverId = null;
+      const today = getLocalDateString();
+
+      openModal(
+        "Add New Driver",
+        "Enter the driver's information to create a new profile.",
+        "modal-large"
+      );
+
+      modalBody.innerHTML = getDriverFormHTML({
+        id: generateDriverId(),
+        name: "", phone: "", alternatePhone: "", email: "", address: "",
+        dateOfBirth: "", gender: "", emergencyContact: "", emergencyPhone: "",
+        emergencyRelation: "", licenseNumber: "", licenseType: "",
+        licenseIssueDate: "", licenseExpiry: "",
+        status: "Available", accountStatus: "Active",
+        assignedVehicle: "", currentTrip: "", joiningDate: today, notes: ""
+      }, false);
+
+      modalFooter.innerHTML = `
+        <button class="driver-secondary-btn" data-action="close-modal">Cancel</button>
+        <button class="driver-primary-btn" data-action="save-driver">
+          <i class="fa-solid fa-check"></i> Save Driver
+        </button>
+      `;
+    }
+
+    /* =========================================================
+       11. EDIT DRIVER
+    ========================================================= */
+    function openEditDriverModal(driverId) {
+      const driver = findDriver(driverId);
+      if (!driver) return;
+      editingDriverId = driverId;
+
+      openModal(
+        "Edit Driver Details",
+        `Update the profile information for ${driver.name}.`,
+        "modal-large"
+      );
+
+      modalBody.innerHTML = getDriverFormHTML(driver, true);
+
+      modalFooter.innerHTML = `
+        <button class="driver-secondary-btn" data-action="close-modal">Cancel</button>
+        <button class="driver-primary-btn" data-action="save-driver">
+          <i class="fa-solid fa-floppy-disk"></i> Update Driver
+        </button>
+      `;
+    }
+
+    /* =========================================================
+       12. DRIVER FORM HTML
+    ========================================================= */
+    function getDriverFormHTML(driver, isEdit) {
+      return `
+        <form id="driverForm" novalidate>
+
+          <section class="driver-form-section">
+            <h3 class="driver-form-section-title">
+              <i class="fa-regular fa-user"></i> Personal Information
+            </h3>
+            <div class="driver-form-grid">
+              ${formField("Driver ID", "id", driver.id, "text", true)}
+              ${formField("Full Name", "name", driver.name, "text", false, true)}
+              ${formField("Date of Birth", "dateOfBirth", driver.dateOfBirth, "date")}
+              <div class="driver-form-field">
+                <label class="driver-form-label" for="gender">Gender</label>
+                <select class="driver-form-control" id="gender" name="gender">
+                  <option value="">Select Gender</option>
+                  ${option("Male", driver.gender)}
+                  ${option("Female", driver.gender)}
+                  ${option("Other", driver.gender)}
+                </select>
+              </div>
+              <div class="driver-form-field full">
+                <label class="driver-form-label" for="address">Address</label>
+                <textarea class="driver-form-control" id="address" name="address">${escapeHTML(driver.address || "")}</textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="driver-form-section">
+            <h3 class="driver-form-section-title">
+              <i class="fa-solid fa-phone"></i> Contact Information
+            </h3>
+            <div class="driver-form-grid">
+              ${formField("Phone Number", "phone", driver.phone, "tel", false, true)}
+              ${formField("Alternate Phone", "alternatePhone", driver.alternatePhone, "tel")}
+              ${formField("Email Address", "email", driver.email, "email")}
+              ${formField("Emergency Contact Name", "emergencyContact", driver.emergencyContact)}
+              ${formField("Emergency Contact Number", "emergencyPhone", driver.emergencyPhone, "tel")}
+              ${formField("Emergency Relationship", "emergencyRelation", driver.emergencyRelation)}
+            </div>
+          </section>
+
+          <section class="driver-form-section">
+            <h3 class="driver-form-section-title">
+              <i class="fa-regular fa-id-card"></i> License Information
+            </h3>
+            <div class="driver-form-grid">
+              ${formField("Driving License Number", "licenseNumber", driver.licenseNumber, "text", false, true)}
+              <div class="driver-form-field">
+                <label class="driver-form-label" for="licenseType">
+                  License Type <span class="driver-required">*</span>
+                </label>
+                <select class="driver-form-control" id="licenseType" name="licenseType">
+                  <option value="">Select License Type</option>
+                  ${option("LMV", driver.licenseType)}
+                  ${option("LMV-TR", driver.licenseType)}
+                  ${option("HMV", driver.licenseType)}
+                  ${option("HGV", driver.licenseType)}
+                </select>
+                <div class="driver-field-error" data-error="licenseType"></div>
+              </div>
+              ${formField("License Issue Date", "licenseIssueDate", driver.licenseIssueDate, "date")}
+              ${formField("License Expiry Date", "licenseExpiry", driver.licenseExpiry, "date", false, true)}
+            </div>
+          </section>
+
+          <section class="driver-form-section">
+            <h3 class="driver-form-section-title">
+              <i class="fa-solid fa-truck"></i> Driver Operational Information
+            </h3>
+            <div class="driver-form-grid">
+              <div class="driver-form-field">
+                <label class="driver-form-label" for="status">
+                  Driver Status <span class="driver-required">*</span>
+                </label>
+                <select class="driver-form-control" id="status" name="status">
+                  ${["Available", "Assigned", "On Trip", "Inactive", "Suspended"]
+          .map(value => option(value, driver.status)).join("")}
+                </select>
+                <div class="driver-field-error" data-error="status"></div>
+              </div>
+              <div class="driver-form-field">
+                <label class="driver-form-label" for="assignedVehicle">Assigned Vehicle</label>
+                <select class="driver-form-control" id="assignedVehicle" name="assignedVehicle">
+                  <option value="">No Vehicle Assigned</option>
+                  ${vehicles.map(v => `
+                    <option value="${escapeHTML(v.number)}" ${driver.assignedVehicle === v.number ? "selected" : ""}>
+                      ${escapeHTML(v.number)} — ${escapeHTML(v.name)}
+                    </option>
+                  `).join("")}
+                </select>
+              </div>
+              ${formField("Current Trip", "currentTrip", driver.currentTrip, "text", true)}
+              ${formField("Joining Date", "joiningDate", driver.joiningDate, "date")}
+            </div>
+            ${isEdit ? `
+              <p class="driver-form-note">
+                For active trip changes, use the Assign Trip action. Existing trip references are not reassigned automatically.
+              </p>
+            ` : ""}
+          </section>
+
+          <section class="driver-form-section">
+            <h3 class="driver-form-section-title">
+              <i class="fa-solid fa-user-shield"></i> Account Access
+            </h3>
+            <div class="driver-form-grid">
+              <div class="driver-form-field">
+                <label class="driver-form-label" for="accountStatus">
+                  Account Status <span class="driver-required">*</span>
+                </label>
+                <select class="driver-form-control" id="accountStatus" name="accountStatus">
+                  ${["Active", "Inactive", "Suspended"]
+          .map(value => option(value, driver.accountStatus)).join("")}
+                </select>
+                <div class="driver-field-error" data-error="accountStatus"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="driver-form-section">
+            <h3 class="driver-form-section-title">
+              <i class="fa-regular fa-note-sticky"></i> Additional Information
+            </h3>
+            <div class="driver-form-grid">
+              <div class="driver-form-field full">
+                <label class="driver-form-label" for="notes">Driver Notes</label>
+                <textarea class="driver-form-control" id="notes" name="notes"
+                  placeholder="Add additional information about the driver...">${escapeHTML(driver.notes || "")}</textarea>
+              </div>
+            </div>
+          </section>
+
+        </form>
+      `;
+    }
+
+    function formField(label, name, value, type = "text", readonly = false, required = false) {
+      return `
+        <div class="driver-form-field">
+          <label class="driver-form-label" for="${name}">
+            ${label}
+            ${required ? '<span class="driver-required">*</span>' : ""}
+          </label>
+          <input class="driver-form-control" type="${type}" id="${name}" name="${name}"
+            value="${escapeHTML(value || "")}" ${readonly ? "readonly" : ""}
+            ${required ? "data-required='true'" : ""} />
+          <div class="driver-field-error" data-error="${name}"></div>
+        </div>
+      `;
+    }
+
+    function option(value, selectedValue) {
+      return `<option value="${escapeHTML(value)}" ${value === selectedValue ? "selected" : ""}>${escapeHTML(value)}</option>`;
+    }
+
+    /* =========================================================
+       13. SAVE DRIVER + VALIDATION
+    ========================================================= */
+    function saveDriver() {
+      const form = document.getElementById("driverForm");
+      if (!form) return;
+
+      clearFormErrors();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      if (!validateDriverForm(data)) {
+        showToast("Please correct the highlighted fields.", "error");
+        return;
+      }
+
+      const isEdit = Boolean(editingDriverId);
+
+      if (isEdit) {
+        const existingDriver = findDriver(editingDriverId);
+        if (!existingDriver) return;
+        Object.assign(existingDriver, data);
+        existingDriver.id = editingDriverId;
+        showToast("Driver details updated successfully.", "success");
+      } else {
+        const newDriver = {
+          ...data,
+          id: generateDriverId(),
+          currentTrip: "",
+          assignedVehicle: data.assignedVehicle || "",
+          assignmentDate: "",
+          lastLogin: "Not logged in",
+          accountCreatedDate: getLocalDateString(),
+          tripHistory: []
+        };
+        drivers.unshift(newDriver);
+        showToast("Driver added successfully.", "success");
+      }
+
+      calculateDriverKPIs();
+      closeDriverModal();
+      currentPage = 1;
+      renderDrivers();
+    }
+
+    function validateDriverForm(data) {
+      let isValid = true;
+
+      const requiredFields = [
+        ["name", "Full name is required."],
+        ["phone", "Phone number is required."],
+        ["licenseNumber", "Driving license number is required."],
+        ["licenseType", "Please select a license type."],
+        ["licenseExpiry", "License expiry date is required."],
+        ["status", "Please select a driver status."],
+        ["accountStatus", "Please select an account status."]
+      ];
+
+      requiredFields.forEach(([field, message]) => {
+        if (!String(data[field] || "").trim()) {
+          setFieldError(field, message);
+          isValid = false;
+        }
+      });
+
+      const phonePattern = /^[6-9]\d{9}$/;
+
+      if (data.phone && !phonePattern.test(data.phone.trim())) {
+        setFieldError("phone", "Enter a valid 10-digit Indian mobile number.");
+        isValid = false;
+      }
+      if (data.alternatePhone && !phonePattern.test(data.alternatePhone.trim())) {
+        setFieldError("alternatePhone", "Enter a valid 10-digit mobile number.");
+        isValid = false;
+      }
+      if (data.emergencyPhone && !phonePattern.test(data.emergencyPhone.trim())) {
+        setFieldError("emergencyPhone", "Enter a valid 10-digit mobile number.");
+        isValid = false;
+      }
+      if (data.email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(data.email.trim())) {
+          setFieldError("email", "Enter a valid email address.");
+          isValid = false;
+        }
+      }
+
+      const duplicatePhone = drivers.some(driver =>
+        driver.phone === data.phone.trim() && driver.id !== editingDriverId);
+      if (duplicatePhone) {
+        setFieldError("phone", "This phone number is already registered.");
+        isValid = false;
+      }
+
+      const duplicateLicense = drivers.some(driver =>
+        driver.licenseNumber.toLowerCase() === data.licenseNumber.trim().toLowerCase() &&
+        driver.id !== editingDriverId);
+      if (duplicateLicense) {
+        setFieldError("licenseNumber", "This license number is already registered.");
+        isValid = false;
+      }
+
+      if (data.licenseIssueDate && data.licenseExpiry &&
+        data.licenseExpiry < data.licenseIssueDate) {
+        setFieldError("licenseExpiry", "Expiry date cannot be before the issue date.");
+        isValid = false;
+      }
+      if (data.licenseExpiry && data.licenseExpiry < getLocalDateString()) {
+        setFieldError("licenseExpiry", "This license is expired. Enter a valid expiry date.");
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    function setFieldError(fieldName, message) {
+      const errorElement = modalBody.querySelector(`[data-error="${fieldName}"]`);
+      if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.add("show");
+      }
+      const input = modalBody.querySelector(`[name="${fieldName}"]`);
+      if (input) {
+        input.style.borderColor = "#dc2626";
+        input.setAttribute("aria-invalid", "true");
+      }
+    }
+
+    function clearFormErrors() {
+      modalBody.querySelectorAll(".driver-field-error").forEach(el => {
+        el.textContent = "";
+        el.classList.remove("show");
+      });
+      modalBody.querySelectorAll(".driver-form-control").forEach(input => {
+        input.style.borderColor = "";
+        input.removeAttribute("aria-invalid");
+      });
+    }
+
+    /* =========================================================
+       14. VIEW DRIVER DETAILS — Trips hero + sections
+    ========================================================= */
+    function openViewDriverModal(driverId) {
+      const driver = findDriver(driverId);
+      if (!driver) return;
+
+      activeModalDriverId = driverId;
+
+      openModal(
+        "Driver Details",
+        `${driver.id} · Complete driver profile and trip history`,
+        "modal-large"
+      );
+
+      const licenseInfo = getLicenseExpiryInfo(driver.licenseExpiry);
+      const history = driver.tripHistory || [];
+
+      const historyStats = {
+        total: history.length,
+        completed: history.filter(item => item.status === "Completed").length,
+        cancelled: history.filter(item => item.status === "Cancelled").length,
+        inProgress: history.filter(item => item.status === "In Progress").length
+      };
+
+      modalBody.innerHTML = `
+        <div class="driver-detail-hero">
+          <div class="driver-detail-hero-left">
+            <div class="driver-detail-avatar">${escapeHTML(getInitials(driver.name))}</div>
+            <div>
+              <div class="driver-detail-name">${escapeHTML(driver.name)}</div>
+              <div class="driver-detail-meta">
+                ${escapeHTML(driver.id)} · ${escapeHTML(driver.licenseType)}
+              </div>
+            </div>
+          </div>
+          <div class="driver-detail-hero-badges">
+            <span class="driver-status-badge ${getStatusClass(driver.status)}">
+              ${escapeHTML(driver.status)}
+            </span>
+            <span class="driver-account-badge ${getAccountClass(driver.accountStatus)}">
+              ${escapeHTML(driver.accountStatus)} Account
+            </span>
+          </div>
+        </div>
+
+        <div class="driver-detail-section">
+          <h3 class="driver-detail-section-title"><i class="fa-regular fa-user"></i> Personal Information</h3>
+          <div class="driver-detail-section-body">
+            ${detailList([
+        ["Full Name", driver.name],
+        ["Date of Birth", formatDate(driver.dateOfBirth)],
+        ["Gender", driver.gender],
+        ["Address", driver.address],
+        ["Joining Date", formatDate(driver.joiningDate)]
+      ])}
+          </div>
+        </div>
+
+        <div class="driver-detail-section">
+          <h3 class="driver-detail-section-title"><i class="fa-solid fa-phone"></i> Contact Information</h3>
+          <div class="driver-detail-section-body">
+            ${detailList([
+        ["Phone Number", driver.phone],
+        ["Alternate Phone", driver.alternatePhone],
+        ["Email Address", driver.email],
+        ["Emergency Contact", driver.emergencyContact],
+        ["Emergency Number", driver.emergencyPhone],
+        ["Emergency Relationship", driver.emergencyRelation]
+      ])}
+          </div>
+        </div>
+
+        <div class="driver-detail-section">
+          <h3 class="driver-detail-section-title"><i class="fa-regular fa-id-card"></i> License Information</h3>
+          <div class="driver-detail-section-body">
+            ${detailList([
+        ["License Number", driver.licenseNumber],
+        ["License Type", driver.licenseType],
+        ["Issue Date", formatDate(driver.licenseIssueDate)],
+        ["Expiry Date", formatDate(driver.licenseExpiry)]
+      ])}
+            ${licenseInfo.level === "expired" ? `
+              <div class="driver-warning driver-danger-warning">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> License Expired
+              </div>
+            ` : licenseInfo.level === "soon" ? `
+              <div class="driver-warning">
+                <i class="fa-solid fa-clock mr-1"></i> ${escapeHTML(licenseInfo.label)}
+              </div>
+            ` : `
+              <div class="driver-form-note">License is currently valid.</div>
+            `}
+          </div>
+        </div>
+
+        <div class="driver-detail-section">
+          <h3 class="driver-detail-section-title"><i class="fa-solid fa-route"></i> Current Assignment</h3>
+          <div class="driver-detail-section-body">
+            ${detailList([
+        ["Operational Status", driver.status],
+        ["Assigned Vehicle", driver.assignedVehicle || "Not assigned"],
+        ["Current Trip", driver.currentTrip || "No active trip"],
+        ["Assignment Date", formatDate(driver.assignmentDate)]
+      ])}
+          </div>
+        </div>
+
+        <div class="driver-detail-section">
+          <h3 class="driver-detail-section-title"><i class="fa-solid fa-user-shield"></i> Account Access</h3>
+          <div class="driver-detail-section-body">
+            ${detailList([
+        ["Account Status", driver.accountStatus],
+        ["Last Login", driver.lastLogin],
+        ["Account Created", formatDate(driver.accountCreatedDate)]
+      ])}
+          </div>
+        </div>
+
+        <div class="driver-detail-section">
+          <h3 class="driver-detail-section-title"><i class="fa-regular fa-note-sticky"></i> Driver Notes</h3>
+          <div class="driver-detail-section-body">
+            <p style="font-size:12px;color:#57534e;line-height:1.6;margin:0;">
+              ${escapeHTML(driver.notes || "No additional notes available.")}
+            </p>
+          </div>
+        </div>
+
+        <div class="driver-detail-section">
+          <h3 class="driver-detail-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Trip History</h3>
+          <div class="driver-detail-section-body">
+            <div class="driver-history-summary">
+              <div class="driver-history-stat"><strong>${historyStats.total}</strong><span>Total Trips</span></div>
+              <div class="driver-history-stat"><strong>${historyStats.completed}</strong><span>Completed</span></div>
+              <div class="driver-history-stat"><strong>${historyStats.cancelled}</strong><span>Cancelled</span></div>
+              <div class="driver-history-stat"><strong>${historyStats.inProgress}</strong><span>In Progress</span></div>
+            </div>
+            ${renderTripHistory(history)}
+          </div>
+        </div>
+      `;
+
+      modalFooter.innerHTML = `
+        <button class="driver-secondary-btn" data-action="close-modal">Close</button>
+        <button class="driver-primary-btn" data-action="edit-from-view">
+          <i class="fa-solid fa-pen-to-square"></i> Edit Driver
+        </button>
+      `;
+    }
+
+    /* Two-column detail list helper */
+    function detailList(items) {
+      return `
+        <div class="driver-detail-list">
+          ${items.map(([label, value]) => `
+            <div>
+              <div class="driver-detail-item-label">${escapeHTML(label)}</div>
+              <div class="driver-detail-item-value">${escapeHTML(value || "—")}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderTripHistory(history) {
+      if (!history.length) {
+        return `
+          <div style="padding:18px;text-align:center;background:#fafaf9;border-radius:8px;color:#78716c;font-size:12px;border:1px dashed #e7e5e4;">
+            No trip history available for this driver.
+          </div>
+        `;
+      }
+
+      return `
+        <div class="driver-history-table-wrap">
+          <table class="driver-history-table">
+            <thead>
+              <tr>
+                <th>Trip ID</th>
+                <th>Route</th>
+                <th>Vehicle</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${history.map(item => `
+                <tr>
+                  <td style="font-weight:700;color:#601d49;">${escapeHTML(item.id)}</td>
+                  <td>${escapeHTML(item.route)}</td>
+                  <td>${escapeHTML(item.vehicle)}</td>
+                  <td>${formatDate(item.date)}</td>
+                  <td>${escapeHTML(item.status)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    /* =========================================================
+       15. ASSIGN DRIVER TO TRIP
+    ========================================================= */
+    function openAssignTripModal(driverId) {
+      const driver = findDriver(driverId);
+      if (!driver) return;
+
+      if (isDriverAssignedToActiveTrip(driver)) {
+        showToast("This driver is already assigned to an active trip.", "warning");
+        return;
+      }
+      if (!["Available"].includes(driver.status)) {
+        showToast("Only available drivers can be assigned to a new trip.", "warning");
+        return;
+      }
+
+      activeModalDriverId = driverId;
+
+      openModal(
+        "Assign Driver to Trip",
+        `Select a trip for ${driver.name}.`,
+        "modal-small"
+      );
+
+      const availableTrips = trips.filter(trip => !trip.driverId && trip.status === "Scheduled");
+
+      modalBody.innerHTML = `
+        <div style="padding:11px;background:#faf5f8;border:1px solid #efe3eb;border-radius:8px;margin-bottom:15px;">
+          <div style="font-size:10px;color:#78716c;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;">Selected Driver</div>
+          <div style="font-size:13px;font-weight:700;color:#292524;">${escapeHTML(driver.name)}</div>
+          <div style="font-size:11px;color:#78716c;margin-top:3px;">${escapeHTML(driver.id)} · ${escapeHTML(driver.status)}</div>
+        </div>
+
+        <form id="assignTripForm" novalidate>
+          <div class="driver-form-field" style="margin-bottom:13px;">
+            <label class="driver-form-label" for="assignTrip">
+              Select Trip <span class="driver-required">*</span>
+            </label>
+            <select class="driver-form-control" id="assignTrip" name="tripId">
+              <option value="">Choose a trip</option>
+              ${availableTrips.map(trip => `
+                <option value="${escapeHTML(trip.id)}">
+                  ${escapeHTML(trip.id)} — ${escapeHTML(trip.route)} (${escapeHTML(trip.status)})
+                </option>
+              `).join("")}
+            </select>
+            <div class="driver-field-error" data-error="tripId"></div>
+          </div>
+
+          <div class="driver-form-field" style="margin-bottom:13px;">
+            <label class="driver-form-label" for="assignVehicle">Assign Vehicle</label>
+            <select class="driver-form-control" id="assignVehicle" name="vehicle">
+              <option value="">Select Vehicle (Optional)</option>
+              ${vehicles.map(v => `
+                <option value="${escapeHTML(v.number)}">${escapeHTML(v.number)} — ${escapeHTML(v.name)}</option>
+              `).join("")}
+            </select>
+          </div>
+
+          <div class="driver-form-field" style="margin-bottom:13px;">
+            <label class="driver-form-label" for="assignmentDate">Assignment Date</label>
+            <input class="driver-form-control" type="date" id="assignmentDate" name="assignmentDate" value="${getLocalDateString()}" />
+          </div>
+
+          <div class="driver-form-field">
+            <label class="driver-form-label" for="assignmentNotes">Notes</label>
+            <textarea class="driver-form-control" id="assignmentNotes" name="notes" placeholder="Optional assignment notes..."></textarea>
+          </div>
+        </form>
+      `;
+
+      modalFooter.innerHTML = `
+        <button class="driver-secondary-btn" data-action="close-modal">Cancel</button>
+        <button class="driver-primary-btn" data-action="confirm-assignment">
+          <i class="fa-solid fa-check"></i> Assign Driver
+        </button>
+      `;
+    }
+
+    function assignDriverToTrip() {
+      const driver = findDriver(activeModalDriverId);
+      const form = document.getElementById("assignTripForm");
+      if (!driver || !form) return;
+
+      if (isDriverAssignedToActiveTrip(driver)) {
+        showToast("This driver is already assigned to an active trip.", "warning");
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      if (!data.tripId) {
+        setFieldError("tripId", "Please select a trip.");
+        showToast("Please select a trip.", "error");
+        return;
+      }
+
+      const selectedTrip = trips.find(trip => trip.id === data.tripId);
+      if (!selectedTrip) {
+        showToast("Selected trip could not be found.", "error");
+        return;
+      }
+      if (selectedTrip.driverId) {
+        showToast("This trip already has a driver assigned.", "warning");
+        return;
+      }
+      if (selectedTrip.status !== "Scheduled") {
+        showToast("Only scheduled trips can be assigned.", "warning");
+        return;
+      }
+
+      selectedTrip.driverId = driver.id;
+      selectedTrip.vehicle = data.vehicle || "";
+
+      driver.currentTrip = selectedTrip.id;
+      driver.assignedVehicle = data.vehicle || "";
+      driver.assignmentDate = data.assignmentDate || getLocalDateString();
+      driver.status = selectedTrip.status === "In Progress" ? "On Trip" : "Assigned";
+
+      if (data.notes) {
+        driver.notes = driver.notes
+          ? `${driver.notes}\nAssignment: ${data.notes}`
+          : data.notes;
+      }
+
+      calculateDriverKPIs();
+      closeDriverModal();
+      renderDrivers();
+      showToast("Driver assigned to trip successfully.", "success");
+    }
+
+    /* =========================================================
+       16. ACCOUNT ACCESS MANAGEMENT
+    ========================================================= */
+    function openAccountAccessModal(driverId) {
+      const driver = findDriver(driverId);
+      if (!driver) return;
+      activeModalDriverId = driverId;
+
+      openModal(
+        "Manage Account Access",
+        `Change account access for ${driver.name}.`,
+        "modal-small"
+      );
+
+      modalBody.innerHTML = `
+        <div style="padding:12px;background:#fafaf9;border-radius:8px;margin-bottom:15px;border:1px solid #e7e5e4;">
+          <div style="font-size:12px;font-weight:700;color:#292524;">${escapeHTML(driver.name)}</div>
+          <div style="font-size:11px;color:#78716c;margin-top:4px;">${escapeHTML(driver.id)}</div>
+        </div>
+
+        <div class="driver-form-field">
+          <label class="driver-form-label" for="newAccountStatus">Account Status</label>
+          <select class="driver-form-control" id="newAccountStatus">
+            ${["Active", "Inactive", "Suspended"].map(value => option(value, driver.accountStatus)).join("")}
+          </select>
+        </div>
+
+        <p class="driver-form-note" style="line-height:1.5;margin-top:10px;">
+          This changes account access only. It does not change the driver's operational status or current trip assignment.
+        </p>
+      `;
+
+      modalFooter.innerHTML = `
+        <button class="driver-secondary-btn" data-action="close-modal">Cancel</button>
+        <button class="driver-primary-btn" data-action="update-account">Save Changes</button>
+      `;
+    }
+
+    function updateAccountStatus() {
+      const driver = findDriver(activeModalDriverId);
+      const select = document.getElementById("newAccountStatus");
+      if (!driver || !select) return;
+
+      const newStatus = select.value;
+      if (newStatus === "Suspended") {
+        showAccountSuspendConfirmation(driver.id);
+        return;
+      }
+
+      driver.accountStatus = newStatus;
+      calculateDriverKPIs();
+      closeDriverModal();
+      renderDrivers();
+      showToast("Driver account status updated successfully.", "success");
+    }
+
+    function showAccountSuspendConfirmation(driverId) {
+      const driver = findDriver(driverId);
+      if (!driver) return;
+
+      openModal(
+        "Suspend Driver Account?",
+        "Confirm account access restriction.",
+        "modal-small"
+      );
+
+      modalBody.innerHTML = `
+        <div class="driver-confirm-icon">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <p class="driver-confirm-message">
+          Are you sure you want to suspend access for this driver?<br>
+          <strong>${escapeHTML(driver.name)}</strong> will have a suspended account status.
+        </p>
+      `;
+
+      modalFooter.innerHTML = `
+        <button class="driver-secondary-btn" data-action="cancel-suspend">Cancel</button>
+        <button class="driver-primary-btn" style="background:#b91c1c;border-color:#b91c1c;"
+          data-action="confirm-suspend">Suspend Account</button>
+      `;
+
+      activeModalDriverId = driverId;
+    }
+
+    /* =========================================================
+       17. OPERATIONAL STATUS MANAGEMENT
+    ========================================================= */
+    function updateDriverStatus(driverId, newStatus) {
+      const driver = findDriver(driverId);
+      if (!driver) return;
+
+      if (["Inactive", "Suspended"].includes(newStatus) &&
+        isDriverAssignedToActiveTrip(driver)) {
+        showToast(
+          "This driver is currently assigned to an active trip. Complete or reassign the trip first.",
+          "warning"
+        );
+        return;
+      }
+
+      driver.status = newStatus;
+      calculateDriverKPIs();
+      renderDrivers();
+      showToast("Driver status updated successfully.", "success");
+    }
+
+    /* =========================================================
+       18. DEACTIVATE DRIVER
+    ========================================================= */
+    function deactivateDriver(driverId) {
+      const driver = findDriver(driverId);
+      if (!driver) return;
+
+      if (isDriverAssignedToActiveTrip(driver)) {
+        showToast(
+          "This driver is currently assigned to an active trip. Complete or reassign the trip before deactivating the driver.",
+          "warning"
+        );
+        return;
+      }
+
+      activeModalDriverId = driverId;
+
+      openModal(
+        "Deactivate Driver?",
+        "Confirm driver deactivation.",
+        "modal-small"
+      );
+
+      modalBody.innerHTML = `
+        <div class="driver-confirm-icon danger">
+          <i class="fa-solid fa-user-slash"></i>
+        </div>
+        <p class="driver-confirm-message">
+          Are you sure you want to deactivate this driver?<br>
+          <strong>${escapeHTML(driver.name)}</strong> will be marked as inactive.
+          Historical trip data will be preserved.
+        </p>
+      `;
+
+      modalFooter.innerHTML = `
+        <button class="driver-secondary-btn" data-action="close-modal">Cancel</button>
+        <button class="driver-primary-btn" style="background:#b91c1c;border-color:#b91c1c;"
+          data-action="confirm-deactivate">Deactivate Driver</button>
+      `;
+    }
+
+    function confirmDeactivateDriver() {
+      const driver = findDriver(activeModalDriverId);
+      if (!driver) return;
+
+      if (isDriverAssignedToActiveTrip(driver)) {
+        closeDriverModal();
+        showToast(
+          "This driver is currently assigned to an active trip. Complete or reassign the trip before deactivating the driver.",
+          "warning"
+        );
+        return;
+      }
+
+      driver.status = "Inactive";
+      calculateDriverKPIs();
+      closeDriverModal();
+      renderDrivers();
+      showToast("Driver deactivated successfully.", "success");
+    }
+
+    /* =========================================================
+       19. MODAL ACTION HANDLER
+    ========================================================= */
+    function handleModalAction(event) {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+
+      switch (button.dataset.action) {
+        case "close-modal": closeDriverModal(); break;
+        case "save-driver": saveDriver(); break;
+        case "edit-from-view": {
+          const driverId = activeModalDriverId;
+          closeDriverModal();
+          openEditDriverModal(driverId);
+          break;
+        }
+        case "confirm-assignment": assignDriverToTrip(); break;
+        case "update-account": updateAccountStatus(); break;
+        case "confirm-suspend": {
+          const driver = findDriver(activeModalDriverId);
+          if (driver) {
+            driver.accountStatus = "Suspended";
+            calculateDriverKPIs();
+            closeDriverModal();
+            renderDrivers();
+            showToast("Driver account status updated successfully.", "success");
+          }
+          break;
+        }
+        case "cancel-suspend": closeDriverModal(); break;
+        case "confirm-deactivate": confirmDeactivateDriver(); break;
+      }
+    }
+
+    /* =========================================================
+       20. MODAL HANDLING
+    ========================================================= */
+    function openModal(title, subtitle = "", size = "") {
+      lastFocusedElement = document.activeElement;
+
+      modalTitle.textContent = title;
+      modalSubtitle.textContent = subtitle;
+      modal.className = `driver-modal ${size}`;
+
+      modalOverlay.classList.add("show");
+      modalOverlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+
+      setTimeout(() => {
+        const firstInput = modalBody.querySelector(
+          "input:not([readonly]), select, textarea, button"
+        );
+        if (firstInput) firstInput.focus();
+        else document.getElementById("closeDriverModal").focus();
+      }, 30);
+    }
+
+    function closeDriverModal() {
+      modalOverlay.classList.remove("show");
+      modalOverlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+
+      modalBody.innerHTML = "";
+      modalFooter.innerHTML = "";
+
+      editingDriverId = null;
+      activeModalDriverId = null;
+
+      if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+        lastFocusedElement.focus();
+      }
+    }
+
+    /* =========================================================
+       21. ASSIGNMENT HELPERS
+    ========================================================= */
+    function isDriverAssignedToActiveTrip(driver) {
+      if (!driver.currentTrip) return false;
+      const trip = trips.find(item => item.id === driver.currentTrip);
+      return Boolean(
+        trip &&
+        ["Scheduled", "In Progress"].includes(trip.status) &&
+        trip.driverId === driver.id
+      );
+    }
+
+    function findDriver(driverId) {
+      return drivers.find(driver => driver.id === driverId);
+    }
+
+    /* =========================================================
+       22. LICENSE EXPIRY HELPERS
+    ========================================================= */
+    function getLicenseExpiryInfo(expiryDate) {
+      if (!expiryDate) return { level: "normal", label: "Expiry date not available" };
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const expiry = new Date(`${expiryDate}T00:00:00`);
+      const difference = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+
+      if (difference < 0) return { level: "expired", label: "License Expired" };
+      if (difference <= 30) return { level: "soon", label: `License expires in ${difference} days` };
+      return { level: "normal", label: "License valid" };
+    }
+
+    /* =========================================================
+       23. STATUS HELPERS
+    ========================================================= */
+    function getStatusClass(status) {
+      const classes = {
+        "Available": "status-available",
+        "Assigned": "status-assigned",
+        "On Trip": "status-on-trip",
+        "Inactive": "status-inactive",
+        "Suspended": "status-suspended"
+      };
+      return classes[status] || "status-inactive";
+    }
+
+    function getAccountClass(status) {
+      const classes = {
+        "Active": "account-active",
+        "Inactive": "account-inactive",
+        "Suspended": "account-suspended"
+      };
+      return classes[status] || "account-inactive";
+    }
+
+    /* =========================================================
+       24. TOAST NOTIFICATIONS
+    ========================================================= */
+    function showToast(message, type = "success") {
+      const container = document.getElementById("driverToastContainer");
+      const toast = document.createElement("div");
+
+      const icons = {
+        success: "fa-circle-check",
+        error: "fa-circle-exclamation",
+        warning: "fa-triangle-exclamation"
+      };
+
+      toast.className = `driver-toast ${type}`;
+
+      const icon = document.createElement("i");
+      icon.className = `fa-solid ${icons[type] || icons.success}`;
+
+      const text = document.createElement("span");
+      text.textContent = message;
+
+      toast.append(icon, text);
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(10px)";
+        setTimeout(() => toast.remove(), 200);
+      }, 3500);
+    }
+
+    /* =========================================================
+       25. GENERAL UTILITIES
+    ========================================================= */
+    function generateDriverId() {
+      const highestId = drivers.reduce((highest, driver) => {
+        const number = Number(driver.id.replace("DRV-", ""));
+        return Math.max(highest, number);
+      }, 1000);
+      return `DRV-${highestId + 1}`;
+    }
+
+    function getInitials(name) {
+      return String(name || "").trim().split(/\s+/).slice(0, 2)
+        .map(part => part.charAt(0)).join("").toUpperCase();
+    }
+
+    function getLocalDateString() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const localDate = new Date(now.getTime() - offset * 60000);
+      return localDate.toISOString().slice(0, 10);
+    }
+
+    function formatDate(dateValue) {
+      if (!dateValue) return "—";
+      const date = new Date(`${dateValue}T00:00:00`);
+      if (Number.isNaN(date.getTime())) return "—";
+      return date.toLocaleDateString("en-IN", {
+        day: "2-digit", month: "short", year: "numeric"
+      });
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+      })[character]);
+    }
+
+  </script>
+
+</body>
+
+</html>

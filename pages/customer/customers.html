@@ -1,0 +1,3174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers Management | TMS Admin</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Navigation CSS -->
+  <link rel="stylesheet" href="../../css/nav-sidebar.css">
+
+  <style>
+    /* =========================================================
+     CUSTOMER MODULE — CLEANED & CONSOLIDATED STYLES
+     Theme: Plum / White / Warm Neutral
+  ========================================================= */
+
+    /* ==================== THEME VARIABLES ==================== */
+    :root {
+      --brand: #601D49;
+      --brand-dark: #4B1738;
+      --brand-soft: #F7EFF4;
+
+      --page-bg: #FAFAF9;
+      --surface: #FFFFFF;
+      --border: #E7E5E4;
+
+      --text: #292524;
+      --muted: #78716C;
+
+      --success: #15803D;
+      --success-bg: #F0FDF4;
+
+      --warning: #B45309;
+      --warning-bg: #FFFBEB;
+
+      --danger: #DC2626;
+      --danger-bg: #FEF2F2;
+
+      --info: #2563EB;
+      --info-bg: #EFF6FF;
+    }
+
+    /* ==================== GLOBAL ==================== */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page-bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* ==================== MAIN CONTENT ==================== */
+    .tms-main {
+      min-height: 100vh;
+      padding: 70px 20px 25px;
+      box-sizing: border-box;
+    }
+
+    /* ==================== CUSTOMERS PAGE ==================== */
+    #customers-page {
+      width: 100%;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* ==================== PAGE HEADING ==================== */
+    #customers-page .page-heading {
+      position: relative;
+      margin-top: 0;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+
+    .page-title {
+      margin: 0;
+      color: #292329;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+    }
+
+    .page-subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .btn {
+      min-height: 38px;
+      height: 38px;
+      padding: 0 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: .18s ease;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: var(--brand);
+      border-color: var(--brand);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-dark);
+      border-color: var(--brand-dark);
+    }
+
+    .btn-secondary {
+      color: #44403C;
+      background: #fff;
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #F5F5F4;
+    }
+
+    .btn-danger {
+      color: #fff;
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: #B91C1C;
+    }
+
+    .btn-small {
+      min-height: 31px;
+      height: 31px;
+      padding: 0 10px;
+      font-size: 11px;
+    }
+
+    /* ==================== KPI CARDS ==================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      min-width: 0;
+      min-height: 76px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg,
+          #FFFFFF 0%,
+          #FAF5F8 55%,
+          #F7EFF4 100%);
+      border: 1px solid rgba(96, 29, 73, .16);
+      border-radius: 9px;
+      box-shadow:
+        0 2px 5px rgba(96, 29, 73, .04),
+        0 4px 10px rgba(96, 29, 73, .035);
+      transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 29, 73, .28);
+      box-shadow: 0 5px 12px rgba(96, 29, 73, .07);
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 0;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    .kpi-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--brand);
+      background: rgba(96, 29, 73, .06);
+      border-radius: 7px;
+      font-size: 13px;
+    }
+
+    .kpi-card:nth-child(2) .kpi-icon {
+      color: #15803D;
+      background: rgba(21, 128, 61, .08);
+    }
+
+    .kpi-card:nth-child(3) .kpi-icon {
+      color: #B45309;
+      background: rgba(180, 83, 9, .08);
+    }
+
+    .kpi-card:nth-child(4) .kpi-icon {
+      color: #2563EB;
+      background: rgba(37, 99, 235, .08);
+    }
+
+    .kpi-card:nth-child(5) .kpi-icon {
+      color: #7E22CE;
+      background: rgba(126, 34, 206, .08);
+    }
+
+    .kpi-value {
+      margin-top: 5px;
+      color: #292329;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .kpi-note {
+      margin-top: 2px;
+      color: #96908F;
+      font-size: 10px;
+      line-height: 1.15;
+    }
+
+    /* ==================== MAIN CONTENT PANEL ==================== */
+    .content-card {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: none;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 16px 0;
+      border-bottom: 0;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .panel-description {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* ==================== FILTERS ==================== */
+    .filter-area {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 8px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #F0EDEF;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 180px;
+      max-width: none;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      top: 50%;
+      left: 11px;
+      color: #A8A29E;
+      font-size: 11px;
+      transform: translateY(-50%);
+    }
+
+    .form-control {
+      width: 100%;
+      height: 34px;
+      padding: 0 9px;
+      color: #292524;
+      background: #fff;
+      border: 1px solid #E7E5E4;
+      border-radius: 6px;
+      outline: none;
+      font-size: 11px;
+      transition: .15s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, .08);
+    }
+
+    .search-input {
+      padding-left: 31px;
+    }
+
+    .filter-area select.form-control {
+      width: 140px;
+      min-width: 0;
+      height: 34px;
+      padding: 0 8px;
+      flex: 0 0 140px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .filter-clear {
+      height: 34px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex: 0 0 auto;
+      color: var(--brand);
+      background: var(--brand-soft);
+      border: 1px solid #E8D5E1;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .filter-clear:hover {
+      background: #F0E2EB;
+    }
+
+    /* ==================== CUSTOMER TABLE ==================== */
+    .table-scroll {
+      position: relative;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .customer-table {
+      width: 100%;
+      min-width: 1120px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .customer-table thead {
+      background: #FAFAF9;
+    }
+
+    .customer-table th {
+      padding: 8px 12px;
+      color: #78716C;
+      border: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    .customer-table td {
+      padding: 7px 12px;
+      color: #44403C;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    .customer-table tbody tr:hover {
+      background: #FDFBFC;
+    }
+
+    .customer-table tbody tr:last-child td {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .customer-id {
+      color: var(--brand);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .customer-person {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 165px;
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--brand);
+      background: rgba(96, 29, 73, .08);
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .customer-name {
+      color: #292524;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .customer-sub {
+      margin-top: 2px;
+      color: #A8A29E;
+      font-size: 10px;
+    }
+
+    .contact-line {
+      color: #57534E;
+      font-size: 10px;
+      line-height: 1.65;
+      white-space: nowrap;
+    }
+
+    .type-badge {
+      padding: 4px 8px;
+      color: #57534E;
+      background: #F5F5F4;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ==================== STATUS BADGES ==================== */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+      background: currentColor;
+      border-radius: 50%;
+    }
+
+    .status-active,
+    .status-completed {
+      color: #15803D;
+      background: #F0FDF4;
+    }
+
+    .status-inactive {
+      color: #78716C;
+      background: #F5F5F4;
+    }
+
+    .status-suspended {
+      color: #B45309;
+      background: #FFFBEB;
+    }
+
+    .status-progress {
+      color: #2563EB;
+      background: #EFF6FF;
+    }
+
+    .status-scheduled {
+      color: #7C3AED;
+      background: #F5F3FF;
+    }
+
+    .status-cancelled {
+      color: #DC2626;
+      background: #FEF2F2;
+    }
+
+    .active-trip {
+      color: #2563EB;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .no-trip {
+      color: #A8A29E;
+    }
+
+    /* ==================== TABLE ACTIONS ==================== */
+    .action-cell {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .customer-action-list {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      white-space: nowrap;
+    }
+
+    .customer-action-btn {
+      width: 25px;
+      min-width: 25px;
+      height: 25px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      color: #78716C;
+      background: transparent;
+      border: 0;
+      border-radius: 4px;
+      font-size: 11px;
+      transition: .15s ease;
+    }
+
+    .customer-action-btn:hover {
+      color: var(--brand);
+      background: rgba(96, 29, 73, .08);
+    }
+
+    .customer-action-btn.trips {
+      color: #2563EB;
+    }
+
+    .customer-action-btn.trips:hover {
+      color: #1D4ED8;
+      background: #EFF6FF;
+    }
+
+    .customer-action-btn.danger:hover {
+      color: #DC2626;
+      background: #FEF2F2;
+    }
+
+    .customer-action-btn:disabled {
+      opacity: .3;
+      cursor: not-allowed;
+      background: transparent;
+    }
+
+    /* ==================== FIXED ACTION MENU ==================== */
+    .action-trigger {
+      width: 30px;
+      height: 30px;
+      color: #78716C;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .action-trigger:hover {
+      color: var(--brand);
+      background: var(--brand-soft);
+      border-color: #E8D5E1;
+    }
+
+    .action-menu {
+      position: fixed;
+      z-index: 9000;
+      display: none;
+      width: 160px;
+      padding: 5px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .13);
+    }
+
+    .action-menu.show {
+      display: block;
+    }
+
+    .action-menu button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px;
+      color: #44403C;
+      background: #fff;
+      border: 0;
+      border-radius: 5px;
+      text-align: left;
+      font-size: 11px;
+    }
+
+    .action-menu button:hover {
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+
+    .action-menu button.danger-item {
+      color: var(--danger);
+    }
+
+    .action-menu button.danger-item:hover {
+      background: var(--danger-bg);
+    }
+
+    /* ==================== PAGINATION ==================== */
+    .pagination-area {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-top: 1px solid #F0EDEF;
+    }
+
+    .pagination-info {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .pagination-buttons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .page-btn {
+      min-width: 29px;
+      height: 29px;
+      padding: 0 8px;
+      color: #57534E;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 10px;
+    }
+
+    .page-btn.active {
+      color: #fff;
+      background: var(--brand);
+      border-color: var(--brand);
+    }
+
+    .page-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* ==================== EMPTY STATE ==================== */
+    .empty-state {
+      padding: 48px 15px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 12px;
+      color: var(--brand);
+      background: var(--brand-soft);
+      border-radius: 12px;
+      font-size: 18px;
+    }
+
+    .empty-state h3 {
+      margin: 0 0 5px;
+      color: #44403C;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-size: 11px;
+    }
+
+    /* ==================== MODALS ==================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: rgba(28, 25, 23, .55);
+      backdrop-filter: blur(3px);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 660px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+      animation: modalIn .18s ease;
+    }
+
+    .modal-small {
+      max-width: 420px;
+    }
+
+    .modal-large {
+      max-width: 720px;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 12px;
+      padding: 17px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-heading {
+      margin: 0;
+      color: #292524;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-description {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .modal-close {
+      width: 30px;
+      height: 30px;
+      color: #78716C;
+      background: #F5F5F4;
+      border: 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .modal-close:hover {
+      color: #292524;
+      background: #E7E5E4;
+    }
+
+    .modal-body {
+      min-height: 0;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      gap: 8px;
+      padding: 13px 20px;
+      background: #fff;
+      border-top: 1px solid #F0EDEF;
+    }
+
+    /* ==================== FORM SECTIONS ==================== */
+    .section-heading {
+      margin: 3px 0 12px;
+      padding-bottom: 8px;
+      color: var(--brand);
+      border-bottom: 1px solid #F0EDEF;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .45px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      min-width: 0;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #57534E;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .required {
+      color: #DC2626;
+    }
+
+    .form-hint {
+      margin-top: 5px;
+      color: #A8A29E;
+      font-size: 10px;
+    }
+
+    textarea.form-control {
+      height: auto;
+      min-height: 75px;
+      padding: 10px;
+      resize: vertical;
+    }
+
+    .form-error {
+      display: none;
+      margin-top: 4px;
+      color: #DC2626;
+      font-size: 10px;
+    }
+
+    .form-control.invalid {
+      border-color: #DC2626;
+    }
+
+    .form-control.invalid+.form-error {
+      display: block;
+    }
+
+    /* ==================== CUSTOMER PROFILE ==================== */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 15px;
+      margin-bottom: 19px;
+      color: #fff;
+      background: linear-gradient(135deg, #601D49 0%, #8A2D6A 100%);
+      border: 1px solid #601D49;
+      border-radius: 9px;
+    }
+
+    .profile-avatar {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: #fff;
+      background: rgba(255, 255, 255, .14);
+      border: 1px solid rgba(255, 255, 255, .35);
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .profile-name {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .profile-meta {
+      margin-top: 4px;
+      color: rgba(255, 255, 255, .82);
+      font-size: 10px;
+    }
+
+    /* ==================== CUSTOMER DETAILS ==================== */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .detail-item {
+      min-width: 0;
+      padding: 11px;
+      background: #FAFAF9;
+      border: 1px solid rgba(96, 29, 73, .18);
+      border-radius: 8px;
+    }
+
+    .detail-label {
+      margin-bottom: 6px;
+      color: var(--brand);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .detail-value {
+      color: #292524;
+      font-size: 11px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    /* ==================== SUMMARY CARDS ==================== */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      padding: 12px;
+      border: 1px solid rgba(96, 29, 73, .18);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .summary-value {
+      color: var(--brand);
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .summary-label {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    /* ==================== TRIP HISTORY ==================== */
+    .history-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 12px 0;
+    }
+
+    .history-filters {
+      display: flex;
+      gap: 7px;
+    }
+
+    .history-filters select {
+      min-width: 120px;
+      height: 31px;
+      font-size: 10px;
+    }
+
+    .history-table-wrap {
+      overflow-x: auto;
+      border: 1px solid #F0EDEF;
+      border-radius: 8px;
+    }
+
+    .history-table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      padding: 9px 10px;
+      color: #78716C;
+      background: #FAF9F8;
+      font-size: 9px;
+      letter-spacing: .3px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .history-table td {
+      padding: 9px 10px;
+      color: #57534E;
+      border-top: 1px solid #F0EDEF;
+      font-size: 10px;
+    }
+
+    .history-trip-id {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* ==================== CURRENT TRIP ==================== */
+    .current-trip-box {
+      padding: 13px;
+      margin-bottom: 19px;
+      background: #F8FBFF;
+      border: 1px solid #DBEAFE;
+      border-radius: 8px;
+    }
+
+    .current-trip-title {
+      margin-bottom: 10px;
+      color: #1D4ED8;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .current-trip-route {
+      color: #292524;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .current-trip-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 13px;
+      margin-top: 9px;
+      color: #78716C;
+      font-size: 10px;
+    }
+
+    /* ==================== CONFIRMATION ==================== */
+    .confirm-icon {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 12px;
+      color: var(--warning);
+      background: var(--warning-bg);
+      border-radius: 50%;
+      font-size: 17px;
+    }
+
+    .confirm-message {
+      color: #57534E;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    /* ==================== TOAST NOTIFICATIONS ==================== */
+    #toast-container {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 12000;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      max-width: 360px;
+      padding: 13px 15px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      box-shadow: 0 7px 25px rgba(0, 0, 0, .14);
+      font-size: 11px;
+      animation: toastIn .2s ease;
+    }
+
+    .toast i {
+      font-size: 15px;
+    }
+
+    .toast.success i {
+      color: var(--success);
+    }
+
+    .toast.error i {
+      color: var(--danger);
+    }
+
+    .toast.info i {
+      color: var(--info);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================================================
+     RESPONSIVE STYLES
+  ========================================================= */
+
+    /* Tablets and smaller desktop screens */
+    @media (max-width: 1100px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .tms-main {
+        padding: 22px 20px;
+      }
+    }
+
+    /* Mobile and small tablets */
+    @media (max-width: 700px) {
+      .tms-main {
+        padding: 18px 13px;
+      }
+
+      .page-heading {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .page-heading .btn {
+        align-self: flex-start;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .kpi-card {
+        padding: 12px;
+      }
+
+      .kpi-value {
+        font-size: 20px;
+      }
+
+      .panel-header {
+        padding: 14px 14px 0;
+      }
+
+      .filter-area {
+        flex-wrap: wrap;
+        padding: 12px 14px;
+      }
+
+      .search-wrap {
+        flex: 1 1 100%;
+        max-width: none;
+      }
+
+      .filter-area select.form-control {
+        width: auto;
+        flex: 1 1 130px;
+      }
+
+      .filter-clear {
+        flex: 1 1 100%;
+      }
+
+      .pagination-area {
+        flex-wrap: wrap;
+        padding: 12px 14px;
+      }
+
+      .modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      .modal {
+        max-width: 100%;
+        max-height: 94vh;
+        border-radius: 14px 14px 0 0;
+      }
+
+      .modal-body {
+        padding: 16px;
+      }
+
+      .modal-header,
+      .modal-footer {
+        padding: 14px 16px;
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #toast-container {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+      }
+
+      .toast {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+      }
+    }
+
+    /* Small mobile screens */
+    @media (max-width: 430px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full {
+        grid-column: auto;
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .history-toolbar {
+        align-items: stretch;
+      }
+
+      .history-filters {
+        width: 100%;
+      }
+
+      .history-filters select {
+        min-width: 0;
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Shared Sidebar / Navigation -->
+  <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+  <main class="tms-main">
+    <div id="customers-page">
+
+      <!-- PAGE HEADER -->
+      <section class="page-heading">
+        <div>
+          <h1 class="page-title">Customers</h1>
+          <p class="page-subtitle">
+            Manage customer profiles, accounts and trip activity.
+          </p>
+        </div>
+
+        <button class="btn btn-primary" id="add-customer-btn">
+          <i class="fa-solid fa-plus"></i>
+          Add Customer
+        </button>
+      </section>
+
+      <!-- KPI CARDS -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Total Customers</span>
+            <span class="kpi-icon"><i class="fa-solid fa-users"></i></span>
+          </div>
+          <div class="kpi-value" id="kpi-total">0</div>
+          <div class="kpi-note">All registered customers</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Active Customers</span>
+            <span class="kpi-icon"><i class="fa-solid fa-user-check"></i></span>
+          </div>
+          <div class="kpi-value" id="kpi-active">0</div>
+          <div class="kpi-note">Accounts currently active</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Inactive Customers</span>
+            <span class="kpi-icon"><i class="fa-solid fa-user-clock"></i></span>
+          </div>
+          <div class="kpi-value" id="kpi-inactive">0</div>
+          <div class="kpi-note">Inactive and suspended accounts</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Active Trip Customers</span>
+            <span class="kpi-icon"><i class="fa-solid fa-truck-fast"></i></span>
+          </div>
+          <div class="kpi-value" id="kpi-trips">0</div>
+          <div class="kpi-note">Customers with ongoing trips</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">New Customers</span>
+            <span class="kpi-icon"><i class="fa-solid fa-user-plus"></i></span>
+          </div>
+          <div class="kpi-value" id="kpi-new">0</div>
+          <div class="kpi-note">Added in the current month</div>
+        </div>
+      </section>
+
+      <!-- CUSTOMER TABLE PANEL -->
+      <section class="content-card">
+
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Customer Directory</h2>
+            <p class="panel-description">
+              View and manage individual and business customer records.
+            </p>
+          </div>
+        </div>
+
+        <!-- SEARCH AND FILTERS -->
+        <div class="filter-area">
+          <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" class="form-control search-input" id="customer-search"
+              placeholder="Search ID, name, phone, email, city or trip...">
+          </div>
+
+          <select class="form-control" id="filter-type" aria-label="Customer type">
+            <option value="">All Types</option>
+            <option value="Individual">Individual</option>
+            <option value="Business">Business</option>
+          </select>
+
+          <select class="form-control" id="filter-status" aria-label="Account status">
+            <option value="">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Suspended">Suspended</option>
+          </select>
+
+          <select class="form-control" id="filter-activity" aria-label="Trip activity">
+            <option value="">All Trip Activity</option>
+            <option value="active">Active Trip</option>
+            <option value="none">No Active Trip</option>
+            <option value="previous">Previous Trips</option>
+          </select>
+
+          <select class="form-control" id="filter-city" aria-label="City">
+            <option value="">All Cities</option>
+            <option value="Pune">Pune</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Nashik">Nashik</option>
+            <option value="Nagpur">Nagpur</option>
+            <option value="Satara">Satara</option>
+            <option value="Kolhapur">Kolhapur</option>
+          </select>
+
+          <button class="filter-clear" id="clear-filters">
+            <i class="fa-solid fa-rotate-left"></i> Clear
+          </button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-scroll">
+          <table class="customer-table">
+            <thead>
+              <tr>
+                <th>Customer ID</th>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Active Trip</th>
+                <th>Total Trips</th>
+                <th>Account Status</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customers-table-body"></tbody>
+          </table>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination-area">
+          <div class="pagination-info" id="pagination-info">
+            Showing 0 customers
+          </div>
+          <div class="pagination-buttons" id="pagination-buttons"></div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <!-- =========================================================
+       ADD / EDIT CUSTOMER MODAL
+  ========================================================== -->
+  <div class="modal-backdrop hidden" id="customer-form-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="customer-form-title">
+
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-heading" id="customer-form-title">Add Customer</h2>
+          <p class="modal-description" id="customer-form-description">
+            Enter the customer details below.
+          </p>
+        </div>
+        <button class="modal-close" data-close="customer-form-modal" aria-label="Close">&times;</button>
+      </div>
+
+      <form id="customer-form" novalidate>
+        <div class="modal-body">
+
+          <input type="hidden" id="form-customer-id">
+
+          <h3 class="section-heading">Customer Information</h3>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="form-type">
+                Customer Type <span class="required">*</span>
+              </label>
+              <select class="form-control" id="form-type" required>
+                <option value="Individual">Individual</option>
+                <option value="Business">Business</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="form-status">
+                Account Status <span class="required">*</span>
+              </label>
+              <select class="form-control" id="form-status" required>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- INDIVIDUAL FIELDS -->
+          <div id="individual-fields">
+            <h3 class="section-heading">Individual Details</h3>
+
+            <div class="form-grid">
+              <div class="form-group full">
+                <label class="form-label" for="form-name">
+                  Full Name <span class="required">*</span>
+                </label>
+                <input class="form-control" id="form-name" placeholder="Enter full name">
+                <div class="form-error">Full name is required.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BUSINESS FIELDS -->
+          <div id="business-fields" class="hidden">
+            <h3 class="section-heading">Business Details</h3>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="form-company">
+                  Company Name <span class="required">*</span>
+                </label>
+                <input class="form-control" id="form-company" placeholder="Enter company name">
+                <div class="form-error">Company name is required.</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="form-contact-person">
+                  Contact Person <span class="required">*</span>
+                </label>
+                <input class="form-control" id="form-contact-person" placeholder="Enter contact person">
+                <div class="form-error">Contact person is required.</div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-heading">Contact Information</h3>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="form-phone">
+                <span id="phone-label">Phone Number</span>
+                <span class="required">*</span>
+              </label>
+              <input class="form-control" id="form-phone" type="tel" maxlength="10"
+                placeholder="10-digit mobile number">
+              <div class="form-error">Enter a valid 10-digit phone number.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="form-email">
+                <span id="email-label">Email Address</span>
+                <span class="required">*</span>
+              </label>
+              <input class="form-control" id="form-email" type="email" placeholder="name@example.com">
+              <div class="form-error">Enter a valid email address.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="form-city">
+                City <span class="required">*</span>
+              </label>
+              <select class="form-control" id="form-city">
+                <option value="">Select city</option>
+                <option>Pune</option>
+                <option>Mumbai</option>
+                <option>Nashik</option>
+                <option>Nagpur</option>
+                <option>Satara</option>
+                <option>Kolhapur</option>
+              </select>
+              <div class="form-error">Please select a city.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="form-state">State</label>
+              <input class="form-control" id="form-state" value="Maharashtra">
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label" for="form-address">Address</label>
+              <textarea class="form-control" id="form-address" placeholder="Enter complete address"></textarea>
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label" for="form-notes">Notes</label>
+              <textarea class="form-control" id="form-notes" placeholder="Add any additional customer notes"></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="customer-form-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-customer-btn">
+            <i class="fa-solid fa-check"></i> Save Customer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       VIEW CUSTOMER MODAL
+  ========================================================== -->
+  <div class="modal-backdrop hidden" id="customer-view-modal">
+    <div class="modal modal-large" role="dialog" aria-modal="true" aria-labelledby="view-customer-name">
+
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-heading">Customer Details</h2>
+          <p class="modal-description">Customer profile and trip activity.</p>
+        </div>
+        <button class="modal-close" data-close="customer-view-modal" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body" id="customer-view-content"></div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close="customer-view-modal">Close</button>
+        <button class="btn btn-primary" id="view-edit-btn">
+          <i class="fa-solid fa-pen"></i> Edit Customer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       CONFIRMATION MODAL
+  ========================================================== -->
+  <div class="modal-backdrop hidden" id="confirmation-modal">
+    <div class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="confirmation-title">
+
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-heading" id="confirmation-title">Confirm Action</h2>
+          <p class="modal-description">Please review this action.</p>
+        </div>
+        <button class="modal-close" data-close="confirmation-modal" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="confirm-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <p class="confirm-message" id="confirmation-message"></p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close="confirmation-modal">Cancel</button>
+        <button class="btn btn-danger" id="confirm-action-btn">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- SHARED NAVIGATION JS -->
+  <script src="../../js/nav-sidebar.js"></script>
+
+  <script>
+    /* =========================================================
+       1. CUSTOMER DATA
+    ========================================================= */
+
+    const customers = [
+      {
+        id: "CUS-1001", type: "Individual", name: "Rahul Deshmukh",
+        company: "", contactPerson: "", phone: "9876543210",
+        email: "rahul.deshmukh@example.com", city: "Pune",
+        state: "Maharashtra", address: "Kothrud, Pune",
+        status: "Active", createdAt: "2026-11-02",
+        notes: "Regular transport customer."
+      },
+      {
+        id: "CUS-1002", type: "Business", name: "Shree Industries",
+        company: "Shree Industries", contactPerson: "Amit Shah",
+        phone: "9876501234", email: "amit@shreeindustries.in",
+        city: "Mumbai", state: "Maharashtra",
+        address: "Andheri East, Mumbai", status: "Active",
+        createdAt: "2026-10-15", notes: "Industrial goods transportation."
+      },
+      {
+        id: "CUS-1003", type: "Individual", name: "Priya Kulkarni",
+        company: "", contactPerson: "", phone: "9823012345",
+        email: "priya.k@example.com", city: "Nashik",
+        state: "Maharashtra", address: "College Road, Nashik",
+        status: "Active", createdAt: "2026-09-20", notes: ""
+      },
+      {
+        id: "CUS-1004", type: "Business", name: "Metro Distributors",
+        company: "Metro Distributors", contactPerson: "Sanjay Mehta",
+        phone: "9890012345", email: "sanjay@metrodistributors.in",
+        city: "Pune", state: "Maharashtra",
+        address: "Market Yard, Pune", status: "Active",
+        createdAt: "2026-08-12", notes: "Weekly deliveries."
+      },
+      {
+        id: "CUS-1005", type: "Individual", name: "Sneha Patil",
+        company: "", contactPerson: "", phone: "9765432109",
+        email: "sneha.patil@example.com", city: "Kolhapur",
+        state: "Maharashtra", address: "Rajarampuri, Kolhapur",
+        status: "Inactive", createdAt: "2026-07-10", notes: ""
+      },
+      {
+        id: "CUS-1006", type: "Business", name: "Aarav Logistics",
+        company: "Aarav Logistics", contactPerson: "Vikas Joshi",
+        phone: "9812345670", email: "vikas@aaravlogistics.in",
+        city: "Nagpur", state: "Maharashtra",
+        address: "Hingna Road, Nagpur", status: "Active",
+        createdAt: "2026-11-12", notes: "Commercial transport partner."
+      },
+      {
+        id: "CUS-1007", type: "Individual", name: "Kunal Jadhav",
+        company: "", contactPerson: "", phone: "9923456781",
+        email: "kunal.j@example.com", city: "Satara",
+        state: "Maharashtra", address: "Powai Naka, Satara",
+        status: "Active", createdAt: "2026-06-05", notes: ""
+      },
+      {
+        id: "CUS-1008", type: "Business", name: "Prime Packaging",
+        company: "Prime Packaging", contactPerson: "Neha Shah",
+        phone: "9822012345", email: "neha@primepackaging.in",
+        city: "Pune", state: "Maharashtra",
+        address: "Chakan MIDC, Pune", status: "Suspended",
+        createdAt: "2026-05-18", notes: "Account temporarily suspended."
+      },
+      {
+        id: "CUS-1009", type: "Individual", name: "Aditi More",
+        company: "", contactPerson: "", phone: "9898123456",
+        email: "aditi.more@example.com", city: "Mumbai",
+        state: "Maharashtra", address: "Thane West, Mumbai",
+        status: "Active", createdAt: "2026-11-08", notes: ""
+      },
+      {
+        id: "CUS-1010", type: "Business", name: "Om Sai Traders",
+        company: "Om Sai Traders", contactPerson: "Mahesh Pawar",
+        phone: "9765012345", email: "mahesh@omsa itraders.in".replace(" ", ""),
+        city: "Nashik", state: "Maharashtra",
+        address: "Ambad MIDC, Nashik", status: "Active",
+        createdAt: "2026-04-22", notes: ""
+      },
+      {
+        id: "CUS-1011", type: "Individual", name: "Rohan Bhosale",
+        company: "", contactPerson: "", phone: "9811122233",
+        email: "rohan.b@example.com", city: "Pune",
+        state: "Maharashtra", address: "Baner, Pune",
+        status: "Active", createdAt: "2026-03-15", notes: ""
+      },
+      {
+        id: "CUS-1012", type: "Business", name: "Western Supplies",
+        company: "Western Supplies", contactPerson: "Pooja Nair",
+        phone: "9822233344", email: "pooja@westernsupply.in",
+        city: "Kolhapur", state: "Maharashtra",
+        address: "Shiroli MIDC, Kolhapur", status: "Active",
+        createdAt: "2026-11-15", notes: "New business customer."
+      },
+      {
+        id: "CUS-1013", type: "Individual", name: "Manish Pawar",
+        company: "", contactPerson: "", phone: "9898765432",
+        email: "manish.p@example.com", city: "Nagpur",
+        state: "Maharashtra", address: "Dharampeth, Nagpur",
+        status: "Inactive", createdAt: "2026-02-10", notes: ""
+      },
+      {
+        id: "CUS-1014", type: "Business", name: "Greenfield Foods",
+        company: "Greenfield Foods", contactPerson: "Nitin Rao",
+        phone: "9876123450", email: "nitin@greenfieldfoods.in",
+        city: "Satara", state: "Maharashtra",
+        address: "MIDC, Satara", status: "Active",
+        createdAt: "2026-10-25", notes: ""
+      },
+      {
+        id: "CUS-1015", type: "Individual", name: "Pallavi Shinde",
+        company: "", contactPerson: "", phone: "9823456789",
+        email: "pallavi.s@example.com", city: "Pune",
+        state: "Maharashtra", address: "Wakad, Pune",
+        status: "Active", createdAt: "2026-11-18", notes: ""
+      },
+      {
+        id: "CUS-1016", type: "Business", name: "Reliable Hardware",
+        company: "Reliable Hardware", contactPerson: "Ajay Kulkarni",
+        phone: "9766123456", email: "ajay@reliablehardware.in",
+        city: "Mumbai", state: "Maharashtra",
+        address: "Bhiwandi, Mumbai", status: "Active",
+        createdAt: "2026-01-30", notes: ""
+      },
+      {
+        id: "CUS-1017", type: "Individual", name: "Sagar Chavan",
+        company: "", contactPerson: "", phone: "9898981234",
+        email: "sagar.c@example.com", city: "Nashik",
+        state: "Maharashtra", address: "Gangapur Road, Nashik",
+        status: "Active", createdAt: "2026-08-01", notes: ""
+      },
+      {
+        id: "CUS-1018", type: "Business", name: "Sunrise Enterprises",
+        company: "Sunrise Enterprises", contactPerson: "Kiran Desai",
+        phone: "9812340987", email: "kiran@sunriseenterprises.in",
+        city: "Nagpur", state: "Maharashtra",
+        address: "Butibori, Nagpur", status: "Active",
+        createdAt: "2026-09-05", notes: ""
+      }
+    ];
+
+    /* =========================================================
+       2. TRIP DATA
+       Trips are linked to customers through customerId.
+    ========================================================= */
+
+    const customerTrips = [
+      {
+        id: "TRP-1024", customerId: "CUS-1001",
+        origin: "Pune", destination: "Mumbai",
+        vehicle: "Tata 407 — MH12CD4589",
+        driver: "Amit Patil", date: "2026-11-20",
+        status: "In Progress"
+      },
+      {
+        id: "TRP-1018", customerId: "CUS-1001",
+        origin: "Pune", destination: "Nashik",
+        vehicle: "Eicher 14ft — MH12AB1234",
+        driver: "Rohit Shinde", date: "2026-11-10",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1011", customerId: "CUS-1001",
+        origin: "Mumbai", destination: "Pune",
+        vehicle: "Tata Ace — MH12EF5678",
+        driver: "Suresh Pawar", date: "2026-10-21",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1005", customerId: "CUS-1001",
+        origin: "Pune", destination: "Satara",
+        vehicle: "Eicher 14ft — MH12AB1234",
+        driver: "Amit Patil", date: "2026-09-12",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1023", customerId: "CUS-1002",
+        origin: "Mumbai", destination: "Pune",
+        vehicle: "Ashok Leyland — MH02GH9876",
+        driver: "Vijay More", date: "2026-11-19",
+        status: "Scheduled"
+      },
+      {
+        id: "TRP-1019", customerId: "CUS-1002",
+        origin: "Mumbai", destination: "Nashik",
+        vehicle: "Tata 407 — MH02JK4321",
+        driver: "Prakash Jadhav", date: "2026-11-08",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1017", customerId: "CUS-1003",
+        origin: "Nashik", destination: "Pune",
+        vehicle: "Tata Ace — MH15AB4567",
+        driver: "Ganesh Patil", date: "2026-11-16",
+        status: "In Progress"
+      },
+      {
+        id: "TRP-1009", customerId: "CUS-1003",
+        origin: "Nashik", destination: "Mumbai",
+        vehicle: "Eicher 14ft — MH15CD7890",
+        driver: "Rahul Pawar", date: "2026-10-05",
+        status: "Cancelled"
+      },
+      {
+        id: "TRP-1022", customerId: "CUS-1004",
+        origin: "Pune", destination: "Nagpur",
+        vehicle: "BharatBenz — MH12KL3456",
+        driver: "Sachin More", date: "2026-11-18",
+        status: "In Progress"
+      },
+      {
+        id: "TRP-1014", customerId: "CUS-1004",
+        origin: "Pune", destination: "Mumbai",
+        vehicle: "Tata 407 — MH12CD4589",
+        driver: "Amit Patil", date: "2026-10-28",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1020", customerId: "CUS-1005",
+        origin: "Kolhapur", destination: "Pune",
+        vehicle: "Tata Ace — MH09AB1234",
+        driver: "Nilesh Shinde", date: "2026-11-12",
+        status: "Cancelled"
+      },
+      {
+        id: "TRP-1021", customerId: "CUS-1006",
+        origin: "Nagpur", destination: "Mumbai",
+        vehicle: "Ashok Leyland — MH31CD5678",
+        driver: "Vijay More", date: "2026-11-17",
+        status: "Scheduled"
+      },
+      {
+        id: "TRP-1013", customerId: "CUS-1006",
+        origin: "Nagpur", destination: "Pune",
+        vehicle: "Eicher 14ft — MH31EF9012",
+        driver: "Rohit Shinde", date: "2026-10-15",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1016", customerId: "CUS-1007",
+        origin: "Satara", destination: "Kolhapur",
+        vehicle: "Tata Ace — MH11AB2345",
+        driver: "Suresh Pawar", date: "2026-11-14",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1010", customerId: "CUS-1008",
+        origin: "Pune", destination: "Mumbai",
+        vehicle: "Tata 407 — MH12CD4589",
+        driver: "Amit Patil", date: "2026-10-02",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1025", customerId: "CUS-1009",
+        origin: "Mumbai", destination: "Pune",
+        vehicle: "Tata 407 — MH02CD4589",
+        driver: "Prakash Jadhav", date: "2026-11-20",
+        status: "Scheduled"
+      },
+      {
+        id: "TRP-1008", customerId: "CUS-1010",
+        origin: "Nashik", destination: "Nagpur",
+        vehicle: "Eicher 14ft — MH15AB1234",
+        driver: "Ganesh Patil", date: "2026-09-18",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1012", customerId: "CUS-1011",
+        origin: "Pune", destination: "Mumbai",
+        vehicle: "Tata Ace — MH12EF5678",
+        driver: "Nilesh Shinde", date: "2026-10-20",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1026", customerId: "CUS-1012",
+        origin: "Kolhapur", destination: "Pune",
+        vehicle: "BharatBenz — MH09KL3456",
+        driver: "Sachin More", date: "2026-11-20",
+        status: "In Progress"
+      },
+      {
+        id: "TRP-1007", customerId: "CUS-1014",
+        origin: "Satara", destination: "Mumbai",
+        vehicle: "Tata 407 — MH11CD4589",
+        driver: "Amit Patil", date: "2026-09-10",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1027", customerId: "CUS-1015",
+        origin: "Pune", destination: "Nashik",
+        vehicle: "Tata Ace — MH12EF5678",
+        driver: "Rohit Shinde", date: "2026-11-20",
+        status: "Scheduled"
+      },
+      {
+        id: "TRP-1004", customerId: "CUS-1016",
+        origin: "Mumbai", destination: "Nagpur",
+        vehicle: "Ashok Leyland — MH02GH9876",
+        driver: "Vijay More", date: "2026-08-25",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1015", customerId: "CUS-1017",
+        origin: "Nashik", destination: "Pune",
+        vehicle: "Tata 407 — MH15CD7890",
+        driver: "Ganesh Patil", date: "2026-10-30",
+        status: "Completed"
+      },
+      {
+        id: "TRP-1006", customerId: "CUS-1018",
+        origin: "Nagpur", destination: "Mumbai",
+        vehicle: "Eicher 14ft — MH31EF9012",
+        driver: "Rahul Pawar", date: "2026-09-25",
+        status: "Completed"
+      }
+    ];
+
+    /* =========================================================
+       3. DOM ELEMENTS AND STATE
+    ========================================================= */
+
+    const PAGE_SIZE = 10;
+
+    let currentPage = 1;
+    let currentViewCustomerId = null;
+    let editingCustomerId = null;
+    let pendingConfirmation = null;
+    let openActionCustomerId = null;
+
+    const $ = id => document.getElementById(id);
+
+    const tableBody = $("customers-table-body");
+    const searchInput = $("customer-search");
+
+    /* =========================================================
+       4. HELPER FUNCTIONS
+    ========================================================= */
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function getCustomer(customerId) {
+      return customers.find(customer => customer.id === customerId);
+    }
+
+    function getCustomerTrips(customerId) {
+      return customerTrips
+        .filter(trip => trip.customerId === customerId)
+        .sort((a, b) => b.date.localeCompare(a.date));
+    }
+
+    function getInitials(name) {
+      return String(name || "")
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(part => part.charAt(0))
+        .join("")
+        .toUpperCase();
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "—";
+
+      const date = new Date(dateString + "T00:00:00");
+
+      return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function getDisplayName(customer) {
+      return customer.type === "Business"
+        ? customer.company
+        : customer.name;
+    }
+
+    function getCurrentTrip(customerId) {
+      return getCustomerTrips(customerId).find(trip =>
+        trip.status === "In Progress"
+      );
+    }
+
+    function getStatusClass(status) {
+      const classes = {
+        "Active": "status-active",
+        "Inactive": "status-inactive",
+        "Suspended": "status-suspended",
+        "In Progress": "status-progress",
+        "Completed": "status-completed",
+        "Scheduled": "status-scheduled",
+        "Cancelled": "status-cancelled"
+      };
+
+      return classes[status] || "status-inactive";
+    }
+
+    function statusBadge(status) {
+      return `
+        <span class="status-badge ${getStatusClass(status)}">
+          <span class="status-dot"></span>
+          ${escapeHTML(status)}
+        </span>
+      `;
+    }
+
+    function isSameMonth(dateString) {
+      const date = new Date(dateString + "T00:00:00");
+      const now = new Date();
+
+      return date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear();
+    }
+
+    function calculateTripSummary(customerId) {
+      const trips = getCustomerTrips(customerId);
+
+      return {
+        total: trips.length,
+        completed: trips.filter(t => t.status === "Completed").length,
+        active: trips.filter(t => t.status === "In Progress").length,
+        scheduled: trips.filter(t => t.status === "Scheduled").length,
+        cancelled: trips.filter(t => t.status === "Cancelled").length
+      };
+    }
+
+    /* =========================================================
+       5. KPI CALCULATIONS
+    ========================================================= */
+
+    function calculateCustomerKPIs() {
+      const total = customers.length;
+      const active = customers.filter(c => c.status === "Active").length;
+      const inactive = customers.filter(c =>
+        c.status === "Inactive" || c.status === "Suspended"
+      ).length;
+
+      const activeTripCustomers = customers.filter(c =>
+        Boolean(getCurrentTrip(c.id))
+      ).length;
+
+      const newCustomers = customers.filter(c =>
+        isSameMonth(c.createdAt)
+      ).length;
+
+      $("kpi-total").textContent = total;
+      $("kpi-active").textContent = active;
+      $("kpi-inactive").textContent = inactive;
+      $("kpi-trips").textContent = activeTripCustomers;
+      $("kpi-new").textContent = newCustomers;
+    }
+
+    /* =========================================================
+       6. SEARCH AND FILTER
+    ========================================================= */
+
+    function filterCustomers() {
+      const query = searchInput.value.trim().toLowerCase();
+      const type = $("filter-type").value;
+      const status = $("filter-status").value;
+      const activity = $("filter-activity").value;
+      const city = $("filter-city").value;
+
+      return customers.filter(customer => {
+        const trips = getCustomerTrips(customer.id);
+        const currentTrip = getCurrentTrip(customer.id);
+
+        const searchable = [
+          customer.id,
+          customer.name,
+          customer.company,
+          customer.contactPerson,
+          customer.phone,
+          customer.email,
+          customer.city,
+          currentTrip?.id
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = !query || searchable.includes(query);
+        const matchesType = !type || customer.type === type;
+        const matchesStatus = !status || customer.status === status;
+        const matchesCity = !city || customer.city === city;
+
+        let matchesActivity = true;
+
+        if (activity === "active") {
+          matchesActivity = Boolean(currentTrip);
+        } else if (activity === "none") {
+          matchesActivity = !currentTrip;
+        } else if (activity === "previous") {
+          matchesActivity = trips.some(t =>
+            t.status === "Completed" || t.status === "Cancelled"
+          );
+        }
+
+        return matchesSearch &&
+          matchesType &&
+          matchesStatus &&
+          matchesCity &&
+          matchesActivity;
+      });
+    }
+
+    function clearFilters() {
+      searchInput.value = "";
+      $("filter-type").value = "";
+      $("filter-status").value = "";
+      $("filter-activity").value = "";
+      $("filter-city").value = "";
+      currentPage = 1;
+      renderCustomers();
+    }
+
+    /* =========================================================
+       7. CUSTOMER TABLE RENDERING
+    ========================================================= */
+
+    function renderCustomers() {
+      closeActionMenu();
+
+      const filtered = filterCustomers();
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const pageCustomers = filtered.slice(start, start + PAGE_SIZE);
+
+      if (!pageCustomers.length) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="9">
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <h3>No customers found</h3>
+                <p>Try adjusting your search or filters.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        tableBody.innerHTML = pageCustomers.map(customer => {
+          const name = getDisplayName(customer);
+          const currentTrip = getCurrentTrip(customer.id);
+          const tripCount = getCustomerTrips(customer.id).length;
+
+          return `
+            <tr>
+              <td>
+                <span class="customer-id">${escapeHTML(customer.id)}</span>
+              </td>
+
+              <td>
+                <div class="customer-person">
+                  <div class="avatar">${escapeHTML(getInitials(name))}</div>
+                  <div>
+                    <div class="customer-name">${escapeHTML(name)}</div>
+                    <div class="customer-sub">
+                      ${customer.type === "Business"
+              ? "Business account"
+              : "Individual account"}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <div class="contact-line">
+                  <div><i class="fa-solid fa-phone mr-1"></i>
+                    ${escapeHTML(customer.phone)}</div>
+                  <div><i class="fa-regular fa-envelope mr-1"></i>
+                    ${escapeHTML(customer.email)}</div>
+                </div>
+              </td>
+
+              <td><span class="type-badge">${escapeHTML(customer.type)}</span></td>
+
+              <td>${escapeHTML(customer.city)}</td>
+
+              <td>
+                ${currentTrip
+              ? `<span class="active-trip">${escapeHTML(currentTrip.id)}</span>`
+              : `<span class="no-trip">—</span>`}
+              </td>
+
+              <td><strong>${tripCount}</strong></td>
+
+              <td>${statusBadge(customer.status)}</td>
+
+              <td class="action-cell">
+                <div class="customer-action-list">
+                  <button class="customer-action-btn"
+                    data-customer-action="view" data-id="${escapeHTML(customer.id)}"
+                    title="View Customer" aria-label="View ${escapeHTML(name)}">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button class="customer-action-btn"
+                    data-customer-action="edit" data-id="${escapeHTML(customer.id)}"
+                    title="Edit Customer" aria-label="Edit ${escapeHTML(name)}">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="customer-action-btn trips"
+                    data-customer-action="trips" data-id="${escapeHTML(customer.id)}"
+                    title="View Trip History" aria-label="View trips for ${escapeHTML(name)}">
+                    <i class="fa-solid fa-route"></i>
+                  </button>
+                  <button class="customer-action-btn"
+                    data-customer-action="status" data-id="${escapeHTML(customer.id)}"
+                    title="Change Account Status" aria-label="Change status for ${escapeHTML(name)}">
+                    <i class="fa-solid fa-user-gear"></i>
+                  </button>
+                  <button class="customer-action-btn danger"
+                    data-customer-action="deactivate" data-id="${escapeHTML(customer.id)}"
+                    title="Deactivate Customer" aria-label="Deactivate ${escapeHTML(name)}"
+                    ${customer.status === "Inactive" ? "disabled" : ""}>
+                    <i class="fa-solid fa-user-slash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      const from = filtered.length ? start + 1 : 0;
+      const to = Math.min(start + PAGE_SIZE, filtered.length);
+
+      $("pagination-info").textContent =
+        `Showing ${from}–${to} of ${filtered.length} customers`;
+
+      renderPagination(totalPages);
+      calculateCustomerKPIs();
+    }
+
+    function renderPagination(totalPages) {
+      const container = $("pagination-buttons");
+
+      let html = `
+        <button class="page-btn" data-page="${currentPage - 1}"
+          ${currentPage === 1 ? "disabled" : ""}>
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      for (let page = 1; page <= totalPages; page++) {
+        if (
+          page === 1 ||
+          page === totalPages ||
+          Math.abs(page - currentPage) <= 1
+        ) {
+          html += `
+            <button class="page-btn ${page === currentPage ? "active" : ""}"
+              data-page="${page}">${page}</button>
+          `;
+        } else if (
+          page === currentPage - 2 ||
+          page === currentPage + 2
+        ) {
+          html += `<span style="padding:0 3px;color:#A8A29E">...</span>`;
+        }
+      }
+
+      html += `
+        <button class="page-btn" data-page="${currentPage + 1}"
+          ${currentPage === totalPages ? "disabled" : ""}>
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /* =========================================================
+       8. ACTION MENU
+    ========================================================= */
+
+    function closeActionMenu() {
+      document.querySelectorAll(".action-menu").forEach(menu => menu.remove());
+      openActionCustomerId = null;
+    }
+
+    function toggleActionMenu(button, customerId) {
+      if (openActionCustomerId === customerId) {
+        closeActionMenu();
+        return;
+      }
+
+      closeActionMenu();
+      openActionCustomerId = customerId;
+
+      const rect = button.getBoundingClientRect();
+      const menu = document.createElement("div");
+
+      menu.className = "action-menu show";
+      menu.innerHTML = `
+        <button data-menu-action="view" data-id="${escapeHTML(customerId)}">
+          <i class="fa-regular fa-eye"></i> View Details
+        </button>
+        <button data-menu-action="edit" data-id="${escapeHTML(customerId)}">
+          <i class="fa-regular fa-pen-to-square"></i> Edit Customer
+        </button>
+        <button data-menu-action="trips" data-id="${escapeHTML(customerId)}">
+          <i class="fa-solid fa-route"></i> View Trips
+        </button>
+        <button data-menu-action="status" data-id="${escapeHTML(customerId)}">
+          <i class="fa-solid fa-user-gear"></i> Change Status
+        </button>
+        <button class="danger-item" data-menu-action="deactivate"
+          data-id="${escapeHTML(customerId)}">
+          <i class="fa-solid fa-user-slash"></i> Deactivate
+        </button>
+      `;
+
+      document.body.appendChild(menu);
+
+      const menuHeight = menu.offsetHeight;
+      const menuWidth = menu.offsetWidth;
+
+      let top = rect.bottom + 5;
+      let left = rect.right - menuWidth;
+
+      if (top + menuHeight > window.innerHeight - 10) {
+        top = rect.top - menuHeight - 5;
+      }
+
+      if (left < 8) left = 8;
+      if (left + menuWidth > window.innerWidth - 8) {
+        left = window.innerWidth - menuWidth - 8;
+      }
+
+      menu.style.top = `${Math.max(8, top)}px`;
+      menu.style.left = `${left}px`;
+    }
+
+    /* =========================================================
+       9. ADD CUSTOMER MODAL
+    ========================================================= */
+
+    function openAddCustomerModal() {
+      editingCustomerId = null;
+      $("customer-form").reset();
+
+      $("customer-form-title").textContent = "Add Customer";
+      $("customer-form-description").textContent =
+        "Enter the new customer details below.";
+
+      $("form-customer-id").value = "";
+      $("form-status").value = "Active";
+      $("form-type").value = "Individual";
+      $("form-state").value = "Maharashtra";
+      $("save-customer-btn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Save Customer';
+
+      clearFormErrors();
+      updateCustomerTypeFields();
+      openModal("customer-form-modal");
+
+      setTimeout(() => $("form-name").focus(), 100);
+    }
+
+    /* =========================================================
+       10. EDIT CUSTOMER MODAL
+    ========================================================= */
+
+    function openEditCustomerModal(customerId) {
+      const customer = getCustomer(customerId);
+      if (!customer) return;
+
+      editingCustomerId = customerId;
+
+      $("customer-form").reset();
+
+      $("customer-form-title").textContent = "Edit Customer";
+      $("customer-form-description").textContent =
+        `Update information for ${getDisplayName(customer)}.`;
+
+      $("form-customer-id").value = customer.id;
+      $("form-type").value = customer.type;
+      $("form-status").value = customer.status;
+      $("form-name").value = customer.name || "";
+      $("form-company").value = customer.company || "";
+      $("form-contact-person").value = customer.contactPerson || "";
+      $("form-phone").value = customer.phone;
+      $("form-email").value = customer.email;
+      $("form-city").value = customer.city;
+      $("form-state").value = customer.state || "Maharashtra";
+      $("form-address").value = customer.address || "";
+      $("form-notes").value = customer.notes || "";
+
+      $("save-customer-btn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Update Customer';
+
+      clearFormErrors();
+      updateCustomerTypeFields();
+
+      $("customer-view-modal").classList.add("hidden");
+      openModal("customer-form-modal");
+    }
+
+    /* =========================================================
+       11. DYNAMIC CUSTOMER TYPE FIELDS
+    ========================================================= */
+
+    function updateCustomerTypeFields() {
+      const isBusiness = $("form-type").value === "Business";
+
+      $("individual-fields").classList.toggle("hidden", isBusiness);
+      $("business-fields").classList.toggle("hidden", !isBusiness);
+
+      $("phone-label").textContent = isBusiness
+        ? "Business Phone Number"
+        : "Phone Number";
+
+      $("email-label").textContent = isBusiness
+        ? "Business Email Address"
+        : "Email Address";
+    }
+
+    /* =========================================================
+       12. FORM VALIDATION
+    ========================================================= */
+
+    function clearFormErrors() {
+      $("customer-form").querySelectorAll(".form-control").forEach(input => {
+        input.classList.remove("invalid");
+      });
+
+      $("customer-form").querySelectorAll(".form-error").forEach(error => {
+        error.style.display = "";
+      });
+    }
+
+    function setFieldError(id, message) {
+      const input = $(id);
+      input.classList.add("invalid");
+
+      const error = input.parentElement.querySelector(".form-error");
+      if (error) {
+        error.textContent = message;
+        error.style.display = "block";
+      }
+    }
+
+    function validateCustomerForm() {
+      clearFormErrors();
+
+      const type = $("form-type").value;
+      const phone = $("form-phone").value.trim();
+      const email = $("form-email").value.trim();
+
+      let valid = true;
+
+      if (type === "Individual") {
+        if (!$("form-name").value.trim()) {
+          setFieldError("form-name", "Full name is required.");
+          valid = false;
+        }
+      } else {
+        if (!$("form-company").value.trim()) {
+          setFieldError("form-company", "Company name is required.");
+          valid = false;
+        }
+
+        if (!$("form-contact-person").value.trim()) {
+          setFieldError("form-contact-person", "Contact person is required.");
+          valid = false;
+        }
+      }
+
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        setFieldError("form-phone", "Enter a valid 10-digit Indian mobile number.");
+        valid = false;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setFieldError("form-email", "Enter a valid email address.");
+        valid = false;
+      }
+
+      if (!$("form-city").value) {
+        setFieldError("form-city", "Please select a city.");
+        valid = false;
+      }
+
+      const duplicatePhone = customers.some(customer =>
+        customer.phone === phone && customer.id !== editingCustomerId
+      );
+
+      const duplicateEmail = customers.some(customer =>
+        customer.email.toLowerCase() === email.toLowerCase() &&
+        customer.id !== editingCustomerId
+      );
+
+      if (duplicatePhone) {
+        setFieldError("form-phone", "This phone number is already registered.");
+        valid = false;
+      }
+
+      if (duplicateEmail) {
+        setFieldError("form-email", "This email is already registered.");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    /* =========================================================
+       13. SAVE CUSTOMER
+    ========================================================= */
+
+    function saveCustomer(event) {
+      event.preventDefault();
+
+      if (!validateCustomerForm()) {
+        showToast("Please correct the highlighted fields.", "error");
+        return;
+      }
+
+      const type = $("form-type").value;
+
+      const customerData = {
+        type,
+        name: type === "Individual"
+          ? $("form-name").value.trim()
+          : $("form-contact-person").value.trim(),
+        company: type === "Business"
+          ? $("form-company").value.trim()
+          : "",
+        contactPerson: type === "Business"
+          ? $("form-contact-person").value.trim()
+          : "",
+        phone: $("form-phone").value.trim(),
+        email: $("form-email").value.trim(),
+        city: $("form-city").value,
+        state: $("form-state").value.trim(),
+        address: $("form-address").value.trim(),
+        status: $("form-status").value,
+        notes: $("form-notes").value.trim()
+      };
+
+      if (editingCustomerId) {
+        const index = customers.findIndex(c => c.id === editingCustomerId);
+
+        if (index === -1) return;
+
+        customers[index] = {
+          ...customers[index],
+          ...customerData
+        };
+
+        closeModal("customer-form-modal");
+        renderCustomers();
+        showToast("Customer details updated successfully.", "success");
+      } else {
+        const nextNumber = Math.max(
+          ...customers.map(c => Number(c.id.split("-")[1]) || 1000),
+          1000
+        ) + 1;
+
+        const newCustomer = {
+          id: `CUS-${nextNumber}`,
+          ...customerData,
+          createdAt: new Date().toISOString().slice(0, 10)
+        };
+
+        customers.unshift(newCustomer);
+        currentPage = 1;
+
+        closeModal("customer-form-modal");
+        renderCustomers();
+        showToast("Customer added successfully.", "success");
+      }
+    }
+
+    /* =========================================================
+       14. VIEW CUSTOMER MODAL
+    ========================================================= */
+
+    function openViewCustomerModal(customerId) {
+      const customer = getCustomer(customerId);
+      if (!customer) return;
+
+      currentViewCustomerId = customerId;
+
+      const summary = calculateTripSummary(customerId);
+      const currentTrip = getCurrentTrip(customerId);
+      const displayName = getDisplayName(customer);
+
+      $("customer-view-content").innerHTML = `
+        <div class="profile-header">
+          <div class="profile-avatar">
+            ${escapeHTML(getInitials(displayName))}
+          </div>
+          <div style="min-width:0;flex:1">
+            <div class="profile-name" id="view-customer-name">
+              ${escapeHTML(displayName)}
+            </div>
+            <div class="profile-meta">
+              ${escapeHTML(customer.id)} · ${escapeHTML(customer.type)}
+              · Registered ${formatDate(customer.createdAt)}
+            </div>
+          </div>
+          <div>${statusBadge(customer.status)}</div>
+        </div>
+
+        <h3 class="section-heading">Contact Information</h3>
+
+        <div class="detail-grid">
+          ${detailItem("Phone Number", customer.phone)}
+          ${detailItem("Email Address", customer.email)}
+          ${detailItem("City", customer.city)}
+          ${detailItem("State", customer.state || "—")}
+          ${detailItem("Address", customer.address || "—")}
+          ${detailItem("Customer Type", customer.type)}
+          ${customer.type === "Business"
+          ? detailItem("Contact Person", customer.contactPerson || "—")
+          : ""}
+          ${customer.type === "Business"
+          ? detailItem("Company", customer.company || "—")
+          : ""}
+        </div>
+
+        <h3 class="section-heading">Trip Summary</h3>
+
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-value">${summary.total}</div>
+            <div class="summary-label">Total Trips</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">${summary.completed}</div>
+            <div class="summary-label">Completed</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">${summary.active}</div>
+            <div class="summary-label">In Progress</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">${summary.cancelled}</div>
+            <div class="summary-label">Cancelled</div>
+          </div>
+        </div>
+
+        <h3 class="section-heading">Current Trip</h3>
+
+        ${currentTrip ? `
+          <div class="current-trip-box">
+            <div class="current-trip-title">
+              <i class="fa-solid fa-truck-fast"></i> Ongoing Trip
+            </div>
+            <div class="current-trip-route">
+              ${escapeHTML(currentTrip.origin)}
+              <i class="fa-solid fa-arrow-right" style="font-size:10px;color:#78716C;margin:0 6px"></i>
+              ${escapeHTML(currentTrip.destination)}
+            </div>
+            <div class="current-trip-meta">
+              <span><strong>${escapeHTML(currentTrip.id)}</strong></span>
+              <span><i class="fa-solid fa-truck"></i>
+                ${escapeHTML(currentTrip.vehicle)}</span>
+              <span><i class="fa-solid fa-user"></i>
+                ${escapeHTML(currentTrip.driver)}</span>
+              <span><i class="fa-regular fa-calendar"></i>
+                ${formatDate(currentTrip.date)}</span>
+              ${statusBadge(currentTrip.status)}
+            </div>
+          </div>
+        ` : `
+          <div class="detail-item" style="margin-bottom:19px">
+            <div class="detail-value" style="color:#78716C;font-weight:500">
+              No active trip currently assigned to this customer.
+            </div>
+          </div>
+        `}
+
+        <h3 class="section-heading">Customer Trip History</h3>
+
+        <div class="history-toolbar">
+          <span style="font-size:11px;font-weight:700;color:#44403C">
+            Trip Records (${summary.total})
+          </span>
+
+          <div class="history-filters">
+            <select class="form-control" id="history-status-filter">
+              <option value="">All Statuses</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+
+            <select class="form-control" id="history-date-filter">
+              <option value="all">All Dates</option>
+              <option value="this-month">This Month</option>
+              <option value="last-month">Last Month</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="customer-trip-history"></div>
+
+        <h3 class="section-heading" style="margin-top:20px">Account Information</h3>
+
+        <div class="detail-grid">
+          ${detailItem("Customer ID", customer.id)}
+          ${detailItem("Account Status", customer.status)}
+          ${detailItem("Registration Date", formatDate(customer.createdAt))}
+        </div>
+
+        <h3 class="section-heading">Notes</h3>
+        <div class="detail-item">
+          <div class="detail-value" style="font-weight:400;line-height:1.6">
+            ${escapeHTML(customer.notes || "No additional notes available.")}
+          </div>
+        </div>
+      `;
+
+      renderCustomerTripHistory(customerId);
+
+      $("history-status-filter").addEventListener("change", () =>
+        renderCustomerTripHistory(customerId)
+      );
+
+      $("history-date-filter").addEventListener("change", () =>
+        renderCustomerTripHistory(customerId)
+      );
+
+      $("view-edit-btn").onclick = () =>
+        openEditCustomerModal(customerId);
+
+      openModal("customer-view-modal");
+    }
+
+    function detailItem(label, value) {
+      return `
+        <div class="detail-item">
+          <div class="detail-label">${escapeHTML(label)}</div>
+          <div class="detail-value">${escapeHTML(value || "—")}</div>
+        </div>
+      `;
+    }
+
+    /* =========================================================
+       15. CUSTOMER TRIP HISTORY
+    ========================================================= */
+
+    function renderCustomerTripHistory(customerId) {
+      const statusFilter = $("history-status-filter")?.value || "";
+      const dateFilter = $("history-date-filter")?.value || "all";
+
+      let trips = getCustomerTrips(customerId);
+
+      if (statusFilter) {
+        trips = trips.filter(trip => trip.status === statusFilter);
+      }
+
+      const now = new Date();
+
+      if (dateFilter === "this-month") {
+        trips = trips.filter(trip => isSameMonth(trip.date));
+      }
+
+      if (dateFilter === "last-month") {
+        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+        trips = trips.filter(trip => {
+          const date = new Date(trip.date + "T00:00:00");
+
+          return date.getMonth() === lastMonth.getMonth() &&
+            date.getFullYear() === lastMonth.getFullYear();
+        });
+      }
+
+      const container = $("customer-trip-history");
+
+      if (!trips.length) {
+        container.innerHTML = `
+          <div class="empty-state" style="padding:25px 10px;border:1px solid #F0EDEF;border-radius:8px">
+            <div class="empty-icon" style="width:38px;height:38px">
+              <i class="fa-solid fa-route"></i>
+            </div>
+            <h3>No trip records found</h3>
+            <p>No trips match the selected filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Trip ID</th>
+                <th>Route</th>
+                <th>Vehicle</th>
+                <th>Driver</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${trips.map(trip => `
+                <tr>
+                  <td><span class="history-trip-id">${escapeHTML(trip.id)}</span></td>
+                  <td>
+                    ${escapeHTML(trip.origin)}
+                    <i class="fa-solid fa-arrow-right" style="font-size:9px;color:#A8A29E;margin:0 4px"></i>
+                    ${escapeHTML(trip.destination)}
+                  </td>
+                  <td>${escapeHTML(trip.vehicle)}</td>
+                  <td>${escapeHTML(trip.driver)}</td>
+                  <td>${formatDate(trip.date)}</td>
+                  <td>${statusBadge(trip.status)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    /* =========================================================
+       16. CUSTOMER ACCOUNT STATUS
+    ========================================================= */
+
+    function updateCustomerStatus(customerId) {
+      const customer = getCustomer(customerId);
+      if (!customer) return;
+
+      const statuses = ["Active", "Inactive", "Suspended"];
+      const nextStatus = statuses[(statuses.indexOf(customer.status) + 1) % statuses.length];
+
+      showConfirmation(
+        "Change Customer Status",
+        `Change the account status of ${getDisplayName(customer)} from ${customer.status} to ${nextStatus}?`,
+        () => {
+          customer.status = nextStatus;
+          renderCustomers();
+
+          if (currentViewCustomerId === customerId &&
+            !$("customer-view-modal").classList.contains("hidden")) {
+            openViewCustomerModal(customerId);
+          }
+
+          showToast("Customer account status updated successfully.", "success");
+        },
+        "Update Status"
+      );
+    }
+
+    /* =========================================================
+       17. DEACTIVATE CUSTOMER
+    ========================================================= */
+
+    function deactivateCustomer(customerId) {
+      const customer = getCustomer(customerId);
+      if (!customer) return;
+
+      if (customer.status === "Inactive") {
+        showToast("This customer account is already inactive.", "info");
+        return;
+      }
+
+      const activeTrip = getCurrentTrip(customerId);
+
+      const warning = activeTrip
+        ? `This customer currently has an active trip (${activeTrip.id}). Deactivating the customer will not cancel the trip. The customer's account will be marked Inactive and trip history will be preserved. Continue?`
+        : `Are you sure you want to deactivate ${getDisplayName(customer)}? The account will be marked Inactive and the customer's trip history will be preserved.`;
+
+      showConfirmation(
+        "Deactivate Customer",
+        warning,
+        () => {
+          customer.status = "Inactive";
+          renderCustomers();
+
+          if (currentViewCustomerId === customerId &&
+            !$("customer-view-modal").classList.contains("hidden")) {
+            openViewCustomerModal(customerId);
+          }
+
+          showToast("Customer account deactivated successfully.", "success");
+        },
+        "Deactivate"
+      );
+    }
+
+    /* =========================================================
+       18. MODAL HELPERS
+    ========================================================= */
+
+    function openModal(id) {
+      closeActionMenu();
+      $(id).classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal(id) {
+      $(id).classList.add("hidden");
+
+      const anyOpen = [...document.querySelectorAll(".modal-backdrop")]
+        .some(modal => !modal.classList.contains("hidden"));
+
+      if (!anyOpen) document.body.style.overflow = "";
+    }
+
+    function showConfirmation(title, message, callback, buttonText = "Confirm") {
+      $("confirmation-title").textContent = title;
+      $("confirmation-message").textContent = message;
+      $("confirm-action-btn").textContent = buttonText;
+
+      pendingConfirmation = callback;
+      openModal("confirmation-modal");
+    }
+
+    /* =========================================================
+       19. TOAST NOTIFICATIONS
+    ========================================================= */
+
+    function showToast(message, type = "success") {
+      const container = $("toast-container");
+      const toast = document.createElement("div");
+
+      const icons = {
+        success: "fa-circle-check",
+        error: "fa-circle-exclamation",
+        info: "fa-circle-info"
+      };
+
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icons[type] || icons.success}"></i>
+        <span>${escapeHTML(message)}</span>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(6px)";
+
+        setTimeout(() => toast.remove(), 200);
+      }, 3200);
+    }
+
+    /* =========================================================
+       20. EVENT LISTENERS
+    ========================================================= */
+
+    $("add-customer-btn").addEventListener("click", openAddCustomerModal);
+
+    $("form-type").addEventListener("change", updateCustomerTypeFields);
+
+    $("customer-form").addEventListener("submit", saveCustomer);
+
+    searchInput.addEventListener("input", () => {
+      currentPage = 1;
+      renderCustomers();
+    });
+
+    [
+      "filter-type",
+      "filter-status",
+      "filter-activity",
+      "filter-city"
+    ].forEach(id => {
+      $(id).addEventListener("change", () => {
+        currentPage = 1;
+        renderCustomers();
+      });
+    });
+
+    $("clear-filters").addEventListener("click", clearFilters);
+
+    /* Inline customer actions — follows the Drivers module pattern */
+    tableBody.addEventListener("click", event => {
+      const action = event.target.closest("[data-customer-action]");
+      if (!action || action.disabled) return;
+
+      const customerId = action.dataset.id;
+      const actionType = action.dataset.customerAction;
+
+      switch (actionType) {
+        case "view":
+          openViewCustomerModal(customerId);
+          break;
+
+        case "edit":
+          openEditCustomerModal(customerId);
+          break;
+
+        case "trips":
+          openViewCustomerModal(customerId);
+          setTimeout(() => {
+            $("customer-trip-history")?.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest"
+            });
+          }, 150);
+          break;
+
+        case "status":
+          updateCustomerStatus(customerId);
+          break;
+
+        case "deactivate":
+          deactivateCustomer(customerId);
+          break;
+      }
+    });
+
+    /* Pagination */
+    $("pagination-buttons").addEventListener("click", event => {
+      const button = event.target.closest("[data-page]");
+      if (!button || button.disabled) return;
+
+      const page = Number(button.dataset.page);
+      const filtered = filterCustomers();
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        renderCustomers();
+      }
+    });
+
+    /* Close buttons */
+    document.querySelectorAll("[data-close]").forEach(button => {
+      button.addEventListener("click", () => {
+        closeModal(button.dataset.close);
+      });
+    });
+
+    /* Close modal when clicking outside its content */
+    document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+      backdrop.addEventListener("click", event => {
+        if (event.target === backdrop) {
+          closeModal(backdrop.id);
+        }
+      });
+    });
+
+    /* Confirmation action */
+    $("confirm-action-btn").addEventListener("click", () => {
+      if (typeof pendingConfirmation === "function") {
+        const callback = pendingConfirmation;
+        pendingConfirmation = null;
+        closeModal("confirmation-modal");
+        callback();
+      }
+    });
+
+    /* Escape key */
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeActionMenu();
+
+        document.querySelectorAll(".modal-backdrop").forEach(modal => {
+          if (!modal.classList.contains("hidden")) {
+            closeModal(modal.id);
+          }
+        });
+      }
+    });
+
+    /* Close floating menu when scrolling */
+    document.querySelector(".table-scroll").addEventListener("scroll", closeActionMenu);
+
+    window.addEventListener("resize", closeActionMenu);
+
+    /* Remove validation error as user corrects the field */
+    $("customer-form").querySelectorAll(".form-control").forEach(input => {
+      input.addEventListener("input", () => {
+        input.classList.remove("invalid");
+        const error = input.parentElement.querySelector(".form-error");
+        if (error) error.style.display = "";
+      });
+
+      input.addEventListener("change", () => {
+        input.classList.remove("invalid");
+        const error = input.parentElement.querySelector(".form-error");
+        if (error) error.style.display = "";
+      });
+    });
+
+    /* =========================================================
+       21. INITIALIZATION
+    ========================================================= */
+
+    function initializeCustomersPage() {
+      calculateCustomerKPIs();
+      renderCustomers();
+    }
+
+    document.addEventListener("DOMContentLoaded", initializeCustomersPage);
+
+  </script>
+</body>
+
+</html>

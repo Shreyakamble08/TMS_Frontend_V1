@@ -1,0 +1,30 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Transport Management System (TMS) Admin Frontend – Level 1">
+    <title>Transport Management System · Admin</title>
+    <!-- 
+        PROJECT ENTRY POINT
+        This is the main entry of the TMS admin frontend (Level 1).
+        Redirects immediately to admin-login.html.
+        No additional UI is needed here.
+    -->
+    <meta http-equiv="refresh" content="0; url=admin-login.html">
+</head>
+<body>
+    <!-- 
+        Smooth redirect: we hide the body immediately so the 
+        fallback text is not visible. The script redirects instantly.
+    -->
+    <style>
+        body { display: none; }
+    </style>
+    <script>
+        // Immediate frontend redirect to the admin login page.
+        window.location.replace("admin-login.html");
+    </script>
+</body>
+</html>

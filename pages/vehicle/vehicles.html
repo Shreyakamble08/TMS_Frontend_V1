@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicles Management | TMS</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Existing shared navigation stylesheet -->
+  <link rel="stylesheet" href="../../css/nav-sidebar.css">
+
+  <style>
+    /* =========================================================
+       VEHICLES MODULE THEME
+       UI redesign aligned to Trips module design language.
+       All functionality untouched.
+    ========================================================= */
+
+    #vehicles-page {
+      --vehicle-primary: #601D49;
+      --vehicle-primary-dark: #4B1738;
+      --vehicle-primary-soft: #F7EFF4;
+      --vehicle-bg: #FAFAF9;
+      --vehicle-border: #E7E5E4;
+      --vehicle-text: #292524;
+      --vehicle-muted: #78716C;
+      width: 100%;
+      min-width: 0;
+      color: var(--vehicle-text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #vehicles-page * {
+      box-sizing: border-box;
+    }
+
+    #vehicles-page .vehicle-card {
+      background: #fff;
+      border: 1px solid var(--vehicle-border);
+      border-radius: 10px;
+    }
+
+    /* ---------- Buttons ---------- */
+
+    #vehicles-page .vehicle-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid var(--vehicle-primary);
+      border-radius: 7px;
+      background: var(--vehicle-primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #vehicles-page .vehicle-primary-btn:hover {
+      background: var(--vehicle-primary-dark);
+      border-color: var(--vehicle-primary-dark);
+    }
+
+    #vehicles-page .vehicle-secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--vehicle-border);
+      border-radius: 7px;
+      background: #fff;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #vehicles-page .vehicle-secondary-btn:hover {
+      background: #f5f5f4;
+    }
+
+    /* ---------- Inputs ---------- */
+
+    #vehicles-page .vehicle-input,
+    #vehicles-page .vehicle-select,
+    #vehicles-page .vehicle-textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #e7e5e4;
+      border-radius: 7px;
+      background: #fff;
+      padding: 9px 11px;
+      color: #292524;
+      font-size: 12px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    #vehicles-page .vehicle-input,
+    #vehicles-page .vehicle-select {
+      height: 38px;
+    }
+
+    #vehicles-page .vehicle-textarea {
+      min-height: 75px;
+      resize: vertical;
+    }
+
+    #vehicles-page .vehicle-input:focus,
+    #vehicles-page .vehicle-select:focus,
+    #vehicles-page .vehicle-textarea:focus {
+      border-color: var(--vehicle-primary);
+      box-shadow: 0 0 0 3px rgba(96, 29, 73, .08);
+    }
+
+    #vehicles-page .vehicle-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #57534e;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    #vehicles-page .vehicle-required {
+      color: #dc2626;
+    }
+
+    #vehicles-page .vehicle-error {
+      display: none;
+      margin-top: 5px;
+      color: #dc2626;
+      font-size: 10px;
+    }
+
+    #vehicles-page .vehicle-error.show {
+      display: block;
+    }
+
+    /* =========================================================
+       KPI CARDS 
+    ========================================================= */
+    /* =========================================================
+   KPI CARDS — 5 CARDS IN ONE ROW
+========================================================= */
+
+    #vehicles-page .vehicle-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    #vehicles-page .vehicle-kpi-card {
+      min-width: 0;
+      min-height: 82px;
+      padding: 9px 12px;
+      background: linear-gradient(135deg,
+          #ffffff 0%,
+          #faf5f8 55%,
+          #f7eff4 100%);
+      border: 1px solid rgba(96, 29, 73, 0.16);
+      border-radius: 9px;
+      box-shadow: 0 2px 5px rgba(96, 29, 73, .04),
+        0 4px 10px rgba(96, 29, 73, .035);
+      transition: all .2s ease;
+    }
+
+    #vehicles-page .vehicle-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 29, 73, .28);
+      box-shadow: 0 5px 12px rgba(96, 29, 73, .07);
+    }
+
+    #vehicles-page .vehicle-kpi-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 29px;
+      height: 29px;
+      border-radius: 7px;
+      font-size: 12px;
+      background: rgba(96, 29, 73, .06);
+      color: var(--vehicle-primary);
+    }
+
+    #vehicles-page .vehicle-kpi-value {
+      margin-top: 5px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #292524;
+    }
+
+    #vehicles-page .vehicle-kpi-label {
+      margin-top: 3px;
+      color: #78716c;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+    #vehicles-page .vehicle-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    #vehicles-page .vehicle-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    #vehicles-page .status-available {
+      color: #15803d;
+      background: #f0fdf4;
+    }
+
+    #vehicles-page .status-assigned {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+
+    #vehicles-page .status-on-trip {
+      color: #7e22ce;
+      background: #f3e8ff;
+    }
+
+    #vehicles-page .status-maintenance {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    #vehicles-page .status-inactive {
+      color: #57534e;
+      background: #e7e5e4;
+    }
+
+    /* =========================================================
+       COMPACT GRID TABLE — matches trip-table
+    ========================================================= */
+
+    #vehicles-page .vehicle-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    #vehicles-page .vehicle-table {
+      width: 100%;
+      min-width: 1120px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    #vehicles-page .vehicle-table th {
+      padding: 8px 12px;
+      background: #fafaf9;
+      border: 1px solid var(--vehicle-border);
+      color: #78716c;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    #vehicles-page .vehicle-table td {
+      padding: 6px 12px;
+      border: 1px solid var(--vehicle-border);
+      color: #57534e;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    #vehicles-page .vehicle-table tbody tr:hover {
+      background: #fdfbfd;
+    }
+
+    /* =========================================================
+       ACTION ICON BUTTONS — matches action-icon-btn
+    ========================================================= */
+
+    #vehicles-page .vehicle-action-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    #vehicles-page .vehicle-row-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    #vehicles-page .vehicle-row-action:focus-visible {
+      outline: 2px solid #601d49;
+      outline-offset: 1px;
+    }
+
+    /* =========================================================
+       MODALS — matches trip-modal-*
+    ========================================================= */
+
+    #vehicles-page .vehicle-modal-backdrop {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 10000 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(28, 25, 23, .55);
+      backdrop-filter: blur(3px);
+    }
+
+    #vehicles-page .vehicle-modal-backdrop.hidden {
+      display: none !important;
+    }
+
+    #vehicles-page .vehicle-modal-panel {
+      position: relative;
+      width: 100%;
+      max-width: 660px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+    }
+
+    #vehicles-page .vehicle-modal-panel.small {
+      max-width: 430px;
+    }
+
+    #vehicles-page .vehicle-modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px 20px;
+      background: #fff;
+      border-bottom: 1px solid var(--vehicle-border);
+    }
+
+    #vehicles-page .vehicle-modal-body {
+      padding: 20px;
+    }
+
+    #vehicles-page .vehicle-modal-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      padding: 13px 20px;
+      background: #fff;
+      border-top: 1px solid var(--vehicle-border);
+    }
+
+    #vehicles-page .vehicle-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 6px;
+      background: #f5f5f4;
+      color: #57534e;
+      cursor: pointer;
+    }
+
+    #vehicles-page .vehicle-close-btn:hover {
+      background: #e7e5e4;
+    }
+
+    /* Form grid */
+
+    #vehicles-page .vehicle-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    #vehicles-page .vehicle-form-field {
+      min-width: 0;
+    }
+
+    #vehicles-page .vehicle-form-field.full,
+    #vehicles-page .vehicle-section-title {
+      grid-column: 1 / -1;
+    }
+
+    #vehicles-page .vehicle-section-title {
+      padding-bottom: 8px;
+      margin-top: 5px;
+      border-bottom: 1px solid #f0eeec;
+      color: #44403c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       DETAILS MODAL — matches trip-details design
+    ========================================================= */
+
+    #vehicles-page #vehicleDetailsModal .vehicle-modal-panel {
+      max-width: 720px;
+      border: 1.5px solid #601d49;
+    }
+
+    #vehicles-page .vehicle-detail-hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1.5px solid #601d49;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #601d49 0%, #8a2d6a 100%);
+      color: #fff;
+    }
+
+    #vehicles-page .vehicle-detail-hero-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+
+    #vehicles-page .vehicle-detail-hero-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      opacity: .85;
+    }
+
+    #vehicles-page .vehicle-detail-section {
+      margin-bottom: 14px;
+      overflow: hidden;
+      border: 1px solid #601d4897;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(96, 29, 73, .08);
+    }
+
+    #vehicles-page .vehicle-detail-section-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: rgba(96, 29, 72, .082);
+      border-bottom: 1.5px solid #601d49;
+      color: #601d49;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #vehicles-page .vehicle-detail-section-body {
+      padding: 12px 14px;
+    }
+
+    #vehicles-page .vehicle-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      #vehicles-page .vehicle-detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    #vehicles-page .vehicle-detail-item {
+      min-width: 0;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid #601d487d;
+      border-radius: 8px;
+      transition: box-shadow .15s, transform .15s;
+    }
+
+    #vehicles-page .vehicle-detail-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(96, 29, 73, .15);
+    }
+
+    #vehicles-page .vehicle-detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    #vehicles-page .vehicle-detail-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3px;
+      color: #601d49;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    #vehicles-page .vehicle-detail-value {
+      color: #292524;
+      font-size: 12px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    /* History timeline */
+
+    #vehicles-page .vehicle-history-item {
+      position: relative;
+      padding: 0 0 12px 18px;
+      margin-left: 5px;
+      border-left: 2px solid #601d49;
+    }
+
+    #vehicles-page .vehicle-history-item:last-child {
+      padding-bottom: 0;
+      border-left-color: transparent;
+    }
+
+    #vehicles-page .vehicle-history-item::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: 2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #601d49;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1.5px #601d49;
+    }
+
+    /* =========================================================
+       PAGINATION — matches trip-page-btn
+    ========================================================= */
+
+    #vehicles-page .vehicle-page-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid #e7e5e4;
+      border-radius: 6px;
+      background: #fff;
+      color: #57534e;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    #vehicles-page .vehicle-page-btn.active {
+      border-color: var(--vehicle-primary);
+      background: var(--vehicle-primary);
+      color: #fff;
+    }
+
+    #vehicles-page .vehicle-page-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    #vehicles-page .vehicle-toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 11000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 32px);
+      padding: 12px 16px;
+      border: 1px solid #e7e5e4;
+      border-radius: 9px;
+      background: #fff;
+      color: #292524;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: .25s ease;
+    }
+
+    #vehicles-page .vehicle-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    #vehicles-page .vehicle-toast-icon {
+      color: var(--vehicle-primary);
+      font-size: 15px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    /* ---------- KPI RESPONSIVE ---------- */
+
+    @media (max-width: 1100px) {
+      #vehicles-page .vehicle-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      #vehicles-page .vehicle-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #vehicles-page .vehicle-kpi-card {
+        padding: 9px;
+      }
+
+      #vehicles-page .vehicle-kpi-value {
+        font-size: 19px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      #vehicles-page .vehicle-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      #vehicles-page .vehicle-modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      #vehicles-page .vehicle-modal-panel {
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0;
+      }
+
+      #vehicles-page .vehicle-modal-body {
+        padding: 15px;
+      }
+
+      #vehicles-page .vehicle-modal-header,
+      #vehicles-page .vehicle-modal-footer {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      #vehicles-page .vehicle-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #vehicles-page .vehicle-form-field.full,
+      #vehicles-page .vehicle-section-title {
+        grid-column: auto;
+      }
+
+      #vehicles-page .vehicle-toast {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #vehicles-page .vehicle-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 380px) {
+      #vehicles-page .vehicle-kpi-card {
+        padding: 11px;
+      }
+
+      #vehicles-page .vehicle-kpi-value {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-stone-50">
+
+  <!-- =======================================================
+       SHARED SIDEBAR AND NAVBAR
+  ======================================================== -->
+  <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+  <!-- =======================================================
+       MAIN CONTENT
+  ======================================================== -->
+  <main class="tms-main">
+    <div id="vehicles-page" class="px-4 py-5 md:px-6 lg:px-4">
+
+      <!-- =====================================================
+           PAGE HEADER
+      ====================================================== -->
+      <section class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-stone-800">Vehicles Management</h1>
+          <p class="text-xs text-stone-500 mt-1">
+            Manage vehicles, registration details, capacity, availability and trip assignments.
+          </p>
+        </div>
+
+        <button type="button" id="addVehicleBtn" class="vehicle-primary-btn">
+          <i class="fa-solid fa-plus"></i>
+          Add Vehicle
+        </button>
+      </section>
+
+      <!-- =====================================================
+           KPI CARDS
+      ====================================================== -->
+      <section class="vehicle-kpi-grid mb-4">
+
+        <div class="vehicle-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Total Vehicles</span>
+            <div class="vehicle-kpi-icon"><i class="fa-solid fa-truck"></i></div>
+          </div>
+          <div class="vehicle-kpi-value" id="kpiTotal">0</div>
+          <div class="vehicle-kpi-label">Registered vehicles</div>
+        </div>
+
+        <div class="vehicle-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Available</span>
+            <div class="vehicle-kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+          <div class="vehicle-kpi-value" id="kpiAvailable">0</div>
+          <div class="vehicle-kpi-label">Ready for assignment</div>
+        </div>
+
+        <div class="vehicle-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Assigned</span>
+            <div class="vehicle-kpi-icon"><i class="fa-solid fa-user-check"></i></div>
+          </div>
+          <div class="vehicle-kpi-value" id="kpiAssigned">0</div>
+          <div class="vehicle-kpi-label">Allocated vehicles</div>
+        </div>
+
+        <div class="vehicle-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">On Trip</span>
+            <div class="vehicle-kpi-icon"><i class="fa-solid fa-route"></i></div>
+          </div>
+          <div class="vehicle-kpi-value" id="kpiOnTrip">0</div>
+          <div class="vehicle-kpi-label">Currently operating</div>
+        </div>
+
+        <div class="vehicle-kpi-card">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-stone-500 font-semibold">Maintenance</span>
+            <div class="vehicle-kpi-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+          </div>
+          <div class="vehicle-kpi-value" id="kpiMaintenance">0</div>
+          <div class="vehicle-kpi-label">Under maintenance</div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           VEHICLES TABLE CARD (search + filters + table)
+      ====================================================== -->
+      <section class="vehicle-card overflow-hidden">
+
+        <!-- TABLE HEADER + SEARCH + FILTERS -->
+        <div class="p-4 border-b border-stone-200">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-bold text-stone-800">All Vehicles</h2>
+              <p class="text-xs text-stone-500 mt-1">
+                View and manage your registered fleet.
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <!-- Search Input -->
+              <div class="relative flex-1 sm:flex-none sm:w-60">
+                <i
+                  class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[11px] pointer-events-none"></i>
+                <input type="search" id="vehicleSearch"
+                  class="vehicle-input !h-[34px] !py-0 !pl-9 !pr-3 !text-[11px] !rounded-md"
+                  placeholder="Search vehicles..." aria-label="Search vehicles" />
+              </div>
+
+              <!-- Clear Filters -->
+              <button type="button" id="clearFiltersBtn"
+                class="vehicle-secondary-btn !h-[34px] !min-h-[34px] !px-3 !gap-2 !text-[11px] !rounded-md whitespace-nowrap">
+                <i class="fa-solid fa-rotate-left text-[10px]"></i>
+                <span>Clear Filters</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- FILTERS -->
+          <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 mt-4">
+            <select id="filterType" class="vehicle-select" aria-label="Filter by type">
+              <option value="">All Types</option>
+              <option>Tempo</option>
+              <option>Mini Truck</option>
+              <option>Truck</option>
+              <option>Pickup</option>
+              <option>LCV</option>
+              <option>Bus</option>
+              <option>Van</option>
+            </select>
+
+            <select id="filterStatus" class="vehicle-select" aria-label="Filter by status">
+              <option value="">All Status</option>
+              <option>Available</option>
+              <option>Assigned</option>
+              <option>On Trip</option>
+              <option>Maintenance</option>
+              <option>Inactive</option>
+            </select>
+
+            <select id="filterCapacity" class="vehicle-select" aria-label="Filter by capacity">
+              <option value="">All Capacity</option>
+              <option value="below1">Below 1 Ton</option>
+              <option value="1to3">1–3 Ton</option>
+              <option value="3to5">3–5 Ton</option>
+              <option value="above5">Above 5 Ton</option>
+              <option value="passengers">Passengers</option>
+            </select>
+
+            <select id="filterAssignment" class="vehicle-select" aria-label="Filter by assignment">
+              <option value="">All Assignments</option>
+              <option value="Assigned">Assigned</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+          </div>
+
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+            <p id="filterResultText" class="text-[10px] text-stone-400"></p>
+            <span id="tableCount" class="rounded-full bg-stone-100 px-3 py-1 text-[10px] font-semibold text-stone-600">
+              0 Vehicles
+            </span>
+          </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="vehicle-table-wrap">
+          <table class="vehicle-table">
+            <thead>
+              <tr>
+                <th>Vehicle ID</th>
+                <th>Registration No.</th>
+                <th>Vehicle</th>
+                <th>Type</th>
+                <th>Capacity</th>
+                <th>Driver</th>
+                <th>Status</th>
+                <th>Current Trip</th>
+                <th class="text-center w-[110px]">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="vehicleTableBody"></tbody>
+          </table>
+
+          <!-- EMPTY STATE -->
+          <div id="vehicleEmptyState" class="hidden py-14 text-center">
+            <div
+              class="mx-auto mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 text-stone-400">
+              <i class="fa-solid fa-truck text-lg"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-stone-700" id="emptyTitle">No vehicles found</h3>
+            <p class="text-xs text-stone-500 mt-1" id="emptyDescription">
+              Try changing your search or filters.
+            </p>
+            <button type="button" id="emptyAddBtn" class="vehicle-primary-btn mt-4 hidden">
+              <i class="fa-solid fa-plus"></i>
+              Add Vehicle
+            </button>
+          </div>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-stone-200">
+          <p id="paginationInfo" class="text-xs text-stone-500">
+            Showing 0 vehicles
+          </p>
+          <div id="paginationControls" class="flex items-center gap-1"></div>
+        </div>
+      </section>
+
+      <p class="mt-4 text-center text-[10px] text-stone-400">
+        TMS Vehicle Management Module
+      </p>
+
+      <!-- =====================================================
+           ADD / EDIT VEHICLE MODAL
+      ====================================================== -->
+      <div id="vehicleFormModal" class="vehicle-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="vehicleFormTitle">
+
+        <div class="vehicle-modal-panel">
+          <div class="vehicle-modal-header">
+            <div>
+              <h2 id="vehicleFormTitle" class="text-base font-bold text-stone-800">
+                Add New Vehicle
+              </h2>
+              <p class="text-xs text-stone-500 mt-1">
+                Enter the vehicle information and compliance details.
+              </p>
+            </div>
+            <button type="button" class="vehicle-close-btn" data-close-modal="vehicleFormModal"
+              aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <form id="vehicleForm" novalidate>
+            <div class="vehicle-modal-body">
+
+              <div class="vehicle-form-grid">
+                <h3 class="vehicle-section-title">Vehicle Information</h3>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formVehicleId">Vehicle ID</label>
+                  <input id="formVehicleId" class="vehicle-input bg-stone-50" readonly>
+                  <p class="mt-1 text-[9px] text-stone-400">Automatically generated.</p>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formRegistration">
+                    Registration Number <span class="vehicle-required">*</span>
+                  </label>
+                  <input id="formRegistration" class="vehicle-input" placeholder="e.g. MH12AB1234" maxlength="15">
+                  <p class="vehicle-error" id="errorRegistration"></p>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formType">
+                    Vehicle Type <span class="vehicle-required">*</span>
+                  </label>
+                  <select id="formType" class="vehicle-select">
+                    <option value="">Select vehicle type</option>
+                    <option>Tempo</option>
+                    <option>Mini Truck</option>
+                    <option>Truck</option>
+                    <option>Pickup</option>
+                    <option>LCV</option>
+                    <option>Bus</option>
+                    <option>Van</option>
+                  </select>
+                  <p class="vehicle-error" id="errorType"></p>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formMake">
+                    Make <span class="vehicle-required">*</span>
+                  </label>
+                  <input id="formMake" class="vehicle-input" placeholder="e.g. Tata">
+                  <p class="vehicle-error" id="errorMake"></p>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formModel">
+                    Model <span class="vehicle-required">*</span>
+                  </label>
+                  <input id="formModel" class="vehicle-input" placeholder="e.g. Ace">
+                  <p class="vehicle-error" id="errorModel"></p>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formYear">Manufacturing Year</label>
+                  <input id="formYear" type="number" min="1990" max="2099" class="vehicle-input" placeholder="2023">
+                  <p class="vehicle-error" id="errorYear"></p>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formColor">Color</label>
+                  <input id="formColor" class="vehicle-input" placeholder="White">
+                </div>
+
+                <h3 class="vehicle-section-title">Capacity Details</h3>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formCapacity">
+                    Load Capacity <span class="vehicle-required">*</span>
+                  </label>
+                  <input id="formCapacity" type="number" min="0.1" step="0.1" class="vehicle-input"
+                    placeholder="e.g. 1">
+                  <p class="vehicle-error" id="errorCapacity"></p>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formCapacityUnit">
+                    Capacity Unit
+                  </label>
+                  <select id="formCapacityUnit" class="vehicle-select">
+                    <option>Ton</option>
+                    <option>Kg</option>
+                    <option>Passengers</option>
+                  </select>
+                </div>
+
+                <h3 class="vehicle-section-title">Registration & Compliance</h3>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formRegistrationExpiry">Registration Expiry</label>
+                  <input id="formRegistrationExpiry" type="date" class="vehicle-input">
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formInsuranceExpiry">Insurance Expiry</label>
+                  <input id="formInsuranceExpiry" type="date" class="vehicle-input">
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formFitnessExpiry">Fitness Expiry</label>
+                  <input id="formFitnessExpiry" type="date" class="vehicle-input">
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formPermitExpiry">Permit Expiry</label>
+                  <input id="formPermitExpiry" type="date" class="vehicle-input">
+                </div>
+
+                <h3 class="vehicle-section-title">Assignment & Status</h3>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formDriver">Assigned Driver</label>
+                  <select id="formDriver" class="vehicle-select">
+                    <option value="">No driver assigned</option>
+                  </select>
+                </div>
+
+                <div class="vehicle-form-field">
+                  <label class="vehicle-label" for="formStatus">
+                    Current Status <span class="vehicle-required">*</span>
+                  </label>
+                  <select id="formStatus" class="vehicle-select">
+                    <option value="">Select status</option>
+                    <option>Available</option>
+                    <option>Assigned</option>
+                    <option>On Trip</option>
+                    <option>Maintenance</option>
+                    <option>Inactive</option>
+                  </select>
+                  <p class="vehicle-error" id="errorStatus"></p>
+                </div>
+
+                <div class="vehicle-form-field full">
+                  <label class="vehicle-label" for="formNotes">Additional Notes</label>
+                  <textarea id="formNotes" rows="3" class="vehicle-textarea"
+                    placeholder="Enter any additional vehicle information..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="vehicle-modal-footer">
+              <button type="button" class="vehicle-secondary-btn" data-close-modal="vehicleFormModal">Cancel</button>
+              <button type="submit" class="vehicle-primary-btn" id="saveVehicleBtn">
+                <i class="fa-solid fa-check"></i>
+                Save Vehicle
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           VIEW VEHICLE DETAILS MODAL
+      ====================================================== -->
+      <div id="vehicleDetailsModal" class="vehicle-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="vehicleDetailsTitle">
+
+        <div class="vehicle-modal-panel">
+          <div class="vehicle-modal-header">
+            <div>
+              <h2 id="vehicleDetailsTitle" class="text-base font-bold text-stone-800">
+                Vehicle Details
+              </h2>
+              <p id="detailsSubtitle" class="text-xs text-stone-500 mt-1"></p>
+            </div>
+            <button type="button" class="vehicle-close-btn" data-close-modal="vehicleDetailsModal"
+              aria-label="Close modal">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="vehicle-modal-body">
+            <!-- HERO -->
+            <div class="vehicle-detail-hero">
+              <div>
+                <div class="vehicle-detail-hero-title" id="detailsHeroTitle">Vehicle</div>
+                <div class="vehicle-detail-hero-sub" id="detailsHeroSub">-</div>
+              </div>
+              <div id="detailsHeroStatus"></div>
+            </div>
+
+            <!-- OVERVIEW -->
+            <div class="vehicle-detail-section">
+              <div class="vehicle-detail-section-head">
+                <i class="fa-solid fa-truck"></i> Vehicle Overview
+              </div>
+              <div class="vehicle-detail-section-body">
+                <div id="detailsOverview" class="vehicle-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- CAPACITY -->
+            <div class="vehicle-detail-section">
+              <div class="vehicle-detail-section-head">
+                <i class="fa-solid fa-weight-hanging"></i> Capacity Details
+              </div>
+              <div class="vehicle-detail-section-body">
+                <div id="detailsCapacity" class="vehicle-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- ASSIGNMENT -->
+            <div class="vehicle-detail-section">
+              <div class="vehicle-detail-section-head">
+                <i class="fa-solid fa-route"></i> Current Assignment
+              </div>
+              <div class="vehicle-detail-section-body">
+                <div id="detailsAssignment" class="vehicle-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- COMPLIANCE -->
+            <div class="vehicle-detail-section">
+              <div class="vehicle-detail-section-head">
+                <i class="fa-solid fa-file-shield"></i> Compliance Information
+              </div>
+              <div class="vehicle-detail-section-body">
+                <div id="detailsCompliance" class="vehicle-detail-grid"></div>
+              </div>
+            </div>
+
+            <!-- NOTES -->
+            <div class="vehicle-detail-section">
+              <div class="vehicle-detail-section-head">
+                <i class="fa-regular fa-note-sticky"></i> Additional Notes
+              </div>
+              <div class="vehicle-detail-section-body">
+                <div id="detailsNotes" class="text-xs text-stone-600"></div>
+              </div>
+            </div>
+
+            <!-- HISTORY -->
+            <div class="vehicle-detail-section">
+              <div class="vehicle-detail-section-head">
+                <i class="fa-solid fa-clock-rotate-left"></i> Trip History
+              </div>
+              <div class="vehicle-detail-section-body">
+                <div id="detailsHistory"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="vehicle-modal-footer">
+            <button type="button" class="vehicle-secondary-btn" data-close-modal="vehicleDetailsModal">Close</button>
+            <button type="button" id="detailsEditBtn" class="vehicle-primary-btn">
+              <i class="fa-regular fa-pen-to-square"></i>
+              Edit Vehicle
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           DELETE CONFIRMATION MODAL
+      ====================================================== -->
+      <div id="vehicleDeleteModal" class="vehicle-modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="deleteVehicleTitle">
+
+        <div class="vehicle-modal-panel small">
+          <div class="vehicle-modal-body text-center py-7">
+            <div class="mx-auto mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-red-50 text-red-600">
+              <i class="fa-solid fa-trash-can text-lg"></i>
+            </div>
+
+            <h2 id="deleteVehicleTitle" class="text-base font-bold text-stone-800">
+              Delete Vehicle?
+            </h2>
+
+            <p class="text-xs text-stone-500 mt-2 leading-5">
+              Are you sure you want to delete this vehicle? This action cannot be undone.
+            </p>
+
+            <p id="deleteVehicleName" class="mt-3 rounded-md bg-stone-50 p-3 text-xs font-semibold text-stone-700"></p>
+
+            <div class="flex justify-center gap-2 mt-6">
+              <button type="button" class="vehicle-secondary-btn" data-close-modal="vehicleDeleteModal">Cancel</button>
+              <button type="button" id="confirmDeleteBtn"
+                class="vehicle-primary-btn !bg-red-600 !border-red-600 hover:!bg-red-700">
+                <i class="fa-solid fa-trash"></i>
+                Delete Vehicle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOAST -->
+      <div id="vehicleToast" class="vehicle-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check vehicle-toast-icon"></i>
+        <span id="vehicleToastMessage"></span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================================
+       VEHICLE MANAGEMENT JAVASCRIPT — UNCHANGED LOGIC
+  ========================================================== -->
+  <script>
+    "use strict";
+
+    // ========================================================
+    // DRIVER DATA
+    // ========================================================
+
+    const drivers = [
+      "Rajesh Kumar",
+      "Amit Patil",
+      "Suresh Jadhav",
+      "Vikas Sharma",
+      "Prakash More",
+      "Rohit Shinde",
+      "Akash Pawar",
+      "Sunil Deshmukh",
+      "Nilesh Gaikwad",
+      "Mahesh Chavan"
+    ];
+
+    // ========================================================
+    // VEHICLE DATA
+    // Frontend-only demonstration data
+    // ========================================================
+
+    let vehicles = [
+      {
+        id: "VH-001", registration: "MH12AB1234",
+        type: "Mini Truck", make: "Tata", model: "Ace",
+        year: 2023, color: "White", capacity: 1, capacityUnit: "Ton",
+        driver: "", status: "Available", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "TRP-1008",
+        registrationExpiry: "2027-04-15", insuranceExpiry: "2027-02-20",
+        fitnessExpiry: "2027-05-10", permitExpiry: "2027-06-12",
+        notes: "Regular city delivery vehicle.",
+        history: [
+          { trip: "TRP-1008", route: "Pune → Mumbai", driver: "Rajesh Kumar", date: "2026-11-15", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-002", registration: "MH14CD4589",
+        type: "Truck", make: "Tata", model: "LPT 1613",
+        year: 2022, color: "White", capacity: 8, capacityUnit: "Ton",
+        driver: "Amit Patil", status: "On Trip", currentTrip: "TRP-1024",
+        assignmentStatus: "Assigned", lastTrip: "TRP-1014",
+        registrationExpiry: "2027-03-18", insuranceExpiry: "2027-01-25",
+        fitnessExpiry: "2027-04-12", permitExpiry: "2027-05-20",
+        notes: "Currently operating on Pune to Mumbai route.",
+        history: [
+          { trip: "TRP-1024", route: "Pune → Mumbai", driver: "Amit Patil", date: "2026-11-20", status: "In Progress" },
+          { trip: "TRP-1014", route: "Pune → Nashik", driver: "Amit Patil", date: "2026-11-15", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-003", registration: "MH12EF7890",
+        type: "Pickup", make: "Mahindra", model: "Bolero Pickup",
+        year: 2021, color: "Silver", capacity: 1.5, capacityUnit: "Ton",
+        driver: "Suresh Jadhav", status: "Assigned", currentTrip: "TRP-1025",
+        assignmentStatus: "Assigned", lastTrip: "TRP-1012",
+        registrationExpiry: "2027-08-10", insuranceExpiry: "2027-07-14",
+        fitnessExpiry: "2027-09-05", permitExpiry: "2027-10-12",
+        notes: "Allocated for scheduled delivery.",
+        history: [
+          { trip: "TRP-1012", route: "Pune → Satara", driver: "Suresh Jadhav", date: "2026-11-12", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-004", registration: "MH15GH2468",
+        type: "Tempo", make: "Tata", model: "407",
+        year: 2020, color: "White", capacity: 2.5, capacityUnit: "Ton",
+        driver: "Vikas Sharma", status: "Maintenance", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "TRP-1009",
+        registrationExpiry: "2027-02-10", insuranceExpiry: "2027-01-10",
+        fitnessExpiry: "2027-03-15", permitExpiry: "2027-04-20",
+        notes: "Scheduled maintenance and servicing.",
+        history: [
+          { trip: "TRP-1009", route: "Nashik → Pune", driver: "Vikas Sharma", date: "2026-11-10", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-005", registration: "MH12JK1357",
+        type: "Truck", make: "Ashok Leyland", model: "Ecomet",
+        year: 2023, color: "Blue", capacity: 10, capacityUnit: "Ton",
+        driver: "Prakash More", status: "On Trip", currentTrip: "TRP-1026",
+        assignmentStatus: "Assigned", lastTrip: "TRP-1010",
+        registrationExpiry: "2027-09-15", insuranceExpiry: "2027-08-18",
+        fitnessExpiry: "2027-10-10", permitExpiry: "2027-11-12",
+        notes: "Long-distance freight vehicle.",
+        history: [
+          { trip: "TRP-1026", route: "Mumbai → Nagpur", driver: "Prakash More", date: "2026-11-20", status: "In Progress" },
+          { trip: "TRP-1010", route: "Pune → Kolhapur", driver: "Prakash More", date: "2026-11-09", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-006", registration: "MH13LM8642",
+        type: "Van", make: "Maruti", model: "Eeco",
+        year: 2022, color: "White", capacity: 700, capacityUnit: "Kg",
+        driver: "", status: "Available", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "TRP-1006",
+        registrationExpiry: "2027-06-10", insuranceExpiry: "2027-05-15",
+        fitnessExpiry: "2027-07-10", permitExpiry: "2027-08-12",
+        notes: "Small parcel delivery vehicle.",
+        history: [
+          { trip: "TRP-1006", route: "Pune → Pimpri", driver: "Rohit Shinde", date: "2026-11-06", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-007", registration: "MH12NP9753",
+        type: "LCV", make: "Eicher", model: "Pro 2049",
+        year: 2021, color: "White", capacity: 3.5, capacityUnit: "Ton",
+        driver: "Rohit Shinde", status: "Assigned", currentTrip: "TRP-1027",
+        assignmentStatus: "Assigned", lastTrip: "TRP-1011",
+        registrationExpiry: "2027-03-10", insuranceExpiry: "2027-02-15",
+        fitnessExpiry: "2027-04-10", permitExpiry: "2027-05-15",
+        notes: "Assigned for upcoming goods transport.",
+        history: [
+          { trip: "TRP-1011", route: "Pune → Aurangabad", driver: "Rohit Shinde", date: "2026-11-11", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-008", registration: "MH14QR7531",
+        type: "Bus", make: "Tata", model: "Starbus",
+        year: 2020, color: "White", capacity: 32, capacityUnit: "Passengers",
+        driver: "Akash Pawar", status: "Inactive", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "TRP-1002",
+        registrationExpiry: "2027-01-10", insuranceExpiry: "2027-01-12",
+        fitnessExpiry: "2027-02-15", permitExpiry: "2027-03-18",
+        notes: "Temporarily inactive.",
+        history: [
+          { trip: "TRP-1002", route: "Pune → Lonavala", driver: "Akash Pawar", date: "2026-11-02", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-009", registration: "MH12ST6420",
+        type: "Mini Truck", make: "Mahindra", model: "Jeeto",
+        year: 2024, color: "White", capacity: 700, capacityUnit: "Kg",
+        driver: "", status: "Available", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "",
+        registrationExpiry: "2028-02-10", insuranceExpiry: "2027-12-12",
+        fitnessExpiry: "2028-03-15", permitExpiry: "2028-04-18",
+        notes: "Newly registered vehicle.",
+        history: []
+      },
+      {
+        id: "VH-010", registration: "MH15UV5319",
+        type: "Truck", make: "BharatBenz", model: "1217R",
+        year: 2022, color: "Red", capacity: 6, capacityUnit: "Ton",
+        driver: "Nilesh Gaikwad", status: "On Trip", currentTrip: "TRP-1028",
+        assignmentStatus: "Assigned", lastTrip: "TRP-1016",
+        registrationExpiry: "2027-07-10", insuranceExpiry: "2027-06-12",
+        fitnessExpiry: "2027-08-15", permitExpiry: "2027-09-18",
+        notes: "Regional freight transport.",
+        history: [
+          { trip: "TRP-1028", route: "Nashik → Mumbai", driver: "Nilesh Gaikwad", date: "2026-11-20", status: "In Progress" },
+          { trip: "TRP-1016", route: "Pune → Nashik", driver: "Nilesh Gaikwad", date: "2026-11-16", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-011", registration: "MH12WX4286",
+        type: "Pickup", make: "Tata", model: "Intra V10",
+        year: 2023, color: "White", capacity: 1, capacityUnit: "Ton",
+        driver: "", status: "Available", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "",
+        registrationExpiry: "2027-10-10", insuranceExpiry: "2027-09-12",
+        fitnessExpiry: "2027-11-15", permitExpiry: "2027-12-18",
+        notes: "Available for new assignments.",
+        history: []
+      },
+      {
+        id: "VH-012", registration: "MH14YZ3197",
+        type: "Tempo", make: "Eicher", model: "Pro 1059",
+        year: 2021, color: "White", capacity: 3, capacityUnit: "Ton",
+        driver: "Mahesh Chavan", status: "Assigned", currentTrip: "TRP-1029",
+        assignmentStatus: "Assigned", lastTrip: "TRP-1017",
+        registrationExpiry: "2027-05-10", insuranceExpiry: "2027-04-12",
+        fitnessExpiry: "2027-06-15", permitExpiry: "2027-07-18",
+        notes: "Reserved for scheduled shipment.",
+        history: [
+          { trip: "TRP-1017", route: "Pune → Solapur", driver: "Mahesh Chavan", date: "2026-11-17", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-013", registration: "MH13AB6824",
+        type: "Van", make: "Force", model: "Traveller",
+        year: 2022, color: "White", capacity: 17, capacityUnit: "Passengers",
+        driver: "", status: "Available", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "",
+        registrationExpiry: "2027-08-10", insuranceExpiry: "2027-07-12",
+        fitnessExpiry: "2027-09-15", permitExpiry: "2027-10-18",
+        notes: "Passenger transport vehicle.",
+        history: []
+      },
+      {
+        id: "VH-014", registration: "MH12CD5821",
+        type: "Truck", make: "Tata", model: "Signa 4825",
+        year: 2023, color: "Blue", capacity: 12, capacityUnit: "Ton",
+        driver: "Sunil Deshmukh", status: "On Trip", currentTrip: "TRP-1030",
+        assignmentStatus: "Assigned", lastTrip: "TRP-1018",
+        registrationExpiry: "2027-11-10", insuranceExpiry: "2027-10-12",
+        fitnessExpiry: "2027-12-15", permitExpiry: "2028-01-18",
+        notes: "Heavy transport vehicle.",
+        history: [
+          { trip: "TRP-1018", route: "Mumbai → Pune", driver: "Sunil Deshmukh", date: "2026-11-18", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-015", registration: "MH15EF7293",
+        type: "LCV", make: "Ashok Leyland", model: "Dost",
+        year: 2021, color: "White", capacity: 1.5, capacityUnit: "Ton",
+        driver: "", status: "Maintenance", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "TRP-1013",
+        registrationExpiry: "2027-04-10", insuranceExpiry: "2027-03-12",
+        fitnessExpiry: "2027-05-15", permitExpiry: "2027-06-18",
+        notes: "Vehicle undergoing repairs.",
+        history: [
+          { trip: "TRP-1013", route: "Pune → Ahmednagar", driver: "Vikas Sharma", date: "2026-11-13", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-016", registration: "MH12GH1938",
+        type: "Mini Truck", make: "Mahindra", model: "Supro",
+        year: 2024, color: "White", capacity: 1, capacityUnit: "Ton",
+        driver: "", status: "Available", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "",
+        registrationExpiry: "2028-04-10", insuranceExpiry: "2028-03-12",
+        fitnessExpiry: "2028-05-15", permitExpiry: "2028-06-18",
+        notes: "Ready for new trips.",
+        history: []
+      },
+      {
+        id: "VH-017", registration: "MH14JK8274",
+        type: "Truck", make: "Eicher", model: "Pro 3015",
+        year: 2020, color: "White", capacity: 5, capacityUnit: "Ton",
+        driver: "", status: "Inactive", currentTrip: "",
+        assignmentStatus: "Unassigned", lastTrip: "TRP-1004",
+        registrationExpiry: "2027-01-10", insuranceExpiry: "2027-01-12",
+        fitnessExpiry: "2027-02-15", permitExpiry: "2027-03-18",
+        notes: "Inactive pending fleet review.",
+        history: [
+          { trip: "TRP-1004", route: "Pune → Mumbai", driver: "Prakash More", date: "2026-11-04", status: "Completed" }
+        ]
+      },
+      {
+        id: "VH-018", registration: "MH13LM4729",
+        type: "Bus", make: "Ashok Leyland", model: "Viking",
+        year: 2022, color: "White", capacity: 40, capacityUnit: "Passengers",
+        driver: "Akash Pawar", status: "Assigned", currentTrip: "TRP-1031",
+        assignmentStatus: "Assigned", lastTrip: "",
+        registrationExpiry: "2027-12-10", insuranceExpiry: "2027-11-12",
+        fitnessExpiry: "2028-01-15", permitExpiry: "2028-02-18",
+        notes: "Assigned for upcoming passenger service.",
+        history: []
+      }
+    ];
+
+    // ========================================================
+    // DOM ELEMENTS
+    // ========================================================
+
+    const $ = (id) => document.getElementById(id);
+
+    const pageSize = 10;
+    let currentPage = 1;
+    let editingVehicleId = null;
+    let deletingVehicleId = null;
+    let viewingVehicleId = null;
+    let toastTimer = null;
+
+    const formModal = $("vehicleFormModal");
+    const detailsModal = $("vehicleDetailsModal");
+    const deleteModal = $("vehicleDeleteModal");
+    const vehicleForm = $("vehicleForm");
+
+    // ========================================================
+    // HELPER FUNCTIONS
+    // ========================================================
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function formatDate(date) {
+      if (!date) return "—";
+
+      const parsed = new Date(date + "T00:00:00");
+      if (Number.isNaN(parsed.getTime())) return "—";
+
+      return parsed.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function getStatusClass(status) {
+      const classes = {
+        "Available": "status-available",
+        "Assigned": "status-assigned",
+        "On Trip": "status-on-trip",
+        "Maintenance": "status-maintenance",
+        "Inactive": "status-inactive"
+      };
+      return classes[status] || "status-inactive";
+    }
+
+    function statusBadge(status) {
+      return `<span class="vehicle-status ${getStatusClass(status)}">${escapeHTML(status)}</span>`;
+    }
+
+    function getCapacityLabel(vehicle) {
+      return `${vehicle.capacity} ${vehicle.capacityUnit}`;
+    }
+
+    function getVehicleById(id) {
+      return vehicles.find(vehicle => vehicle.id === id);
+    }
+
+    function generateVehicleId() {
+      const maxNumber = vehicles.reduce((max, vehicle) => {
+        const number = Number(vehicle.id.replace("VH-", "")) || 0;
+        return Math.max(max, number);
+      }, 0);
+      return `VH-${String(maxNumber + 1).padStart(3, "0")}`;
+    }
+
+    function showToast(message, type = "success") {
+      const toast = $("vehicleToast");
+      const icon = toast.querySelector("i");
+
+      $("vehicleToastMessage").textContent = message;
+
+      icon.className = type === "error"
+        ? "fa-solid fa-circle-exclamation vehicle-toast-icon"
+        : "fa-solid fa-circle-check vehicle-toast-icon";
+
+      icon.style.color = type === "error" ? "#dc2626" : "#601D49";
+
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    // ========================================================
+    // MODAL HANDLING
+    // ========================================================
+
+    function openModal(modal) {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+
+      const focusable = modal.querySelector(
+        "input:not([readonly]), select, textarea, button"
+      );
+
+      if (focusable) {
+        setTimeout(() => focusable.focus(), 50);
+      }
+    }
+
+    function closeModal(modal) {
+      modal.classList.add("hidden");
+
+      const anyOpen = [formModal, detailsModal, deleteModal]
+        .some(item => !item.classList.contains("hidden"));
+
+      if (!anyOpen) {
+        document.body.style.overflow = "";
+      }
+    }
+
+    document.querySelectorAll("[data-close-modal]").forEach(button => {
+      button.addEventListener("click", () => {
+        const modal = $(button.dataset.closeModal);
+        if (modal) closeModal(modal);
+      });
+    });
+
+    [formModal, detailsModal, deleteModal].forEach(modal => {
+      modal.addEventListener("click", event => {
+        if (event.target === modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        [formModal, detailsModal, deleteModal].forEach(modal => {
+          if (!modal.classList.contains("hidden")) {
+            closeModal(modal);
+          }
+        });
+      }
+    });
+
+    // ========================================================
+    // DRIVER DROPDOWN
+    // ========================================================
+
+    function populateDriverDropdown() {
+      const select = $("formDriver");
+      const currentValue = select.value;
+
+      select.innerHTML = `
+        <option value="">No driver assigned</option>
+        ${drivers.map(driver =>
+        `<option value="${escapeHTML(driver)}">${escapeHTML(driver)}</option>`
+      ).join("")}
+      `;
+
+      if (currentValue) select.value = currentValue;
+    }
+
+    // ========================================================
+    // KPI CALCULATIONS
+    // ========================================================
+
+    function calculateKPIs() {
+      $("kpiTotal").textContent = vehicles.length;
+      $("kpiAvailable").textContent =
+        vehicles.filter(v => v.status === "Available").length;
+      $("kpiAssigned").textContent =
+        vehicles.filter(v => v.status === "Assigned").length;
+      $("kpiOnTrip").textContent =
+        vehicles.filter(v => v.status === "On Trip").length;
+      $("kpiMaintenance").textContent =
+        vehicles.filter(v => v.status === "Maintenance").length;
+    }
+
+    // ========================================================
+    // SEARCH AND FILTERS
+    // ========================================================
+
+    function filterVehicles() {
+      const search = $("vehicleSearch").value.trim().toLowerCase();
+      const type = $("filterType").value;
+      const status = $("filterStatus").value;
+      const capacity = $("filterCapacity").value;
+      const assignment = $("filterAssignment").value;
+
+      return vehicles.filter(vehicle => {
+        const searchable = [
+          vehicle.id,
+          vehicle.registration,
+          vehicle.type,
+          vehicle.make,
+          vehicle.model,
+          vehicle.driver
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = !search || searchable.includes(search);
+        const matchesType = !type || vehicle.type === type;
+        const matchesStatus = !status || vehicle.status === status;
+
+        let matchesCapacity = true;
+
+        if (capacity === "passengers") {
+          matchesCapacity = vehicle.capacityUnit === "Passengers";
+        } else if (capacity === "below1") {
+          matchesCapacity =
+            vehicle.capacityUnit === "Ton" && vehicle.capacity < 1;
+        } else if (capacity === "1to3") {
+          matchesCapacity =
+            vehicle.capacityUnit === "Ton" &&
+            vehicle.capacity >= 1 && vehicle.capacity <= 3;
+        } else if (capacity === "3to5") {
+          matchesCapacity =
+            vehicle.capacityUnit === "Ton" &&
+            vehicle.capacity > 3 && vehicle.capacity <= 5;
+        } else if (capacity === "above5") {
+          matchesCapacity =
+            vehicle.capacityUnit === "Ton" && vehicle.capacity > 5;
+        }
+
+        const matchesAssignment =
+          !assignment || vehicle.assignmentStatus === assignment;
+
+        return matchesSearch &&
+          matchesType &&
+          matchesStatus &&
+          matchesCapacity &&
+          matchesAssignment;
+      });
+    }
+
+    function clearFilters() {
+      $("vehicleSearch").value = "";
+      $("filterType").value = "";
+      $("filterStatus").value = "";
+      $("filterCapacity").value = "";
+      $("filterAssignment").value = "";
+
+      currentPage = 1;
+      renderVehicles();
+    }
+
+    // ========================================================
+    // TABLE RENDERING
+    // ========================================================
+
+    function renderVehicles() {
+      calculateKPIs();
+
+      const filtered = filterVehicles();
+      const total = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const pageVehicles = filtered.slice(startIndex, startIndex + pageSize);
+
+      $("tableCount").textContent = `${total} Vehicle${total !== 1 ? "s" : ""}`;
+      $("filterResultText").textContent =
+        `${total} matching record${total !== 1 ? "s" : ""}`;
+
+      const tbody = $("vehicleTableBody");
+      const emptyState = $("vehicleEmptyState");
+
+      if (pageVehicles.length === 0) {
+        tbody.innerHTML = "";
+        emptyState.classList.remove("hidden");
+
+        const hasFilters = Boolean(
+          $("vehicleSearch").value ||
+          $("filterType").value ||
+          $("filterStatus").value ||
+          $("filterCapacity").value ||
+          $("filterAssignment").value
+        );
+
+        $("emptyTitle").textContent = hasFilters
+          ? "No vehicles found"
+          : "No vehicles available";
+
+        $("emptyDescription").textContent = hasFilters
+          ? "Try changing your search or filters."
+          : "Add your first vehicle to start managing your fleet.";
+
+        $("emptyAddBtn").classList.toggle("hidden", hasFilters);
+      } else {
+        emptyState.classList.add("hidden");
+
+        tbody.innerHTML = pageVehicles.map(vehicle => `
+          <tr>
+            <td>
+              <div class="text-xs font-bold text-[#601D49]">${escapeHTML(vehicle.id)}</div>
+              <div class="text-[10px] text-stone-400">${escapeHTML(vehicle.registration)}</div>
+            </td>
+
+            <td>
+              <div class="text-xs font-semibold text-stone-700">${escapeHTML(vehicle.registration)}</div>
+              <div class="text-[10px] text-stone-400">${escapeHTML(vehicle.color || "—")}</div>
+            </td>
+
+            <td>
+              <div class="text-xs font-semibold text-stone-700">
+                ${escapeHTML(vehicle.make)} ${escapeHTML(vehicle.model)}
+              </div>
+              <div class="text-[10px] text-stone-400">${escapeHTML(vehicle.year || "Year not provided")}</div>
+            </td>
+
+            <td>
+              <div class="text-xs font-medium text-stone-700">${escapeHTML(vehicle.type)}</div>
+            </td>
+
+            <td>
+              <div class="text-xs font-semibold text-stone-700">${escapeHTML(getCapacityLabel(vehicle))}</div>
+            </td>
+
+            <td>
+              <div class="text-xs font-medium text-stone-700">${escapeHTML(vehicle.driver || "—")}</div>
+            </td>
+
+            <td>${statusBadge(vehicle.status)}</td>
+
+            <td>
+              ${vehicle.currentTrip
+            ? `<span class="text-xs font-semibold text-[#601D49]">${escapeHTML(vehicle.currentTrip)}</span>`
+            : `<span class="text-stone-400">—</span>`}
+            </td>
+
+            <td>
+              <div class="vehicle-action-group">
+                <button type="button" class="vehicle-row-action text-stone-500 hover:text-blue-600 hover:bg-blue-50"
+                  data-action="view" data-id="${escapeHTML(vehicle.id)}"
+                  title="View vehicle" aria-label="View ${escapeHTML(vehicle.id)}">
+                  <i class="fa-solid fa-eye text-[11px]"></i>
+                </button>
+
+                <button type="button" class="vehicle-row-action text-[#601D49] hover:bg-[#601D49]/10"
+                  data-action="edit" data-id="${escapeHTML(vehicle.id)}"
+                  title="Edit vehicle" aria-label="Edit ${escapeHTML(vehicle.id)}">
+                  <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                </button>
+
+                <button type="button" class="vehicle-row-action text-stone-500 hover:text-red-600 hover:bg-red-50"
+                  data-action="delete" data-id="${escapeHTML(vehicle.id)}"
+                  title="Delete vehicle" aria-label="Delete ${escapeHTML(vehicle.id)}">
+                  <i class="fa-solid fa-trash text-[11px]"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join("");
+      }
+
+      renderPagination(total, totalPages, startIndex, pageVehicles.length);
+    }
+
+    // ========================================================
+    // PAGINATION
+    // ========================================================
+
+    function renderPagination(total, totalPages, startIndex, visibleCount) {
+      const info = total === 0
+        ? "Showing 0 vehicles"
+        : `Showing ${startIndex + 1}–${startIndex + visibleCount} of ${total} vehicles`;
+
+      $("paginationInfo").textContent = info;
+
+      const controls = $("paginationControls");
+
+      if (totalPages <= 1) {
+        controls.innerHTML = "";
+        return;
+      }
+
+      let html = `
+        <button type="button" data-page="${currentPage - 1}"
+          ${currentPage === 1 ? "disabled" : ""}
+          class="vehicle-page-btn">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      for (let page = 1; page <= totalPages; page++) {
+        html += `
+          <button type="button" data-page="${page}"
+            class="vehicle-page-btn ${page === currentPage ? "active" : ""}">
+            ${page}
+          </button>
+        `;
+      }
+
+      html += `
+        <button type="button" data-page="${currentPage + 1}"
+          ${currentPage === totalPages ? "disabled" : ""}
+          class="vehicle-page-btn">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      controls.innerHTML = html;
+    }
+
+    $("paginationControls").addEventListener("click", event => {
+      const button = event.target.closest("[data-page]");
+      if (!button || button.disabled) return;
+
+      currentPage = Number(button.dataset.page);
+      renderVehicles();
+    });
+
+    // ========================================================
+    // ADD VEHICLE
+    // ========================================================
+
+    function clearFormErrors() {
+      document.querySelectorAll("#vehicles-page .vehicle-error").forEach(error => {
+        error.textContent = "";
+        error.classList.remove("show");
+      });
+    }
+
+    function showFieldError(field, message) {
+      const error = $("error" + field);
+      if (!error) return;
+      error.textContent = message;
+      error.classList.add("show");
+    }
+
+    function openAddVehicleModal() {
+      editingVehicleId = null;
+      vehicleForm.reset();
+      clearFormErrors();
+      populateDriverDropdown();
+
+      $("vehicleFormTitle").textContent = "Add New Vehicle";
+      $("saveVehicleBtn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Save Vehicle';
+
+      $("formVehicleId").value = generateVehicleId();
+      $("formCapacityUnit").value = "Ton";
+
+      openModal(formModal);
+    }
+
+    // ========================================================
+    // EDIT VEHICLE
+    // ========================================================
+
+    function openEditVehicleModal(id) {
+      const vehicle = getVehicleById(id);
+      if (!vehicle) return;
+
+      editingVehicleId = id;
+      vehicleForm.reset();
+      clearFormErrors();
+      populateDriverDropdown();
+
+      $("vehicleFormTitle").textContent = "Edit Vehicle";
+      $("saveVehicleBtn").innerHTML =
+        '<i class="fa-solid fa-check"></i> Update Vehicle';
+
+      $("formVehicleId").value = vehicle.id;
+      $("formRegistration").value = vehicle.registration;
+      $("formType").value = vehicle.type;
+      $("formMake").value = vehicle.make;
+      $("formModel").value = vehicle.model;
+      $("formYear").value = vehicle.year || "";
+      $("formColor").value = vehicle.color || "";
+      $("formCapacity").value = vehicle.capacity;
+      $("formCapacityUnit").value = vehicle.capacityUnit;
+      $("formRegistrationExpiry").value = vehicle.registrationExpiry || "";
+      $("formInsuranceExpiry").value = vehicle.insuranceExpiry || "";
+      $("formFitnessExpiry").value = vehicle.fitnessExpiry || "";
+      $("formPermitExpiry").value = vehicle.permitExpiry || "";
+      $("formDriver").value = vehicle.driver || "";
+      $("formStatus").value = vehicle.status;
+      $("formNotes").value = vehicle.notes || "";
+
+      openModal(formModal);
+    }
+
+    // ========================================================
+    // FORM VALIDATION
+    // ========================================================
+
+    function validateVehicleForm() {
+      clearFormErrors();
+
+      let valid = true;
+
+      const registration = $("formRegistration").value.trim().toUpperCase();
+      const type = $("formType").value;
+      const make = $("formMake").value.trim();
+      const model = $("formModel").value.trim();
+      const capacity = Number($("formCapacity").value);
+      const status = $("formStatus").value;
+      const year = $("formYear").value;
+
+      if (!registration) {
+        showFieldError("Registration", "Registration number is required.");
+        valid = false;
+      } else {
+        const duplicate = vehicles.some(vehicle =>
+          vehicle.registration.toUpperCase() === registration &&
+          vehicle.id !== editingVehicleId
+        );
+
+        if (duplicate) {
+          showFieldError("Registration", "This registration number already exists.");
+          valid = false;
+        }
+      }
+
+      if (!type) {
+        showFieldError("Type", "Please select a vehicle type.");
+        valid = false;
+      }
+
+      if (!make) {
+        showFieldError("Make", "Vehicle make is required.");
+        valid = false;
+      }
+
+      if (!model) {
+        showFieldError("Model", "Vehicle model is required.");
+        valid = false;
+      }
+
+      if (!Number.isFinite(capacity) || capacity <= 0) {
+        showFieldError("Capacity", "Enter a valid capacity greater than zero.");
+        valid = false;
+      }
+
+      if (!status) {
+        showFieldError("Status", "Please select a vehicle status.");
+        valid = false;
+      }
+
+      if (year && (Number(year) < 1990 || Number(year) > 2099)) {
+        showFieldError("Year", "Enter a valid manufacturing year.");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    // ========================================================
+    // SAVE VEHICLE - CREATE AND UPDATE
+    // ========================================================
+
+    function getVehicleFormData() {
+      return {
+        registration: $("formRegistration").value.trim().toUpperCase(),
+        type: $("formType").value,
+        make: $("formMake").value.trim(),
+        model: $("formModel").value.trim(),
+        year: $("formYear").value ? Number($("formYear").value) : "",
+        color: $("formColor").value.trim(),
+        capacity: Number($("formCapacity").value),
+        capacityUnit: $("formCapacityUnit").value,
+        registrationExpiry: $("formRegistrationExpiry").value,
+        insuranceExpiry: $("formInsuranceExpiry").value,
+        fitnessExpiry: $("formFitnessExpiry").value,
+        permitExpiry: $("formPermitExpiry").value,
+        driver: $("formDriver").value,
+        status: $("formStatus").value,
+        notes: $("formNotes").value.trim()
+      };
+    }
+
+    function saveVehicle(event) {
+      event.preventDefault();
+
+      if (!validateVehicleForm()) {
+        showToast("Please correct the highlighted form fields.", "error");
+        return;
+      }
+
+      const formData = getVehicleFormData();
+
+      if (editingVehicleId) {
+        const index = vehicles.findIndex(v => v.id === editingVehicleId);
+        if (index === -1) return;
+
+        const oldVehicle = vehicles[index];
+
+        const updatedVehicle = {
+          ...oldVehicle,
+          ...formData,
+          assignmentStatus: formData.driver ? "Assigned" : "Unassigned"
+        };
+
+        // Keep an active trip assignment intact when editing other fields.
+        if (oldVehicle.status === "On Trip") {
+          updatedVehicle.status = "On Trip";
+          updatedVehicle.currentTrip = oldVehicle.currentTrip;
+          updatedVehicle.assignmentStatus = "Assigned";
+        } else if (formData.status === "Available" || formData.status === "Maintenance" || formData.status === "Inactive") {
+          updatedVehicle.currentTrip = "";
+          updatedVehicle.assignmentStatus = formData.driver ? "Assigned" : "Unassigned";
+        } else if (formData.status === "Assigned") {
+          updatedVehicle.currentTrip = oldVehicle.currentTrip || "";
+          updatedVehicle.assignmentStatus = "Assigned";
+        }
+
+        vehicles[index] = updatedVehicle;
+
+        closeModal(formModal);
+        renderVehicles();
+        showToast("Vehicle details updated successfully.");
+      } else {
+        const newVehicle = {
+          id: generateVehicleId(),
+          ...formData,
+          currentTrip: "",
+          assignmentStatus: formData.driver ? "Assigned" : "Unassigned",
+          lastTrip: "",
+          history: []
+        };
+
+        vehicles.unshift(newVehicle);
+
+        closeModal(formModal);
+        currentPage = 1;
+        renderVehicles();
+        showToast("Vehicle added successfully.");
+      }
+    }
+
+    // ========================================================
+    // VIEW VEHICLE DETAILS
+    // ========================================================
+
+    function detailItem(label, value, full = false) {
+      return `
+        <div class="vehicle-detail-item ${full ? "full" : ""}">
+          <p class="vehicle-detail-label">${escapeHTML(label)}</p>
+          <p class="vehicle-detail-value">${escapeHTML(value || "—")}</p>
+        </div>
+      `;
+    }
+
+    function renderTripHistory(vehicle) {
+      const history = vehicle.history || [];
+
+      if (!history.length) {
+        return `
+          <div class="rounded-lg border border-dashed border-stone-200 px-4 py-7 text-center">
+            <i class="fa-solid fa-route text-xl text-stone-300"></i>
+            <p class="mt-2 text-xs font-semibold text-stone-600">No trip history available</p>
+            <p class="mt-1 text-[10px] text-stone-400">
+              Trip records for this vehicle will appear here.
+            </p>
+          </div>
+        `;
+      }
+
+      return history.map(item => `
+        <div class="vehicle-history-item">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-bold text-[#601D49]">
+              ${escapeHTML(item.trip)}
+            </span>
+            <span class="text-[10px] text-stone-400">
+              ${formatDate(item.date)}
+            </span>
+          </div>
+          <p class="mt-1 text-xs font-semibold text-stone-700">
+            ${escapeHTML(item.route)}
+          </p>
+          <p class="mt-1 text-[10px] text-stone-500">
+            Driver: ${escapeHTML(item.driver || "—")}
+          </p>
+          <p class="mt-1 text-[10px] text-stone-500">
+            Status: ${escapeHTML(item.status)}
+          </p>
+        </div>
+      `).join("");
+    }
+
+    function openViewVehicleModal(id) {
+      const vehicle = getVehicleById(id);
+      if (!vehicle) return;
+
+      viewingVehicleId = id;
+
+      $("detailsSubtitle").textContent = `${vehicle.id} · ${vehicle.registration}`;
+      $("detailsHeroTitle").textContent = `${vehicle.id} • ${vehicle.make} ${vehicle.model}`;
+      $("detailsHeroSub").textContent = `${vehicle.registration} • ${vehicle.type}`;
+      $("detailsHeroStatus").innerHTML = statusBadge(vehicle.status);
+
+      $("detailsOverview").innerHTML = [
+        detailItem("Vehicle ID", vehicle.id),
+        detailItem("Registration Number", vehicle.registration),
+        detailItem("Vehicle Type", vehicle.type),
+        detailItem("Make", vehicle.make),
+        detailItem("Model", vehicle.model),
+        detailItem("Manufacturing Year", vehicle.year),
+        detailItem("Color", vehicle.color)
+      ].join("");
+
+      $("detailsCapacity").innerHTML = [
+        detailItem("Load Capacity", vehicle.capacity),
+        detailItem("Capacity Unit", vehicle.capacityUnit),
+        detailItem("Full Capacity", getCapacityLabel(vehicle))
+      ].join("");
+
+      $("detailsAssignment").innerHTML = `
+        ${detailItem("Current Status", vehicle.status)}
+        ${detailItem("Assigned Driver", vehicle.driver)}
+        ${detailItem("Current Trip", vehicle.currentTrip)}
+        ${detailItem("Assignment Status", vehicle.assignmentStatus)}
+        ${detailItem("Last Trip", vehicle.lastTrip)}
+      `;
+
+      $("detailsCompliance").innerHTML = `
+        ${detailItem("Registration Expiry", formatDate(vehicle.registrationExpiry))}
+        ${detailItem("Insurance Expiry", formatDate(vehicle.insuranceExpiry))}
+        ${detailItem("Fitness Expiry", formatDate(vehicle.fitnessExpiry))}
+        ${detailItem("Permit Expiry", formatDate(vehicle.permitExpiry))}
+      `;
+
+      $("detailsNotes").textContent = vehicle.notes || "No additional notes.";
+      $("detailsHistory").innerHTML = renderTripHistory(vehicle);
+
+      openModal(detailsModal);
+    }
+
+    // ========================================================
+    // DELETE VEHICLE
+    // ========================================================
+
+    function openDeleteConfirmation(id) {
+      const vehicle = getVehicleById(id);
+      if (!vehicle) return;
+
+      // A vehicle with an active trip or allocation cannot be deleted.
+      if (
+        vehicle.status === "On Trip" ||
+        vehicle.status === "Assigned" ||
+        vehicle.currentTrip
+      ) {
+        showToast(
+          "This vehicle is currently assigned to a trip. Please unassign it before deleting.",
+          "error"
+        );
+        return;
+      }
+
+      deletingVehicleId = id;
+
+      $("deleteVehicleName").textContent =
+        `${vehicle.id} · ${vehicle.registration} · ${vehicle.make} ${vehicle.model}`;
+
+      openModal(deleteModal);
+    }
+
+    function deleteVehicle() {
+      if (!deletingVehicleId) return;
+
+      const vehicle = getVehicleById(deletingVehicleId);
+      if (!vehicle) return;
+
+      // Recheck restriction before deletion.
+      if (
+        vehicle.status === "On Trip" ||
+        vehicle.status === "Assigned" ||
+        vehicle.currentTrip
+      ) {
+        closeModal(deleteModal);
+        deletingVehicleId = null;
+        showToast("This vehicle is currently assigned to a trip.", "error");
+        return;
+      }
+
+      vehicles = vehicles.filter(v => v.id !== deletingVehicleId);
+
+      deletingVehicleId = null;
+      closeModal(deleteModal);
+
+      renderVehicles();
+      showToast("Vehicle deleted successfully.");
+    }
+
+    // ========================================================
+    // TABLE ACTION EVENTS
+    // ========================================================
+
+    $("vehicleTableBody").addEventListener("click", event => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (action === "view") {
+        openViewVehicleModal(id);
+      }
+
+      if (action === "edit") {
+        openEditVehicleModal(id);
+      }
+
+      if (action === "delete") {
+        openDeleteConfirmation(id);
+      }
+    });
+
+    // ========================================================
+    // EVENT LISTENERS
+    // ========================================================
+
+    $("addVehicleBtn").addEventListener("click", openAddVehicleModal);
+    $("emptyAddBtn").addEventListener("click", openAddVehicleModal);
+
+    vehicleForm.addEventListener("submit", saveVehicle);
+
+    $("confirmDeleteBtn").addEventListener("click", deleteVehicle);
+
+    $("detailsEditBtn").addEventListener("click", () => {
+      if (!viewingVehicleId) return;
+
+      const id = viewingVehicleId;
+      closeModal(detailsModal);
+      openEditVehicleModal(id);
+    });
+
+    $("vehicleSearch").addEventListener("input", () => {
+      currentPage = 1;
+      renderVehicles();
+    });
+
+    [
+      "filterType",
+      "filterStatus",
+      "filterCapacity",
+      "filterAssignment"
+    ].forEach(id => {
+      $(id).addEventListener("change", () => {
+        currentPage = 1;
+        renderVehicles();
+      });
+    });
+
+    $("clearFiltersBtn").addEventListener("click", clearFilters);
+
+    // ========================================================
+    // INITIALIZATION
+    // ========================================================
+
+    function initializeVehicleModule() {
+      populateDriverDropdown();
+      calculateKPIs();
+      renderVehicles();
+    }
+
+    initializeVehicleModule();
+  </script>
+
+  <!-- Existing shared navigation JavaScript -->
+  <script src="../../js/nav-sidebar.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,969 @@
+/* ==========================================
+   TMS Design Tokens
+   ========================================== */
+:root {
+  --tms-brand: #601d49;
+  --tms-brand-dark: #4b1738;
+  --tms-brand-soft: rgba(96, 29, 73, 0.08);
+  --tms-border: #e7e5e4;
+  --tms-sidebar-w: 16rem;
+  --tms-sidebar-w-collapsed: 4.5rem;
+  --tms-navbar-h: 4rem;
+  --tms-ease: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  background: #fafaf9;
+  color: #262626;
+}
+
+/* Shared icon style (consistent Lucide stroke look) */
+.tms-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Shared visible focus state */
+.tms-link:focus-visible,
+.tms-icon-btn:focus-visible,
+.tms-profile-btn:focus-visible,
+.tms-menu-item:focus-visible,
+.tms-btn:focus-visible,
+.tms-brand:focus-visible {
+  outline: 2px solid var(--tms-brand);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   TMS Sidebar
+   ========================================== */
+.tms-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: var(--tms-sidebar-w);
+  background-color: #fdfbfd;
+  background-image:
+    radial-gradient(
+      ellipse at 15% 20%,
+      rgba(150, 75, 119, 0.025),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at 85% 80%,
+      rgba(75, 23, 56, 0.02),
+      transparent 45%
+    ),
+    linear-gradient(125deg, #fffefe 0%, #fdfafd 45%, #faf6f9 100%);
+  border-right: 1px solid var(--tms-border);
+  transition:
+    width var(--tms-ease),
+    transform var(--tms-ease);
+}
+
+.tms-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--tms-navbar-h);
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--tms-border);
+  flex-shrink: 0;
+}
+
+.tms-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.5rem;
+  min-width: 0;
+}
+.tms-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  background: var(--tms-brand);
+  color: #fff;
+  flex-shrink: 0;
+}
+.tms-brand-text {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* 17/11 START: Desktop Toggle Arrow Style */
+.tms-desktop-toggle {
+  display: none;
+}
+@media (min-width: 768px) {
+  .tms-desktop-toggle {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    color: #737373;
+  }
+}
+.tms-toggle-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform var(--tms-ease);
+}
+body.tms-collapsed .tms-toggle-icon {
+  transform: rotate(180deg);
+}
+/* 17/11 END */
+
+/* 17/11 START: Adjusted sidebar nav spacing and padding for a proper UI */
+.tms-nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.4rem 0.45rem 0.5rem;
+}
+
+.tms-section + .tms-section {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(96, 29, 73, 0.1);
+}
+/* 17/11 END */
+
+.tms-section-title {
+  padding: 0.2rem 0.65rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a3a3a3;
+  white-space: nowrap;
+}
+
+/* Navigation list spacing */
+.tms-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tms-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  height: 2.3rem;
+  padding: 0 0.65rem;
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #525252;
+  white-space: nowrap;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+/* Hover: light burgundy background + border */
+.tms-link:hover {
+  background: #f7eff4;
+  border-color: rgba(96, 29, 73, 0.35);
+  color: var(--tms-brand);
+  box-shadow: 0 2px 5px rgba(96, 29, 73, 0.07);
+}
+
+/* Active: dark burgundy background + border + shadow */
+.tms-link.is-active {
+  background: var(--tms-brand-dark);
+  border-color: var(--tms-brand);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(75, 23, 56, 0.2);
+}
+
+/* Active left indicator */
+.tms-link.is-active::before {
+  content: "";
+  position: absolute;
+  left: -0.75rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--tms-brand);
+}
+
+/* Active + hover: retain active styling */
+.tms-link.is-active:hover {
+  background: var(--tms-brand-dark);
+  border-color: var(--tms-brand);
+  color: #ffffff;
+}
+
+/* ==========================================
+   Collapsed Sidebar (desktop / tablet only)
+   ========================================== */
+@media (min-width: 768px) {
+  body.tms-collapsed .tms-sidebar {
+    width: var(--tms-sidebar-w-collapsed);
+  }
+  body.tms-collapsed .tms-sidebar-header {
+    justify-content: center;
+    padding: 0;
+  }
+  body.tms-collapsed .tms-brand-text {
+    display: none;
+  }
+  body.tms-collapsed .tms-nav {
+    overflow: visible;
+  }
+
+  body.tms-collapsed .tms-link {
+    justify-content: center;
+    padding: 0;
+  }
+  body.tms-collapsed .tms-link .tms-label {
+    display: none;
+  }
+
+  body.tms-collapsed .tms-section-title {
+    height: 1px;
+    padding: 0;
+    margin: 0 0.5rem 0.5rem;
+  }
+  body.tms-collapsed .tms-section-title .tms-label {
+    display: none;
+  }
+  body.tms-collapsed .tms-section:first-child .tms-section-title {
+    background: transparent;
+  }
+}
+
+/* ==========================================
+   Sidebar Transitions (layout following the sidebar)
+   ========================================== */
+.tms-main {
+  margin-left: var(--tms-sidebar-w);
+  padding-top: var(--tms-navbar-h);
+  min-height: 100vh;
+  transition: margin-left var(--tms-ease);
+}
+@media (min-width: 768px) {
+  body.tms-collapsed .tms-main {
+    margin-left: var(--tms-sidebar-w-collapsed);
+  }
+}
+
+/* ==========================================
+   TMS Navbar
+   ========================================== */
+
+/* ==========================================
+   TMS NAVBAR - SOFT GRADIENT THEME
+   ========================================== */
+
+.tms-navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: var(--tms-sidebar-w);
+  z-index: 30;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: var(--tms-navbar-h);
+  padding: 0 1.25rem;
+
+  /* Soft burgundy gradient */
+  background: linear-gradient(110deg, #ffffff 0%, #fdfafd 55%, #faf4f8 100%);
+
+  border-bottom: 1px solid rgba(96, 29, 73, 0.1);
+  box-shadow: 0 2px 10px rgba(75, 23, 56, 0.035);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  transition:
+    left var(--tms-ease),
+    box-shadow 180ms ease;
+}
+
+@media (min-width: 768px) {
+  body.tms-collapsed .tms-navbar {
+    left: var(--tms-sidebar-w-collapsed);
+  }
+}
+
+/* ==========================================
+   NAVBAR ICON BUTTONS
+   ========================================== */
+
+.tms-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.1rem;
+  height: 2.1rem;
+
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+
+  color: #57505a;
+  background: transparent;
+
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.tms-icon-btn:hover {
+  background: linear-gradient(135deg, #f8f0f5, #f3e8ef);
+  border-color: rgba(96, 29, 73, 0.16);
+  color: var(--tms-brand);
+  box-shadow: 0 2px 5px rgba(96, 29, 73, 0.06);
+}
+
+.tms-icon-btn:active {
+  background: #f0e3eb;
+  transform: scale(0.97);
+}
+
+/* Notification badge */
+.tms-badge {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+
+  width: 0.45rem;
+  height: 0.45rem;
+
+  border: 1.5px solid #fff;
+  border-radius: 9999px;
+
+  background: #b83268;
+  box-shadow: 0 1px 3px rgba(96, 29, 73, 0.15);
+}
+
+/* ==========================================
+   PROFILE BUTTON
+   ========================================== */
+
+.tms-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+
+  height: 2.5rem;
+  padding: 0 0.65rem;
+
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+
+  color: #37313a;
+  background: transparent;
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.tms-profile-btn:hover,
+.tms-profile-btn[aria-expanded="true"] {
+  background: linear-gradient(135deg, #faf4f8, #f5ebf1);
+  border-color: rgba(96, 29, 73, 0.13);
+  box-shadow: 0 2px 6px rgba(96, 29, 73, 0.045);
+}
+
+/* Avatar */
+.tms-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.9rem;
+  height: 1.9rem;
+
+  border-radius: 0.55rem;
+
+  background: linear-gradient(135deg, #601d49, #87436d);
+  color: #fff;
+
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  box-shadow: 0 2px 5px rgba(96, 29, 73, 0.15);
+}
+
+/* Profile chevron */
+.tms-chevron {
+  width: 0.95rem;
+  height: 0.95rem;
+
+  color: #8a7d87;
+
+  transition:
+    transform 160ms ease,
+    color 160ms ease;
+}
+
+.tms-profile-btn[aria-expanded="true"] .tms-chevron {
+  transform: rotate(180deg);
+  color: var(--tms-brand);
+}
+
+/* ==========================================
+   PROFILE DROPDOWN
+   ========================================== */
+
+.tms-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.55rem);
+  z-index: 50;
+
+  min-width: 12rem;
+  padding: 0.4rem;
+
+  background: linear-gradient(145deg, #ffffff, #fdf9fc);
+
+  border: 1px solid rgba(96, 29, 73, 0.12);
+  border-radius: 0.7rem;
+
+  box-shadow:
+    0 10px 25px rgba(75, 23, 56, 0.09),
+    0 2px 6px rgba(75, 23, 56, 0.04);
+}
+
+.tms-dropdown[hidden] {
+  display: none;
+}
+
+/* Dropdown items */
+.tms-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+
+  border: 1px solid transparent;
+  border-radius: 0.45rem;
+
+  font-family: inherit;
+  font-size: 0.825rem;
+  font-weight: 500;
+
+  color: #514650;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.tms-menu-item:hover {
+  background: linear-gradient(110deg, #f8f0f5, #f4eaf0);
+  border-color: rgba(96, 29, 73, 0.1);
+  color: var(--tms-brand);
+}
+
+/* Dropdown divider */
+.tms-divider {
+  height: 1px;
+  margin: 0.3rem 0.2rem;
+  background: rgba(96, 29, 73, 0.1);
+}
+
+/* ==========================================
+   NOTIFICATION PANEL
+   ========================================== */
+
+/* ==========================================
+   COMPACT NOTIFICATION DROPDOWN
+   ========================================== */
+
+.tms-notification-panel {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  z-index: 60;
+
+  width: 330px;
+  max-width: calc(100vw - 1.5rem);
+
+  background: #ffffff;
+  border: 1px solid rgba(96, 29, 73, 0.12);
+  border-radius: 0.7rem;
+
+  box-shadow: 0 10px 28px rgba(75, 23, 56, 0.12);
+
+  overflow: hidden;
+
+  /* Smooth opening and closing */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-7px) scale(0.98);
+  transform-origin: top right;
+
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    visibility 180ms ease;
+}
+
+.tms-notification-panel.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.tms-notification-panel[hidden] {
+  display: none;
+}
+
+/* Compact header */
+.tms-notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  padding: 0.75rem 0.85rem;
+
+  background: linear-gradient(110deg, #ffffff, #faf5f8);
+  border-bottom: 1px solid rgba(96, 29, 73, 0.08);
+}
+
+.tms-notification-header h3 {
+  margin: 0;
+  color: #30232d;
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.tms-notification-header p {
+  margin: 0.18rem 0 0;
+  color: #8a7d87;
+  font-size: 0.66rem;
+}
+
+.tms-mark-read {
+  padding: 0.3rem 0.4rem;
+  border-radius: 0.3rem;
+  background: transparent;
+  color: var(--tms-brand);
+  font-size: 0.65rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tms-mark-read:hover {
+  background: #f3e8ef;
+}
+
+/* Compact notification list */
+.tms-notification-list {
+  max-height: 285px;
+  overflow-y: auto;
+  padding: 0.25rem 0.4rem;
+}
+
+.tms-notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+
+  padding: 0.6rem 0.5rem;
+  margin: 0.12rem 0;
+
+  border: 1px solid transparent;
+  border-radius: 0.45rem;
+
+  transition: background 150ms ease;
+  cursor: pointer;
+}
+
+.tms-notification-item:hover {
+  background: #faf5f8;
+}
+
+.tms-notification-item.is-unread {
+  background: #fcf7fa;
+}
+
+.tms-notification-item.is-unread:hover {
+  background: #f8eff4;
+}
+
+.tms-notification-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
+
+  border-radius: 0.45rem;
+}
+
+.tms-notification-icon .tms-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.tms-notification-icon.trip {
+  color: #601d49;
+  background: #f3e7ef;
+}
+
+.tms-notification-icon.driver {
+  color: #39765b;
+  background: #eaf4ee;
+}
+
+.tms-notification-icon.invoice {
+  color: #a16b20;
+  background: #fbf2e4;
+}
+
+.tms-notification-icon.vehicle {
+  color: #42769a;
+  background: #eaf2f8;
+}
+
+.tms-notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tms-notification-title {
+  margin: 0;
+  color: #393039;
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+
+.tms-notification-desc {
+  margin: 0.15rem 0 0;
+  color: #817680;
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.tms-notification-time {
+  display: block;
+  margin-top: 0.25rem;
+  color: #a39aa2;
+  font-size: 0.61rem;
+}
+
+.tms-unread-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+  border-radius: 50%;
+  background: var(--tms-brand);
+}
+
+.tms-notification-item:not(.is-unread) .tms-unread-dot {
+  display: none;
+}
+
+/* Footer */
+.tms-notification-footer {
+  padding: 0.55rem 0.85rem;
+  text-align: center;
+  background: #fdfafd;
+  border-top: 1px solid rgba(96, 29, 73, 0.08);
+  color: #938691;
+  font-size: 0.63rem;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .tms-notification-panel {
+    position: fixed;
+    top: calc(var(--tms-navbar-h) + 0.4rem);
+    right: 0.5rem;
+    width: calc(100vw - 1rem);
+    max-width: none;
+  }
+}
+
+/* Slim notification scrollbar */
+.tms-notification-list {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #d8c5d1 transparent;
+}
+
+/* Chrome, Edge and Safari */
+.tms-notification-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.tms-notification-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tms-notification-list::-webkit-scrollbar-thumb {
+  background: #d8c5d1;
+  border-radius: 10px;
+}
+
+.tms-notification-list::-webkit-scrollbar-thumb:hover {
+  background: #b99aaa;
+}
+
+/* Notification count badge */
+.tms-bell {
+  width: 2.1rem;
+  height: 2.1rem;
+}
+
+.tms-bell .tms-badge {
+  top: 0.1rem;
+  right: 0.1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0.95rem;
+  height: 0.95rem;
+  padding: 0 0.2rem;
+
+  border: 1.5px solid #fff;
+  border-radius: 9999px;
+
+  color: #fff;
+  background: #b83268;
+
+  font-size: 0.56rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tms-bell .tms-badge[hidden] {
+  display: none;
+}
+
+/* Mobile adjustment */
+@media (max-width: 480px) {
+  .tms-notification-panel {
+    position: fixed;
+    top: calc(var(--tms-navbar-h) + 0.5rem);
+    right: 0.75rem;
+    width: calc(100vw - 1.5rem);
+    max-width: none;
+  }
+}
+
+/* ==========================================
+   Logout Modal
+   ========================================== */
+.tms-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.tms-modal[hidden] {
+  display: none;
+}
+.tms-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(23, 23, 23, 0.45);
+}
+.tms-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 24rem;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 0.875rem;
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+  animation: tms-pop 160ms ease-out;
+}
+@keyframes tms-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tms-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 150ms,
+    border-color 150ms;
+}
+.tms-btn-secondary {
+  background: #fff;
+  color: #404040;
+  border: 1px solid #d6d3d1;
+}
+.tms-btn-secondary:hover {
+  background: #f5f5f4;
+}
+.tms-btn-primary {
+  background: var(--tms-brand);
+  color: #fff;
+  border: 1px solid var(--tms-brand);
+}
+.tms-btn-primary:hover {
+  background: var(--tms-brand-dark);
+  border-color: var(--tms-brand-dark);
+}
+
+/* ==========================================
+   Mobile Navigation (off-canvas drawer, < 768px)
+   ========================================== */
+.tms-mobile-only {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .tms-sidebar {
+    transform: translateX(-100%);
+    width: min(18rem, 85vw);
+    box-shadow: none;
+  }
+  body.tms-mobile-open .tms-sidebar {
+    transform: translateX(0);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+  }
+  .tms-mobile-only {
+    display: inline-flex;
+  }
+  .tms-navbar {
+    left: 0;
+    padding: 0 0.75rem;
+  }
+  .tms-main {
+    margin-left: 0;
+  }
+
+  /* 17/11 START: Ensured the mobile header is properly defined and visible */
+  body.tms-mobile-open .tms-sidebar-header {
+    padding: 0 1rem;
+    justify-content: space-between;
+  }
+  /* 17/11 END */
+}
+
+/* ==========================================
+   Backdrop
+   ========================================== */
+.tms-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background: rgba(23, 23, 23, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--tms-ease),
+    visibility var(--tms-ease);
+}
+@media (max-width: 767.98px) {
+  body.tms-mobile-open .tms-backdrop {
+    opacity: 1;
+    visibility: visible;
+  }
+  body.tms-mobile-open {
+    overflow: hidden;
+  }
+}
+
+/* ==========================================
+   Tooltips (collapsed desktop sidebar only)
+   ========================================== */
+@media (min-width: 768px) {
+  body.tms-collapsed .tms-link::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 0.75rem);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.3rem 0.625rem;
+    border-radius: 0.375rem;
+    background: #262626;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 150ms;
+    z-index: 60;
+  }
+  body.tms-collapsed .tms-link:hover::after,
+  body.tms-collapsed .tms-link:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* ==========================================
+   Responsive Behaviour
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .tms-sidebar,
+  .tms-main,
+  .tms-navbar,
+  .tms-backdrop,
+  .tms-modal-card {
+    transition: none;
+    animation: none;
+  }
+}

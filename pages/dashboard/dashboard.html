@@ -1,0 +1,3280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#601D49" />
+    <title>Dashboard | TMS</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Existing TMS Navigation Styles -->
+    <link rel="stylesheet" href="../../css/nav-sidebar.css" />
+
+    <style>
+      /* ==========================================
+           Dashboard Design Tokens
+           ========================================== */
+      :root {
+        --dashboard-brand: #601d49;
+        --dashboard-brand-dark: #4b1738;
+        --dashboard-brand-soft: #f7eff4;
+        --dashboard-bg: #fafaf9;
+        --dashboard-border: #eae7e9;
+        --dashboard-text: #292329;
+        --dashboard-muted: #858087;
+      }
+
+      body {
+        background: var(--dashboard-bg);
+        color: var(--dashboard-text);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      /* Dashboard content only - does not modify navigation */
+      .dashboard-content {
+        width: 100%;
+        max-width: 1800px;
+        margin: 0 auto;
+        padding: 8px 16px 20px;
+      }
+
+      /* Dashboard cards */
+      .dashboard-card {
+        background: #fff;
+        border: 1px solid var(--dashboard-border);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(35, 20, 30, 0.025);
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+        min-width: 0;
+      }
+
+      .dashboard-card:hover {
+        border-color: #d9c3d1;
+        box-shadow: 0 5px 16px rgba(75, 23, 56, 0.055);
+      }
+
+      a.dashboard-card {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      a.dashboard-card:focus-visible,
+      .quick-action:focus-visible {
+        outline: 2px solid var(--dashboard-brand);
+        outline-offset: 3px;
+      }
+
+      /* Section heading */
+      .section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 13px;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #332b32;
+        letter-spacing: 0.015em;
+      }
+
+      .section-subtitle {
+        font-size: 11px;
+        color: var(--dashboard-muted);
+        margin-top: 3px;
+      }
+
+      .section-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--dashboard-brand);
+        white-space: nowrap;
+      }
+
+      .section-link:hover {
+        color: var(--dashboard-brand-dark);
+        text-decoration: underline;
+      }
+
+      /* ==========================================
+   Compact KPI Cards – Burgundy Theme
+   ========================================== */
+
+      .kpi-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 70px;
+        padding: 8px 12px;
+
+        border: 1px solid rgba(96, 29, 73, 0.13);
+        border-radius: 8px;
+        overflow: hidden;
+
+        /* Subtle brand gradient */
+        background: linear-gradient(
+          125deg,
+          #ffffff 0%,
+          #fcf8fa 55%,
+          #f8f0f5 100%
+        );
+
+        box-shadow: 0 1px 3px rgba(96, 29, 73, 0.04);
+        transition: all 0.22s ease;
+      }
+
+      /* Subtle decorative gradient texture */
+      .kpi-card::before {
+        content: "";
+        position: absolute;
+        width: 85px;
+        height: 85px;
+        top: -48px;
+        right: -20px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(96, 29, 73, 0.09) 0%,
+          rgba(96, 29, 73, 0.025) 55%,
+          transparent 75%
+        );
+        pointer-events: none;
+      }
+
+      .kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(96, 29, 73, 0.3);
+        box-shadow: 0 4px 10px rgba(96, 29, 73, 0.09);
+      }
+
+      /* Label */
+      .kpi-label {
+        position: relative;
+        z-index: 1;
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.035em;
+        color: #796474;
+        margin-bottom: 2px;
+      }
+
+      /* Icon Container */
+      .kpi-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(96, 29, 73, 0.08);
+        color: #601d49;
+
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 1;
+      }
+
+      .kpi-icon svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      /* Value */
+      .kpi-value {
+        position: relative;
+        z-index: 1;
+        font-size: 18px;
+        line-height: 1.1;
+        font-weight: 600;
+        color: #382b35;
+        margin-top: 2px;
+      }
+
+      /* Description */
+      .kpi-description {
+        position: relative;
+        z-index: 1;
+        font-size: 9px;
+        line-height: 1.1;
+        font-weight: 400;
+        color: #938590;
+        margin-top: 3px;
+      }
+
+      /* Module cards */
+
+      /* ==========================================
+   OPERATIONS OVERVIEW – MODULE CARDS
+   Burgundy Light Theme
+========================================== */
+
+      .module-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 14px 15px 11px;
+        min-height: 0;
+        border: 1px solid rgba(96, 29, 73, 0.12);
+        border-radius: 10px;
+        overflow: hidden;
+
+        background: linear-gradient(
+          145deg,
+          #ffffff 0%,
+          #fdf9fb 58%,
+          #f8f0f5 100%
+        );
+
+        box-shadow: 0 2px 6px rgba(96, 29, 73, 0.035);
+        transition:
+          transform 0.22s ease,
+          border-color 0.22s ease,
+          box-shadow 0.22s ease;
+      }
+
+      /* Decorative gradient texture */
+      .module-card::before {
+        content: "";
+        position: absolute;
+        width: 125px;
+        height: 125px;
+        top: -70px;
+        right: -35px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(96, 29, 73, 0.09),
+          rgba(96, 29, 73, 0.015) 65%,
+          transparent 75%
+        );
+        pointer-events: none;
+      }
+
+      .module-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(96, 29, 73, 0.3);
+        box-shadow: 0 7px 17px rgba(96, 29, 73, 0.09);
+      }
+
+      /* Header */
+      .module-header {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 13px;
+      }
+
+      .module-icon {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+      }
+
+      .module-icon svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .module-icon-trip {
+        color: #601d49;
+        background: #f3e8ef;
+      }
+
+      .module-icon-vehicle {
+        color: #477b9b;
+        background: #eaf3f8;
+      }
+
+      .module-icon-driver {
+        color: #655b91;
+        background: #efedf7;
+      }
+
+      .module-icon-customer {
+        color: #b47748;
+        background: #fbf1e7;
+      }
+
+      .module-heading-text {
+        min-width: 0;
+      }
+
+      .module-heading-text h4 {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: #392d36;
+      }
+
+      .module-heading-text p {
+        font-size: 10px;
+        font-weight: 400;
+        color: #968a93;
+        margin-top: 2px;
+      }
+
+      .module-arrow {
+        margin-left: auto;
+        color: #b6a5b0;
+        font-size: 14px;
+        transition:
+          transform 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .module-card:hover .module-arrow {
+        color: #601d49;
+        transform: translate(2px, -2px);
+      }
+
+      /* Main Total */
+      .module-summary {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(96, 29, 73, 0.09);
+      }
+
+      .module-total {
+        font-size: 25px;
+        line-height: 1;
+        font-weight: 600;
+        letter-spacing: -0.6px;
+        color: #493440;
+      }
+
+      .module-total-label {
+        font-size: 10px;
+        font-weight: 400;
+        color: #92848e;
+      }
+
+      /* Status rows */
+      .module-stats {
+        position: relative;
+        z-index: 1;
+        margin-top: 8px;
+      }
+
+      .module-stat-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 0;
+      }
+
+      .module-stat-label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 10px;
+        font-weight: 400;
+        color: #766b74;
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .module-stat-value {
+        font-size: 10px;
+        font-weight: 600;
+        color: #493d46;
+      }
+
+      /* Footer */
+      .module-footer {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding-top: 9px;
+        border-top: 1px solid rgba(96, 29, 73, 0.09);
+
+        color: #601d49;
+        font-size: 10px;
+        font-weight: 500;
+      }
+
+      .module-footer span:last-child {
+        font-size: 14px;
+        transition: transform 0.2s ease;
+      }
+
+      .module-card:hover .module-footer span:last-child {
+        transform: translateX(3px);
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .module-card {
+          padding: 12px;
+        }
+
+        .module-header {
+          margin-bottom: 11px;
+        }
+
+        .module-total {
+          font-size: 23px;
+        }
+      }
+
+      /* Finance cards */
+
+      /* ==========================================
+   FINANCE OVERVIEW
+   Compact Burgundy Theme
+========================================== */
+
+      .finance-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 14px 16px 11px;
+        border: 1px solid rgba(96, 29, 73, 0.12);
+        border-radius: 10px;
+        overflow: hidden;
+
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          #fdf9fb 65%,
+          #f8f0f5 100%
+        );
+
+        box-shadow: 0 2px 6px rgba(96, 29, 73, 0.035);
+        transition: all 0.22s ease;
+      }
+
+      .finance-card::before {
+        content: "";
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        top: -75px;
+        right: -35px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(96, 29, 73, 0.09),
+          rgba(96, 29, 73, 0.015) 65%,
+          transparent 75%
+        );
+        pointer-events: none;
+      }
+
+      .finance-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(96, 29, 73, 0.3);
+        box-shadow: 0 7px 17px rgba(96, 29, 73, 0.09);
+      }
+
+      /* Header */
+      .finance-card-header {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .finance-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .finance-icon svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .invoice-icon {
+        color: #601d49;
+        background: #f3e8ef;
+      }
+
+      .payroll-icon {
+        color: #54866e;
+        background: #eaf4ee;
+      }
+
+      .finance-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #392d36;
+      }
+
+      .finance-subtitle {
+        margin-top: 2px;
+        font-size: 10px;
+        color: #968a93;
+      }
+
+      .finance-total-badge {
+        flex-shrink: 0;
+        padding: 4px 7px;
+        border: 1px solid rgba(96, 29, 73, 0.09);
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.7);
+        color: #857582;
+        font-size: 9px;
+        font-weight: 500;
+      }
+
+      /* Invoice status */
+      .finance-status-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+        padding: 11px 0;
+        border-top: 1px solid rgba(96, 29, 73, 0.08);
+        border-bottom: 1px solid rgba(96, 29, 73, 0.08);
+      }
+
+      .finance-status-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .finance-status-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        font-weight: 400;
+        color: #827680;
+      }
+
+      .finance-status-value {
+        font-size: 19px;
+        line-height: 1;
+        font-weight: 600;
+      }
+
+      /* Financial highlight */
+      .finance-highlight {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-top: 11px;
+        padding: 10px 12px;
+        border: 1px solid rgba(96, 29, 73, 0.08);
+        border-radius: 7px;
+
+        background: linear-gradient(
+          110deg,
+          #f8eff4 0%,
+          #fcf7fa 60%,
+          #f5eaf1 100%
+        );
+      }
+
+      .finance-highlight-label {
+        font-size: 10px;
+        color: #81727e;
+      }
+
+      .finance-highlight-value {
+        margin-top: 3px;
+        font-size: 20px;
+        line-height: 1.2;
+        font-weight: 600;
+        letter-spacing: -0.4px;
+        color: #601d49;
+      }
+
+      .finance-highlight-note {
+        flex-shrink: 0;
+        font-size: 9px;
+        color: #a0919d;
+      }
+
+      /* Payroll status */
+      .payroll-highlight {
+        margin-top: 15px;
+      }
+
+      .payroll-status-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .payroll-status-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 10px;
+        border: 1px solid rgba(96, 29, 73, 0.08);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      .payroll-status-icon {
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 12px;
+      }
+
+      .processed-icon {
+        color: #39815c;
+        background: #eaf4ee;
+      }
+
+      .pending-icon {
+        color: #ad7a2d;
+        background: #fbf2df;
+      }
+
+      /* Footer */
+      .finance-card .module-footer {
+        margin-top: 12px;
+        padding-top: 9px;
+        border-top: 1px solid rgba(96, 29, 73, 0.09);
+        color: #601d49;
+        font-size: 10px;
+        font-weight: 500;
+      }
+
+      .finance-card .module-footer span:last-child {
+        font-size: 14px;
+        transition: transform 0.2s ease;
+      }
+
+      .finance-card:hover .module-footer span:last-child {
+        transform: translateX(3px);
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .finance-card {
+          padding: 12px;
+        }
+
+        .finance-highlight-value {
+          font-size: 18px;
+        }
+
+        .finance-status-value {
+          font-size: 17px;
+        }
+      }
+
+      /* ==========================================================
+   ONGOING TRIPS + ATTENTION REQUIRED
+   Dashboard Activity Section
+   Theme: Burgundy / Light
+   ========================================================== */
+
+      :root {
+        --activity-brand: #601d49;
+        --activity-brand-dark: #4b1738;
+        --activity-brand-soft: #f7eff4;
+
+        --activity-text: #382d36;
+        --activity-muted: #91858f;
+
+        --activity-border: #eee7ec;
+        --activity-surface: #ffffff;
+
+        --activity-green: #39815c;
+        --activity-green-bg: #edf6f0;
+
+        --activity-orange: #a77532;
+        --activity-orange-bg: #fbf3e8;
+
+        --activity-red: #b45c62;
+        --activity-red-bg: #fbefef;
+      }
+
+      /* ==========================================================
+   MAIN GRID
+   ========================================================== */
+
+      .dashboard-activity-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        align-items: stretch;
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+
+      /* ==========================================================
+   COMMON CARD
+   ========================================================== */
+
+      .dashboard-panel {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 340px;
+        height: 100%;
+        padding: 15px;
+
+        background: linear-gradient(
+          145deg,
+          #ffffff 0%,
+          #fdfafd 65%,
+          #faf5f8 100%
+        );
+
+        border: 1px solid var(--activity-border);
+        border-radius: 10px;
+
+        box-shadow:
+          0 2px 7px rgba(96, 29, 73, 0.035),
+          0 1px 2px rgba(96, 29, 73, 0.025);
+
+        overflow: hidden;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .dashboard-panel:hover {
+        border-color: rgba(96, 29, 73, 0.2);
+
+        box-shadow: 0 5px 14px rgba(96, 29, 73, 0.055);
+      }
+
+      /* ==========================================================
+   CARD HEADER
+   ========================================================== */
+
+      .activity-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        min-height: 45px;
+        padding-bottom: 11px;
+        margin-bottom: 5px;
+
+        border-bottom: 1px solid #f0eaf0;
+      }
+
+      .activity-title {
+        margin: 0;
+
+        color: var(--activity-text);
+
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .activity-subtitle {
+        margin: 3px 0 0;
+
+        color: var(--activity-muted);
+
+        font-size: 10px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      /* ==========================================================
+   HEADER BADGES
+   ========================================================== */
+
+      .activity-count-badge,
+      .attention-count-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+
+        flex-shrink: 0;
+
+        padding: 5px 9px;
+
+        border-radius: 20px;
+
+        font-size: 9px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .activity-count-badge {
+        color: var(--activity-green);
+        background: var(--activity-green-bg);
+      }
+
+      .attention-count-badge {
+        color: var(--activity-brand);
+        background: var(--activity-brand-soft);
+      }
+
+      .live-indicator {
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: #43a875;
+
+        box-shadow: 0 0 0 3px rgba(67, 168, 117, 0.12);
+      }
+
+      /* ==========================================================
+   ONGOING TRIPS LIST
+   ========================================================== */
+
+      .ongoing-trips-list {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .ongoing-trip-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+
+        min-height: 78px;
+        padding: 10px 2px;
+
+        border-bottom: 1px solid #f1edf0;
+      }
+
+      .ongoing-trip-item:last-child {
+        border-bottom: none;
+      }
+
+      .ongoing-trip-info {
+        min-width: 0;
+      }
+
+      /* Trip ID + Status */
+
+      .trip-top-line {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 7px;
+
+        margin-bottom: 4px;
+      }
+
+      .ongoing-trip-id {
+        color: var(--activity-brand);
+
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      .trip-status-badge {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 3px 7px;
+
+        color: var(--activity-green);
+        background: var(--activity-green-bg);
+
+        border-radius: 20px;
+
+        font-size: 8px;
+        font-weight: 500;
+        line-height: 1.3;
+
+        white-space: nowrap;
+      }
+
+      /* Route */
+
+      .trip-route {
+        margin: 0 0 5px;
+
+        color: #443541;
+
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .trip-route span {
+        margin: 0 3px;
+
+        color: #a28a9a;
+        font-weight: 400;
+      }
+
+      /* Trip Meta */
+
+      .trip-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px 13px;
+
+        color: #8d818b;
+
+        font-size: 9px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      .trip-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        white-space: nowrap;
+      }
+
+      .trip-meta i {
+        color: #a38b9c;
+        font-size: 9px;
+      }
+
+      /* End Trip Button */
+
+      .end-trip-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 72px;
+        height: 29px;
+
+        padding: 0 10px;
+
+        color: var(--activity-brand);
+        background: #fbf5f9;
+
+        border: 1px solid #ead9e4;
+        border-radius: 6px;
+
+        font-family: inherit;
+        font-size: 9px;
+        font-weight: 500;
+
+        white-space: nowrap;
+        cursor: pointer;
+
+        transition: all 0.2s ease;
+      }
+
+      .end-trip-btn:hover:not(:disabled) {
+        color: #ffffff;
+        background: var(--activity-brand);
+        border-color: var(--activity-brand);
+      }
+
+      .end-trip-btn:disabled {
+        color: var(--activity-green);
+        background: var(--activity-green-bg);
+        border-color: #dcebe1;
+
+        cursor: not-allowed;
+        opacity: 0.85;
+      }
+
+      /* ==========================================================
+   HANDOVER LIST
+   ========================================================== */
+
+      .handover-list {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .handover-item {
+        display: grid;
+        grid-template-columns: 30px minmax(0, 1fr);
+        align-items: start;
+        gap: 9px;
+
+        min-height: 78px;
+        padding: 10px 2px;
+
+        border-bottom: 1px solid #f1edf0;
+      }
+
+      .handover-item:last-child {
+        border-bottom: none;
+      }
+
+      /* Handover Icons */
+
+      .handover-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 29px;
+        height: 29px;
+
+        border-radius: 7px;
+
+        font-size: 11px;
+        flex-shrink: 0;
+      }
+
+      .paused-icon {
+        color: var(--activity-orange);
+        background: var(--activity-orange-bg);
+      }
+
+      .reassigned-icon {
+        color: var(--activity-brand);
+        background: var(--activity-brand-soft);
+      }
+
+      .warning-icon {
+        color: var(--activity-red);
+        background: var(--activity-red-bg);
+      }
+
+      /* Handover Content */
+
+      .handover-content {
+        min-width: 0;
+      }
+
+      .handover-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 5px;
+
+        margin-bottom: 4px;
+      }
+
+      .handover-heading h4 {
+        margin: 0;
+
+        color: #443541;
+
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .handover-description {
+        margin: 0;
+
+        color: #8b8089;
+
+        font-size: 9px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      /* Driver Transfer */
+
+      .driver-transfer {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+
+        margin-top: 5px;
+
+        color: #756873;
+
+        font-size: 9px;
+        line-height: 1.4;
+      }
+
+      .driver-transfer i {
+        color: #a58c9e;
+        font-size: 8px;
+      }
+
+      .driver-transfer strong {
+        color: #493541;
+        font-weight: 600;
+      }
+
+      .driver-transfer .unassigned-driver {
+        color: var(--activity-red);
+      }
+
+      /* Handover Status */
+
+      .handover-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 3px 7px;
+
+        border-radius: 20px;
+
+        font-size: 8px;
+        font-weight: 500;
+        line-height: 1.3;
+
+        white-space: nowrap;
+      }
+
+      .status-pending {
+        color: var(--activity-orange);
+        background: var(--activity-orange-bg);
+      }
+
+      .status-assigned {
+        color: var(--activity-green);
+        background: var(--activity-green-bg);
+      }
+
+      .status-action {
+        color: var(--activity-red);
+        background: var(--activity-red-bg);
+      }
+
+      .handover-note {
+        margin: 4px 0 0;
+
+        color: #9a8e97;
+
+        font-size: 8px;
+        line-height: 1.4;
+      }
+
+      /* ==========================================================
+   COMMON CARD FOOTER
+   ========================================================== */
+
+      .activity-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        min-height: 34px;
+
+        margin-top: auto;
+        padding-top: 9px;
+
+        border-top: 1px solid #f0eaf0;
+      }
+
+      .activity-card-footer > span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: #958894;
+
+        font-size: 9px;
+        font-weight: 400;
+      }
+
+      .activity-card-footer > span i {
+        color: #a48a9b;
+        font-size: 9px;
+      }
+
+      .activity-card-footer a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        color: var(--activity-brand);
+
+        font-size: 9px;
+        font-weight: 600;
+
+        text-decoration: none;
+        white-space: nowrap;
+
+        transition: color 0.2s ease;
+      }
+
+      .activity-card-footer a:hover {
+        color: var(--activity-brand-dark);
+      }
+
+      .activity-card-footer a i {
+        font-size: 8px;
+        transition: transform 0.2s ease;
+      }
+
+      .activity-card-footer a:hover i {
+        transform: translateX(3px);
+      }
+
+      /* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+      @media (max-width: 1279px) {
+        .dashboard-activity-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-panel {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .dashboard-activity-grid {
+          gap: 12px;
+        }
+
+        .dashboard-panel {
+          padding: 12px;
+          border-radius: 9px;
+        }
+
+        .activity-card-header {
+          align-items: flex-start;
+          min-height: 42px;
+        }
+
+        .ongoing-trip-item {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 8px;
+          padding: 11px 2px;
+        }
+
+        .end-trip-btn {
+          justify-self: start;
+        }
+
+        .trip-meta {
+          gap: 5px 10px;
+        }
+
+        .handover-item {
+          grid-template-columns: 28px minmax(0, 1fr);
+          gap: 8px;
+        }
+
+        .activity-card-footer {
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 380px) {
+        .activity-card-footer {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .handover-heading {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .trip-meta {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      /* ==========================================================
+   COMPACT END TRIP MODAL
+   ========================================================== */
+
+      .trip-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+      }
+
+      .trip-modal.is-open {
+        display: flex;
+      }
+
+      .trip-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(35, 20, 31, 0.42);
+        backdrop-filter: blur(2px);
+      }
+
+      /* Modal Container */
+
+      .trip-modal-dialog {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 330px;
+        padding: 19px 20px 16px;
+
+        background: #ffffff;
+        border: 1px solid #eee6eb;
+        border-radius: 10px;
+
+        box-shadow: 0 12px 35px rgba(45, 20, 37, 0.16);
+
+        animation: compactModalIn 0.2s ease;
+      }
+
+      /* Close Button */
+
+      .trip-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 25px;
+        height: 25px;
+        padding: 0;
+
+        color: #8b7d87;
+        background: #f8f5f7;
+        border: 1px solid #f0e9ee;
+        border-radius: 6px;
+
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      .trip-modal-close:hover {
+        color: #601d49;
+        background: #f1e8ee;
+      }
+
+      /* Icon */
+
+      .trip-modal-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 37px;
+        height: 37px;
+        margin-bottom: 11px;
+
+        color: #601d49;
+        background: #f7eff4;
+        border-radius: 9px;
+
+        font-size: 15px;
+      }
+
+      /* Content */
+
+      .trip-modal-content h3 {
+        margin: 0 0 5px;
+
+        color: #382b35;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .trip-modal-content > p {
+        margin: 0;
+
+        color: #897e87;
+        font-size: 10px;
+        line-height: 1.6;
+      }
+
+      /* Trip ID */
+
+      .trip-modal-details {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-top: 13px;
+        padding: 8px 10px;
+
+        background: #faf7f9;
+        border: 1px solid #f0e8ee;
+        border-radius: 6px;
+      }
+
+      .trip-modal-details span {
+        color: #8c818a;
+        font-size: 9px;
+      }
+
+      .trip-modal-details strong {
+        color: #601d49;
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      /* Actions */
+
+      .trip-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 7px;
+
+        margin-top: 15px;
+      }
+
+      .trip-modal-cancel,
+      .trip-modal-confirm {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+
+        height: 30px;
+        min-width: 78px;
+        padding: 0 11px;
+
+        border-radius: 6px;
+
+        font-family: inherit;
+        font-size: 9px;
+        font-weight: 500;
+
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .trip-modal-cancel {
+        color: #71636d;
+        background: #ffffff;
+        border: 1px solid #e9e1e7;
+      }
+
+      .trip-modal-cancel:hover {
+        background: #f8f4f7;
+        border-color: #d9c8d4;
+      }
+
+      .trip-modal-confirm {
+        color: #ffffff;
+        background: #601d49;
+        border: 1px solid #601d49;
+      }
+
+      .trip-modal-confirm:hover {
+        background: #4b1738;
+        border-color: #4b1738;
+      }
+
+      .trip-modal-confirm i {
+        font-size: 9px;
+      }
+
+      /* Animation */
+
+      @keyframes compactModalIn {
+        from {
+          opacity: 0;
+          transform: translateY(7px) scale(0.98);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Mobile */
+
+      @media (max-width: 480px) {
+        .trip-modal-dialog {
+          max-width: 310px;
+          padding: 17px;
+        }
+      }
+
+      /* ==========================================================
+   RECENT TRIPS SECTION
+   Compact table with vertical and horizontal grid lines
+   Theme: Burgundy (#601d49)
+   ========================================================== */
+
+      /* Main Card */
+      .recent-trips-card {
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #eee7ec;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(55, 30, 45, 0.035);
+        overflow: hidden;
+      }
+
+      /* ==========================================================
+   HEADER
+   ========================================================== */
+
+      .recent-trips-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 16px;
+        background: #ffffff;
+        border-bottom: 1px solid #eee8ed;
+      }
+
+      .recent-trips-header .section-title {
+        margin: 0;
+        color: #342b33;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.5;
+      }
+
+      .recent-trips-header .section-subtitle {
+        margin: 2px 0 0;
+        color: #928792;
+        font-size: 9px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      /* View All Trips Button */
+      .recent-trips-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        flex-shrink: 0;
+        padding: 7px 12px;
+        background: #601d49;
+        color: #ffffff;
+        border: 1px solid #601d49;
+        border-radius: 5px;
+        font-size: 9px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .recent-trips-link i {
+        font-size: 9px;
+        transition: transform 0.2s ease;
+      }
+
+      .recent-trips-link:hover {
+        background: #4b1738;
+        border-color: #4b1738;
+        color: #ffffff;
+        box-shadow: 0 3px 8px rgba(96, 29, 73, 0.16);
+      }
+
+      .recent-trips-link:hover i {
+        transform: translateX(3px);
+      }
+
+      /* ==========================================================
+   TABLE WRAPPER
+   ========================================================== */
+
+      .recent-trips-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #d9cbd5 transparent;
+      }
+
+      .recent-trips-table-wrapper::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      .recent-trips-table-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .recent-trips-table-wrapper::-webkit-scrollbar-thumb {
+        background: #d9cbd5;
+        border-radius: 10px;
+      }
+
+      /* ==========================================================
+   TABLE STRUCTURE
+   ========================================================== */
+
+      .recent-trips-table {
+        width: 100%;
+        min-width: 680px;
+        table-layout: fixed;
+        border-collapse: collapse;
+        text-align: left;
+      }
+
+      /* Column Widths */
+      .recent-trips-table th:nth-child(1),
+      .recent-trips-table td:nth-child(1) {
+        width: 15%;
+      }
+
+      .recent-trips-table th:nth-child(2),
+      .recent-trips-table td:nth-child(2) {
+        width: 23%;
+      }
+
+      .recent-trips-table th:nth-child(3),
+      .recent-trips-table td:nth-child(3) {
+        width: 22%;
+      }
+
+      .recent-trips-table th:nth-child(4),
+      .recent-trips-table td:nth-child(4) {
+        width: 20%;
+      }
+
+      .recent-trips-table th:nth-child(5),
+      .recent-trips-table td:nth-child(5) {
+        width: 20%;
+      }
+
+      /* ==========================================================
+   TABLE HEADER
+   ========================================================== */
+
+      .recent-trips-table thead th {
+        height: 32px;
+        padding: 7px 12px;
+        background: #faf8fa;
+        color: #756b73;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        vertical-align: middle;
+
+        /* Grid Lines */
+        border-bottom: 1px solid #eee8ed;
+        border-right: 1px solid #f0ebef;
+      }
+
+      .recent-trips-table thead th:last-child {
+        border-right: none;
+      }
+
+      /* ==========================================================
+   TABLE BODY
+   ========================================================== */
+
+      .recent-trips-table tbody td {
+        height: 39px;
+        padding: 6px 12px;
+        color: #514951;
+        font-size: 10px;
+        font-weight: 400;
+        white-space: nowrap;
+        vertical-align: middle;
+
+        /* Grid Lines */
+        border-bottom: 1px solid #f0edf0;
+        border-right: 1px solid #f0edf0;
+      }
+
+      .recent-trips-table tbody td:last-child {
+        border-right: none;
+      }
+
+      .recent-trips-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* Row Hover */
+      .recent-trips-table tbody tr {
+        transition: background-color 0.18s ease;
+      }
+
+      .recent-trips-table tbody tr:hover {
+        background: #fdfafd;
+      }
+
+      /* ==========================================================
+   TRIP ID
+   ========================================================== */
+
+      .recent-trip-id {
+        color: #601d49;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1px;
+      }
+
+      /* ==========================================================
+   ROUTE
+   ========================================================== */
+
+      .recent-trip-route {
+        color: #514951;
+        font-size: 10px;
+        font-weight: 500;
+      }
+
+      .recent-trip-route span {
+        padding: 0 4px;
+        color: #a18c9b;
+        font-size: 10px;
+      }
+
+      /* ==========================================================
+   VEHICLE NUMBER
+   ========================================================== */
+
+      .recent-trip-vehicle {
+        color: #625963;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.1px;
+      }
+
+      /* ==========================================================
+   STATUS BADGES
+   ========================================================== */
+
+      .recent-trip-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 3px 7px;
+        border-radius: 4px;
+        font-size: 9px;
+        font-weight: 500;
+        line-height: 1.3;
+        white-space: nowrap;
+      }
+
+      .recent-status-dot {
+        width: 5px;
+        height: 5px;
+        flex-shrink: 0;
+        border-radius: 50%;
+      }
+
+      /* In Progress */
+      .status-progress {
+        color: #4389c2;
+        background: #edf5fb;
+      }
+
+      .status-progress .recent-status-dot {
+        background: #4389c2;
+      }
+
+      /* Completed */
+      .status-completed {
+        color: #45a275;
+        background: #edf6f0;
+      }
+
+      .status-completed .recent-status-dot {
+        background: #45a275;
+      }
+
+      /* Scheduled */
+      .status-scheduled {
+        color: #9276c3;
+        background: #f3eff9;
+      }
+
+      .status-scheduled .recent-status-dot {
+        background: #9276c3;
+      }
+
+      /* Delayed */
+      .status-delayed {
+        color: #c18a36;
+        background: #fbf3e8;
+      }
+
+      .status-delayed .recent-status-dot {
+        background: #d59a43;
+      }
+
+      /* ==========================================================
+   FOOTER
+   ========================================================== */
+
+      .recent-trips-footer {
+        min-height: 34px;
+        padding: 7px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        background: #fdfcfd;
+        border-top: 1px solid #eee8ed;
+      }
+
+      .recent-trips-footer span {
+        color: #958b93;
+        font-size: 9px;
+        font-weight: 400;
+      }
+
+      .recent-trips-footer a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #601d49;
+        font-size: 9px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .recent-trips-footer a:hover {
+        color: #4b1738;
+      }
+
+      .recent-trips-footer a i {
+        font-size: 8px;
+        transition: transform 0.2s ease;
+      }
+
+      .recent-trips-footer a:hover i {
+        transform: translateX(3px);
+      }
+
+      /* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+      @media (max-width: 768px) {
+        .recent-trips-header {
+          padding: 11px 13px;
+        }
+
+        .recent-trips-table {
+          min-width: 680px;
+        }
+
+        .recent-trips-table thead th,
+        .recent-trips-table tbody td {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .recent-trips-header {
+          align-items: flex-start;
+        }
+
+        .recent-trips-header .section-title {
+          font-size: 11px;
+        }
+
+        .recent-trips-header .section-subtitle {
+          font-size: 8px;
+        }
+
+        .recent-trips-link {
+          font-size: 9px;
+        }
+
+        .recent-trips-footer {
+          padding: 7px 10px;
+        }
+
+        .recent-trips-footer span,
+        .recent-trips-footer a {
+          font-size: 8px;
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1023px) {
+        .dashboard-content {
+          padding: 22px 19px 35px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .dashboard-content {
+          padding: 18px 13px 28px;
+        }
+
+        .kpi-card {
+          min-height: 112px;
+          padding: 12px;
+        }
+
+        .kpi-value {
+          font-size: 22px;
+        }
+
+        .module-card {
+          padding: 14px;
+        }
+
+        .activity-row {
+          grid-template-columns: 78px minmax(0, 1fr) 25px;
+          gap: 8px;
+        }
+
+        .section-title {
+          font-size: 13px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .dashboard-card,
+        .quick-action,
+        .activity-fill {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ==========================================
+         Existing Common Navigation Mount Point
+         DO NOT RECREATE SIDEBAR OR NAVBAR HERE
+         ========================================== -->
+    <div id="tms-nav-root" data-partial="../../partials/nav-sidebar.html"></div>
+
+    <!-- ==========================================
+         Main Dashboard Content
+         Uses existing .tms-main layout
+         ========================================== -->
+    <main class="tms-main">
+      <div class="dashboard-content">
+        <!-- ==========================================
+                 Dashboard Header
+                 ========================================== -->
+        <section class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div>
+            <h2
+              class="text-xl sm:text-2xl font-bold tracking-tight text-neutral-800"
+            >
+              Dashboard
+            </h2>
+          </div>
+
+          <div
+            class="flex items-center gap-1.5 bg-white border border-[#eee7ec] rounded-md px-2 py-1.5"
+          >
+            <div
+              class="w-6 h-6 rounded-md bg-[#f7eff4] text-[#601d49] flex items-center justify-center"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                viewBox="0 0 24 24"
+              >
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <path d="M16 3v4M8 3v4M3 10h18" />
+              </svg>
+            </div>
+
+            <div class="leading-tight">
+              <p class="text-[9px] text-neutral-400 font-normal">Today</p>
+              <p
+                id="dashboard-date"
+                class="text-[11px] font-medium text-[#382b35]"
+              >
+                18 Nov 2026
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+                 Overall KPI Summary
+                 ========================================== -->
+        <section class="mb-8">
+          <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            <!-- Total Trips -->
+            <a href="/pages/trip/trips.html" class="dashboard-card kpi-card">
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Total Trips</span>
+                <span class="kpi-icon bg-[#f7eff4] text-[#601d49]">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="6" cy="19" r="3" />
+                    <path
+                      d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"
+                    />
+                    <circle cx="18" cy="5" r="3" />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">248</p>
+              <p class="kpi-description">All recorded trips</p>
+            </a>
+
+            <!-- Active Trips -->
+            <a href="/pages/trip/trips.html" class="dashboard-card kpi-card">
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Active Trips</span>
+                <span class="kpi-icon bg-blue-50 text-blue-600">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 2" />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">18</p>
+              <p class="kpi-description">Currently in progress</p>
+            </a>
+
+            <!-- Total Vehicles -->
+            <a
+              href="/pages/vehicle/vehicles.html"
+              class="dashboard-card kpi-card"
+            >
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Total Vehicles</span>
+                <span class="kpi-icon bg-sky-50 text-sky-600">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11h3" />
+                    <path d="M15 18H9M19 18h2v-5l-4-5h-3" />
+                    <circle cx="7" cy="18" r="2" />
+                    <circle cx="17" cy="18" r="2" />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">84</p>
+              <p class="kpi-description">Registered vehicles</p>
+            </a>
+
+            <!-- Available Vehicles -->
+            <a
+              href="/pages/vehicle/vehicles.html"
+              class="dashboard-card kpi-card"
+            >
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Available Vehicles</span>
+                <span class="kpi-icon bg-emerald-50 text-emerald-600">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="m5 12 4 4L19 6" />
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">21</p>
+              <p class="kpi-description">Ready for assignment</p>
+            </a>
+
+            <!-- Total Drivers -->
+            <a href="drivers.html" class="dashboard-card kpi-card">
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Total Drivers</span>
+                <span class="kpi-icon bg-indigo-50 text-indigo-600">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="8" r="5" />
+                    <path d="M20 21a8 8 0 0 0-16 0" />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">67</p>
+              <p class="kpi-description">Registered drivers</p>
+            </a>
+
+            <!-- Total Customers -->
+            <a href="customers.html" class="dashboard-card kpi-card">
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Total Customers</span>
+                <span class="kpi-icon bg-orange-50 text-orange-600">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path
+                      d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                    />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">142</p>
+              <p class="kpi-description">Registered customers</p>
+            </a>
+
+            <!-- Pending Invoices -->
+            <a href="invoices.html" class="dashboard-card kpi-card">
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Pending Invoices</span>
+                <span class="kpi-icon bg-amber-50 text-amber-600">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"
+                    />
+                    <path d="M8 9h8M8 13h8" />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">62</p>
+              <p class="kpi-description">Awaiting payment</p>
+            </a>
+
+            <!-- Payroll Pending -->
+            <a href="payroll.html" class="dashboard-card kpi-card">
+              <div class="flex justify-between items-center">
+                <span class="kpi-label">Payroll Pending</span>
+                <span class="kpi-icon bg-rose-50 text-rose-600">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <path d="M7 8h10M7 12h10M7 16h5" />
+                  </svg>
+                </span>
+              </div>
+              <p class="kpi-value">8</p>
+              <p class="kpi-description">Records awaiting processing</p>
+            </a>
+          </div>
+        </section>
+
+        <!-- ==========================================
+                 Operations Overview
+                 ========================================== -->
+
+        <section class="mb-6 operations-section">
+          <!-- Section Header -->
+          <div class="section-heading mb-3">
+            <div>
+              <h3 class="section-title">Operations Overview</h3>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            <!-- Trip Management -->
+            <a href="../../trips.html" class="dashboard-card module-card">
+              <div class="module-header">
+                <div class="module-icon module-icon-trip">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="6" cy="19" r="3" />
+                    <path
+                      d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"
+                    />
+                    <circle cx="18" cy="5" r="3" />
+                  </svg>
+                </div>
+                <div class="module-heading-text">
+                  <h4>Trip Management</h4>
+                  <p>Trip operations</p>
+                </div>
+                <span class="module-arrow">↗</span>
+              </div>
+
+              <div class="module-summary">
+                <span class="module-total">248</span>
+                <span class="module-total-label">Total Trips</span>
+              </div>
+
+              <div class="module-stats">
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-violet-400"></span
+                    >Scheduled</span
+                  >
+                  <span class="module-stat-value">42</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-blue-500"></span>In
+                    Progress</span
+                  >
+                  <span class="module-stat-value">18</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-emerald-500"></span
+                    >Completed</span
+                  >
+                  <span class="module-stat-value">126</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-amber-500"></span>Delayed</span
+                  >
+                  <span class="module-stat-value">7</span>
+                </div>
+              </div>
+
+              <div class="module-footer">
+                <span>View Trips</span>
+                <span>→</span>
+              </div>
+            </a>
+
+            <!-- Vehicle Management -->
+            <a href="vehicles.html" class="dashboard-card module-card">
+              <div class="module-header">
+                <div class="module-icon module-icon-vehicle">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11h3" />
+                    <path d="M15 18H9M19 18h2v-5l-4-5h-3" />
+                    <circle cx="7" cy="18" r="2" />
+                    <circle cx="17" cy="18" r="2" />
+                  </svg>
+                </div>
+                <div class="module-heading-text">
+                  <h4>Vehicle Management</h4>
+                  <p>Fleet overview</p>
+                </div>
+                <span class="module-arrow">↗</span>
+              </div>
+
+              <div class="module-summary">
+                <span class="module-total">84</span>
+                <span class="module-total-label">Total Vehicles</span>
+              </div>
+
+              <div class="module-stats">
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-emerald-500"></span
+                    >Available</span
+                  >
+                  <span class="module-stat-value">21</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-blue-500"></span>On Trip</span
+                  >
+                  <span class="module-stat-value">52</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-amber-500"></span
+                    >Maintenance</span
+                  >
+                  <span class="module-stat-value">6</span>
+                </div>
+              </div>
+
+              <div class="module-footer">
+                <span>View Vehicles</span>
+                <span>→</span>
+              </div>
+            </a>
+
+            <!-- Driver Management -->
+            <a href="drivers.html" class="dashboard-card module-card">
+              <div class="module-header">
+                <div class="module-icon module-icon-driver">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="8" r="5" />
+                    <path d="M20 21a8 8 0 0 0-16 0" />
+                  </svg>
+                </div>
+                <div class="module-heading-text">
+                  <h4>Driver Management</h4>
+                  <p>Driver overview</p>
+                </div>
+                <span class="module-arrow">↗</span>
+              </div>
+
+              <div class="module-summary">
+                <span class="module-total">67</span>
+                <span class="module-total-label">Total Drivers</span>
+              </div>
+
+              <div class="module-stats">
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-emerald-500"></span
+                    >Available</span
+                  >
+                  <span class="module-stat-value">18</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-blue-500"></span>On Trip</span
+                  >
+                  <span class="module-stat-value">42</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-gray-400"></span>Off Duty</span
+                  >
+                  <span class="module-stat-value">7</span>
+                </div>
+              </div>
+
+              <div class="module-footer">
+                <span>View Drivers</span>
+                <span>→</span>
+              </div>
+            </a>
+
+            <!-- Customer Management -->
+            <a href="customers.html" class="dashboard-card module-card">
+              <div class="module-header">
+                <div class="module-icon module-icon-customer">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path
+                      d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                    />
+                  </svg>
+                </div>
+                <div class="module-heading-text">
+                  <h4>Customer Management</h4>
+                  <p>Customer overview</p>
+                </div>
+                <span class="module-arrow">↗</span>
+              </div>
+
+              <div class="module-summary">
+                <span class="module-total">142</span>
+                <span class="module-total-label">Total Customers</span>
+              </div>
+
+              <div class="module-stats">
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-emerald-500"></span>Active</span
+                  >
+                  <span class="module-stat-value">126</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-blue-500"></span>New</span
+                  >
+                  <span class="module-stat-value">10</span>
+                </div>
+                <div class="module-stat-row">
+                  <span class="module-stat-label"
+                    ><span class="status-dot bg-amber-500"></span>Pending</span
+                  >
+                  <span class="module-stat-value">6</span>
+                </div>
+              </div>
+
+              <div class="module-footer">
+                <span>View Customers</span>
+                <span>→</span>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- ==========================================
+                 Finance Overview
+                 ========================================== -->
+
+        <section class="mb-6 finance-section">
+          <div class="section-heading mb-3">
+            <div>
+              <h3 class="section-title">Finance Overview</h3>
+              <p class="section-subtitle">Invoice and payroll summary</p>
+            </div>
+            <span class="text-[10px] text-neutral-400">02 Modules</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <!-- Invoice Management -->
+            <a href="invoices.html" class="dashboard-card finance-card">
+              <div class="finance-card-header">
+                <div class="flex items-center gap-2.5">
+                  <div class="finance-icon invoice-icon">
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"
+                      />
+                      <path
+                        d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 17.5v-11"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="finance-title">Invoice Management</h4>
+                    <p class="finance-subtitle">Billing and payments</p>
+                  </div>
+                </div>
+
+                <span class="finance-total-badge">248 Total</span>
+              </div>
+
+              <div class="finance-status-grid">
+                <div class="finance-status-item">
+                  <span class="finance-status-label">
+                    <span class="status-dot bg-emerald-500"></span>
+                    Paid
+                  </span>
+                  <p class="finance-status-value text-emerald-700">156</p>
+                </div>
+
+                <div class="finance-status-item">
+                  <span class="finance-status-label">
+                    <span class="status-dot bg-amber-500"></span>
+                    Pending
+                  </span>
+                  <p class="finance-status-value text-amber-700">62</p>
+                </div>
+
+                <div class="finance-status-item">
+                  <span class="finance-status-label">
+                    <span class="status-dot bg-rose-500"></span>
+                    Overdue
+                  </span>
+                  <p class="finance-status-value text-rose-700">30</p>
+                </div>
+              </div>
+
+              <div class="finance-highlight">
+                <div>
+                  <p class="finance-highlight-label">Outstanding Amount</p>
+                  <p class="finance-highlight-value">₹4,85,000</p>
+                </div>
+                <span class="finance-highlight-note">Unpaid invoices</span>
+              </div>
+
+              <div class="module-footer">
+                <span>View Invoices</span>
+                <span>→</span>
+              </div>
+            </a>
+
+            <!-- Payroll Management -->
+            <a href="payroll.html" class="dashboard-card finance-card">
+              <div class="finance-card-header">
+                <div class="flex items-center gap-2.5">
+                  <div class="finance-icon payroll-icon">
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <path d="M3 9h18M7 15h4M7 18h7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="finance-title">Payroll Management</h4>
+                    <p class="finance-subtitle">Driver payroll overview</p>
+                  </div>
+                </div>
+
+                <span class="finance-total-badge">November 2026</span>
+              </div>
+
+              <div class="finance-highlight payroll-highlight">
+                <div>
+                  <p class="finance-highlight-label">Current Month Payroll</p>
+                  <p class="finance-highlight-value">₹8,45,000</p>
+                </div>
+                <span class="finance-highlight-note">Monthly total</span>
+              </div>
+
+              <div class="payroll-status-grid">
+                <div class="payroll-status-item">
+                  <div>
+                    <span class="finance-status-label">
+                      <span class="status-dot bg-emerald-500"></span>
+                      Processed
+                    </span>
+                    <p class="finance-status-value text-emerald-700">42</p>
+                  </div>
+                  <span class="payroll-status-icon processed-icon">✓</span>
+                </div>
+
+                <div class="payroll-status-item">
+                  <div>
+                    <span class="finance-status-label">
+                      <span class="status-dot bg-amber-500"></span>
+                      Pending
+                    </span>
+                    <p class="finance-status-value text-amber-700">8</p>
+                  </div>
+                  <span class="payroll-status-icon pending-icon">!</span>
+                </div>
+              </div>
+
+              <div class="module-footer">
+                <span>View Payroll</span>
+                <span>→</span>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- ==========================================
+                 Trip Activity + Attention Required
+                 ========================================== -->
+
+        <!-- ==========================================================
+     ONGOING TRIPS + ATTENTION REQUIRED
+     ========================================================== -->
+
+        <section class="dashboard-activity-grid">
+          <!-- ======================================================
+         ONGOING TRIPS
+         ====================================================== -->
+
+          <div class="dashboard-panel ongoing-trips-card">
+            <!-- Card Header -->
+            <div class="activity-card-header">
+              <div>
+                <h3 class="activity-title">Ongoing Trips</h3>
+                <p class="activity-subtitle">Monitor currently running trips</p>
+              </div>
+
+              <span class="activity-count-badge">
+                <span class="live-indicator"></span>
+                3 Active
+              </span>
+            </div>
+
+            <!-- Trips List -->
+            <div class="ongoing-trips-list">
+              <!-- Trip 1 -->
+              <div class="ongoing-trip-item" data-trip-row>
+                <div class="ongoing-trip-info">
+                  <div class="trip-top-line">
+                    <span class="ongoing-trip-id">TRP-1024</span>
+                    <span class="trip-status-badge"> In Progress </span>
+                  </div>
+
+                  <h4 class="trip-route">Pune <span>→</span> Mumbai</h4>
+
+                  <div class="trip-meta">
+                    <span>
+                      <i class="fa-solid fa-user"></i>
+                      Rahul Patil
+                    </span>
+
+                    <span>
+                      <i class="fa-solid fa-truck"></i>
+                      MH 12 AB 4521
+                    </span>
+
+                    <span>
+                      <i class="fa-regular fa-clock"></i>
+                      09:30 AM
+                    </span>
+                  </div>
+                </div>
+
+                <button type="button" class="end-trip-btn" data-end-trip>
+                  End Trip
+                </button>
+              </div>
+
+              <!-- Trip 2 -->
+              <div class="ongoing-trip-item" data-trip-row>
+                <div class="ongoing-trip-info">
+                  <div class="trip-top-line">
+                    <span class="ongoing-trip-id">TRP-1028</span>
+                    <span class="trip-status-badge"> In Progress </span>
+                  </div>
+
+                  <h4 class="trip-route">Mumbai <span>→</span> Nashik</h4>
+
+                  <div class="trip-meta">
+                    <span>
+                      <i class="fa-solid fa-user"></i>
+                      Amit Shinde
+                    </span>
+
+                    <span>
+                      <i class="fa-solid fa-truck"></i>
+                      MH 15 CD 7812
+                    </span>
+
+                    <span>
+                      <i class="fa-regular fa-clock"></i>
+                      11:15 AM
+                    </span>
+                  </div>
+                </div>
+
+                <button type="button" class="end-trip-btn" data-end-trip>
+                  End Trip
+                </button>
+              </div>
+
+              <!-- Trip 3 -->
+              <div class="ongoing-trip-item" data-trip-row>
+                <div class="ongoing-trip-info">
+                  <div class="trip-top-line">
+                    <span class="ongoing-trip-id">TRP-1031</span>
+                    <span class="trip-status-badge"> In Progress </span>
+                  </div>
+
+                  <h4 class="trip-route">Pune <span>→</span> Kolhapur</h4>
+
+                  <div class="trip-meta">
+                    <span>
+                      <i class="fa-solid fa-user"></i>
+                      Sagar Jadhav
+                    </span>
+
+                    <span>
+                      <i class="fa-solid fa-truck"></i>
+                      MH 14 EF 2390
+                    </span>
+
+                    <span>
+                      <i class="fa-regular fa-clock"></i>
+                      12:05 PM
+                    </span>
+                  </div>
+                </div>
+
+                <button type="button" class="end-trip-btn" data-end-trip>
+                  End Trip
+                </button>
+              </div>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="activity-card-footer">
+              <span>
+                <i class="fa-solid fa-satellite-dish"></i>
+                Live operational status
+              </span>
+
+              <a href="../../trips.html">
+                View All Trips
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- ======================================================
+                ATTENTION REQUIRED / DRIVER HANDOVER
+                ====================================================== -->
+
+          <div class="dashboard-panel attention-card">
+            <!-- Card Header -->
+            <div class="activity-card-header">
+              <div>
+                <h3 class="activity-title">Attention Required</h3>
+                <p class="activity-subtitle">
+                  Trip handovers and driver reassignment
+                </p>
+              </div>
+
+              <span class="attention-count-badge"> 3 Updates </span>
+            </div>
+
+            <!-- Handover Activity List -->
+            <div class="handover-list">
+              <!-- Handover 1 -->
+              <div class="handover-item">
+                <div class="handover-icon paused-icon">
+                  <i class="fa-solid fa-pause"></i>
+                </div>
+
+                <div class="handover-content">
+                  <div class="handover-heading">
+                    <h4>TRP-1018</h4>
+                    <span class="handover-status status-pending"> Paused </span>
+                  </div>
+
+                  <p class="handover-description">
+                    Trip paused due to driver unavailability.
+                  </p>
+
+                  <div class="driver-transfer">
+                    <span>Rohit More</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <strong>Vijay Pawar</strong>
+                  </div>
+
+                  <p class="handover-note">
+                    New driver assigned · Awaiting continuation
+                  </p>
+                </div>
+              </div>
+
+              <!-- Handover 2 -->
+              <div class="handover-item">
+                <div class="handover-icon reassigned-icon">
+                  <i class="fa-solid fa-user-gear"></i>
+                </div>
+
+                <div class="handover-content">
+                  <div class="handover-heading">
+                    <h4>TRP-1021</h4>
+                    <span class="handover-status status-assigned">
+                      Reassigned
+                    </span>
+                  </div>
+
+                  <p class="handover-description">
+                    Driver changed during an active trip.
+                  </p>
+
+                  <div class="driver-transfer">
+                    <span>Akash Kale</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <strong>Prasad Jagtap</strong>
+                  </div>
+
+                  <p class="handover-note">
+                    New driver assigned · Ready to resume
+                  </p>
+                </div>
+              </div>
+
+              <!-- Handover 3 -->
+              <div class="handover-item">
+                <div class="handover-icon warning-icon">
+                  <i class="fa-solid fa-user-clock"></i>
+                </div>
+
+                <div class="handover-content">
+                  <div class="handover-heading">
+                    <h4>TRP-1030</h4>
+                    <span class="handover-status status-action">
+                      Action Needed
+                    </span>
+                  </div>
+
+                  <p class="handover-description">
+                    Trip paused. Replacement driver not assigned.
+                  </p>
+
+                  <div class="driver-transfer">
+                    <span>Mahesh Pawar</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <strong class="unassigned-driver"> Not Assigned </strong>
+                  </div>
+
+                  <p class="handover-note">Administrative action required</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="activity-card-footer">
+              <span>
+                <i class="fa-solid fa-arrows-rotate"></i>
+                Recent assignment updates
+              </span>
+
+              <a href="../../trips.html">
+                Review Assignments
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================================
+     END TRIP CONFIRMATION OVERLAY -->
+
+        <div id="endTripModal" class="trip-modal" aria-hidden="true">
+          <div class="trip-modal-backdrop" data-close-modal></div>
+
+          <div
+            class="trip-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="endTripModalTitle"
+            aria-describedby="endTripModalDescription"
+          >
+            <!-- Close Button -->
+            <button
+              type="button"
+              class="trip-modal-close"
+              data-close-modal
+              aria-label="Close confirmation"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Icon -->
+            <div class="trip-modal-icon">
+              <i class="fa-solid fa-flag-checkered"></i>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="trip-modal-content">
+              <h3 id="endTripModalTitle">End This Trip?</h3>
+
+              <p id="endTripModalDescription">
+                Are you sure you want to mark this trip as completed? Please
+                confirm before proceeding.
+              </p>
+
+              <div class="trip-modal-details">
+                <span>Trip ID</span>
+                <strong id="confirmTripId">TRP-0000</strong>
+              </div>
+            </div>
+
+            <!-- Modal Actions -->
+            <div class="trip-modal-actions">
+              <button type="button" class="trip-modal-cancel" data-close-modal>
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                class="trip-modal-confirm"
+                id="confirmEndTrip"
+              >
+                <i class="fa-solid fa-check"></i>
+                End Trip
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+     RECENT TRIPS TABLE
+     ========================================================== -->
+
+        <section class="mb-6">
+          <div class="dashboard-card recent-trips-card">
+            <!-- Header -->
+            <div class="recent-trips-header">
+              <div>
+                <h3 class="section-title">Recent Trips</h3>
+                <p class="section-subtitle">
+                  Latest trip records and their current status
+                </p>
+              </div>
+
+              <a href="../../trips.html" class="recent-trips-link">
+                View All Trips
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+
+            <!-- Table -->
+            <div class="recent-trips-table-wrapper">
+              <table class="recent-trips-table">
+                <thead>
+                  <tr>
+                    <th>Trip ID</th>
+                    <th>Route</th>
+                    <th>Vehicle Number</th>
+                    <th>Driver</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="recent-trip-id">TRP-1024</span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-route">
+                        Mumbai <span>→</span> Pune
+                      </span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-vehicle">MH 12 AB 1234</span>
+                    </td>
+
+                    <td>Rahul Sharma</td>
+
+                    <td>
+                      <span class="recent-trip-status status-progress">
+                        <span class="recent-status-dot"></span>
+                        In Progress
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span class="recent-trip-id">TRP-1023</span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-route">
+                        Pune <span>→</span> Nashik
+                      </span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-vehicle">MH 14 CD 5678</span>
+                    </td>
+
+                    <td>Amit Patil</td>
+
+                    <td>
+                      <span class="recent-trip-status status-completed">
+                        <span class="recent-status-dot"></span>
+                        Completed
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span class="recent-trip-id">TRP-1022</span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-route">
+                        Mumbai <span>→</span> Surat
+                      </span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-vehicle">MH 04 EF 9012</span>
+                    </td>
+
+                    <td>Suresh Jadhav</td>
+
+                    <td>
+                      <span class="recent-trip-status status-scheduled">
+                        <span class="recent-status-dot"></span>
+                        Scheduled
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span class="recent-trip-id">TRP-1021</span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-route">
+                        Pune <span>→</span> Kolhapur
+                      </span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-vehicle">MH 12 GH 3456</span>
+                    </td>
+
+                    <td>Vijay More</td>
+
+                    <td>
+                      <span class="recent-trip-status status-completed">
+                        <span class="recent-status-dot"></span>
+                        Completed
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span class="recent-trip-id">TRP-1020</span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-route">
+                        Nashik <span>→</span> Mumbai
+                      </span>
+                    </td>
+
+                    <td>
+                      <span class="recent-trip-vehicle">MH 15 JK 7890</span>
+                    </td>
+
+                    <td>Prakash Shinde</td>
+
+                    <td>
+                      <span class="recent-trip-status status-delayed">
+                        <span class="recent-status-dot"></span>
+                        Delayed
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="recent-trips-footer">
+              <span>Showing latest 5 trip records</span>
+
+              <a href="../../trips.html">
+                Explore All Trips
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Dashboard JavaScript
+         Only dashboard-specific functionality
+         ========================================== -->
+    <script>
+      (function () {
+        "use strict";
+
+        // ==========================================
+        // Dashboard Date
+        // Uses the visitor's local date.
+        // ==========================================
+        function updateDashboardDate() {
+          const dateElement = document.getElementById("dashboard-date");
+
+          if (!dateElement) return;
+
+          const today = new Date();
+
+          dateElement.textContent = new Intl.DateTimeFormat("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }).format(today);
+        }
+
+        /* ==========================================================
+       END TRIP - CUSTOM CONFIRMATION MODAL
+       Frontend demonstration only
+       ========================================================== */
+
+        document.addEventListener("DOMContentLoaded", function () {
+          const modal = document.getElementById("endTripModal");
+          const confirmButton = document.getElementById("confirmEndTrip");
+          const tripIdElement = document.getElementById("confirmTripId");
+          const activeCountBadge = document.querySelector(
+            ".activity-count-badge",
+          );
+
+          let selectedTripRow = null;
+
+          if (!modal || !confirmButton || !tripIdElement) {
+            console.error("End Trip modal elements were not found.");
+            return;
+          }
+
+          // Open modal when End Trip is clicked
+          document.addEventListener("click", function (event) {
+            const endButton = event.target.closest("[data-end-trip]");
+
+            if (endButton) {
+              const tripRow = endButton.closest("[data-trip-row]");
+
+              if (!tripRow || endButton.disabled) return;
+
+              selectedTripRow = tripRow;
+
+              const tripId = tripRow
+                .querySelector(".ongoing-trip-id")
+                ?.textContent.trim();
+
+              tripIdElement.textContent = tripId || "Unknown";
+
+              modal.classList.add("is-open");
+              modal.setAttribute("aria-hidden", "false");
+
+              document.body.style.overflow = "hidden";
+
+              confirmButton.focus();
+
+              return;
+            }
+
+            // Close when clicking a close button or backdrop
+            if (event.target.closest("[data-close-modal]")) {
+              closeEndTripModal();
+            }
+          });
+
+          // Close modal function
+          function closeEndTripModal() {
+            modal.classList.remove("is-open");
+            modal.setAttribute("aria-hidden", "true");
+
+            document.body.style.overflow = "";
+
+            selectedTripRow = null;
+          }
+
+          // Cancel on Escape key
+          document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && modal.classList.contains("is-open")) {
+              closeEndTripModal();
+            }
+          });
+
+          // Confirm End Trip
+          confirmButton.addEventListener("click", function () {
+            if (!selectedTripRow) return;
+
+            const tripRow = selectedTripRow;
+
+            // Update trip status
+            const statusBadge = tripRow.querySelector(".trip-status-badge");
+
+            if (statusBadge) {
+              statusBadge.textContent = "Completed";
+            }
+
+            // Update button
+            const endButton = tripRow.querySelector("[data-end-trip]");
+
+            if (endButton) {
+              endButton.innerHTML = `
+                <i class="fa-solid fa-check"></i>
+                Ended
+            `;
+
+              endButton.disabled = true;
+            }
+
+            // Update active trip count
+            const remainingTrips = document.querySelectorAll(
+              "[data-trip-row] [data-end-trip]:not(:disabled)",
+            ).length;
+
+            if (activeCountBadge) {
+              activeCountBadge.innerHTML = `
+                <span class="live-indicator"></span>
+                ${remainingTrips} Active
+            `;
+            }
+
+            // Close modal
+            closeEndTripModal();
+          });
+        });
+
+        // ==========================================
+        // Dashboard Initialization
+        // ==========================================
+        function initDashboard() {
+          updateDashboardDate();
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initDashboard);
+        } else {
+          initDashboard();
+        }
+      })();
+    </script>
+
+    <!-- Existing Common Navigation JavaScript -->
+    <script src="../../js/nav-sidebar.js"></script>
+  </body>
+</html>
